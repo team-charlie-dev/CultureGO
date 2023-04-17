@@ -11,3 +11,5 @@ Erik Sirborg
 Olof Olsson
 Emil Kanerva
 Arvid Holm
+Phoenix Connelin
+David Glaas
