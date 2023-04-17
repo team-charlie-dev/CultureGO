@@ -1,1 +1,3 @@
-const log;
+const Home = () => {
+  return div;
+};
