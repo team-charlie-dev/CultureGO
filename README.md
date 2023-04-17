@@ -10,7 +10,6 @@ Pontus Rydén
 Erik Sirborg
 Olof Olsson
 Emil Kanerva
-Erik Sirborg 1234
 Arvid Holm
 Phoenix Connelin
 David Glaas
