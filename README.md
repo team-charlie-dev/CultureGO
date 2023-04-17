@@ -7,3 +7,4 @@ Team members:
 Reza Hosseini
 Pontus Berglund
 Pontus Rydén
+Emil Kanerva
