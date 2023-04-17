@@ -1,2 +1,4 @@
 # team-charlie
-Team charlie's application
+
+This is team charlie's application.
+Further information will come shortly.
