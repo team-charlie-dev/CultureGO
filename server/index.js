@@ -1,16 +1,15 @@
 import cors from 'cors';
 import express from 'express';
-import { createClient } from '@supabase/supabase-js'
+// import { createClient } from '@supabase/supabase-js'
 const app = express()
 const port = 4000
 
-import dotenv from 'dotenv'
-dotenv.config()
+import {getItems, supabase} from './dbfuncs.js'
 
 
 app.use(cors())
 
-const supabase = createClient(process.env.DB_URL,process.env.API_KEY);
+// const supabase = createClient(process.env.DB_URL,process.env.API_KEY);
 
 
 app.get('/charlie', (req, res) => {
@@ -44,6 +43,12 @@ app.get('/helloworld', (req, res) => {
     Ta bort användare -> delete/userinfo
     Hämta likes -> get/likes?page=x&filter=visited/unvisited/none&sort=old/new      (HTTP 204 skickas tillbaka om det är slut på kort)
 */
+
+app.get('/getitem', async (req, res) => { 
+  const amount = parseInt(req.query.amount) || 1
+
+  res.send(await getItems(amount, null))
+})
 
 app.listen(port, () => {
   console.log(`Express server is listening on port: ${port}`)
