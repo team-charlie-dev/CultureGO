@@ -1,13 +1,28 @@
-const cors = require('cors')
-const express = require('express')
+import cors from 'cors';
+import express from 'express';
+import { createClient } from '@supabase/supabase-js'
 const app = express()
 const port = 4000
+
+import dotenv from 'dotenv'
+dotenv.config()
 
 
 app.use(cors())
 
+const supabase = createClient(process.env.DB_URL,process.env.API_KEY);
+
+
 app.get('/', (req, res) => {
-  res.send('This is the same page')
+
+  res.send('This is the home page')
+})
+
+app.get('/testDB', async (req, res) => {
+  const data = await supabase
+        .from('testtable')
+        .select()
+    res.send(data);
 })
 
 app.get('/helloworld', (req, res) => {
