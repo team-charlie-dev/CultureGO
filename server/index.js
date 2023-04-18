@@ -7,7 +7,11 @@ const port = 4000
 app.use(cors())
 
 app.get('/', (req, res) => {
-  res.json('Hello Wrld!')
+  res.send('This is the same page')
+})
+
+app.get('/helloworld', (req, res) => {
+  res.json('Hello World!')
 })
 
 //api routes
@@ -23,5 +27,5 @@ app.get('/', (req, res) => {
 */
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Express server is listening on port: ${port}`)
 })
