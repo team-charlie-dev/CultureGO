@@ -13,6 +13,10 @@ app.use(cors())
 const supabase = createClient(process.env.DB_URL,process.env.API_KEY);
 
 
+app.get('/charlie', (req, res) => {
+  res.send('<img src="https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg" style="width:100%">')
+})
+
 app.get('/', (req, res) => {
 
   res.send('This is the home page')
