@@ -7,11 +7,9 @@ export const supabase = createClient(process.env.DB_URL,process.env.API_KEY);
 
 const BASE_IMG_URL = 'https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/'
 
-
 export const getItems = async (amount, user) => {
   const { data, error } = await supabase.from('sights').select() // TODO hämta enbart det man inte har sett
   if (error) return error
-
 
   // TODO fixa så att den väljer annorlunda varje gång
   return data.splice(0, amount).map(({sight_id, name, short_info, long_info, price, main_tag_id, address_id, number_of_img}) => {
@@ -22,6 +20,4 @@ export const getItems = async (amount, user) => {
 
     return {sight_id, name, short_info, long_info, price, main_tag_id, address_id, images}
   })
-
-  // return [data[0]]
 }
