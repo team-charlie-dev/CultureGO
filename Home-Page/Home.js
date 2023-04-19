@@ -1,3 +1,0 @@
-const Home = () => {
-  return div;
-};
