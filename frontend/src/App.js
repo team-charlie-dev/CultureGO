@@ -7,7 +7,7 @@ import Outdoor from './Components/icons/tag-page-icons/Outdoor.svg'
 function App() {
   return (
     <div>
-      <Tags />
+      <Tags />  
     </div>
   );
 }
