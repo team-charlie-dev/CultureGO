@@ -4,16 +4,33 @@ import {useContext} from 'react'
 
 import {deleteContext} from './DeleteContext'
 
-const LikedCard = ({name, location, img}) => {
+const LikedCard = ({name, location, img, func}) => {
 
     // console.log(img);
 
     var del = useContext(deleteContext)
 
+    
+    // const handleClick = (e) => {
+    //     func(e.target.checked)
+    // }
+
+    const inp = <input type="checkbox" className="absolute left-2 top-5"  onChange={e => func(e.target.checked)}></input>
+
+    // const reply = () => {
+    //     let value = inp.value;
+
+    //     func(value);
+    // }
+
+
     return (
         <div style={{backgroundColor: 'red'}} className="rounded-xl relative">
 
-            <input type="checkbox" className="absolute left-2 top-5"></input>
+
+            {inp}
+
+            {/* <button onClick={func}> HEJ </button> */}
 
             <div style={{backgroundImage: `url(${img}`, backgroundSize: 'cover', transform: `translate(${del ? 100 : 0}px, 0)`, transition: 'transform 300ms ease-in-out'}} 
                 className="w-full rounded-lg pt-12 mt-2  text-white">

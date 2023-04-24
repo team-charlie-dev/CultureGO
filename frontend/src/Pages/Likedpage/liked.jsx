@@ -15,31 +15,84 @@ import {deleteContext} from './DeleteContext'
 
 const Liked = () => {
 
-    var dell = useState(false);
-
-    var [del, setDel] = dell
+    var [del, setDel] = useState(false)
 
 
-    var [list, setList] = useState(
-        [<LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={dell[0]}
-        img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
-        img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
-        img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
-        img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
-        img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
-        img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
-        img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>]
-    )
 
+
+    const fn = (a, value) => {
+
+        // console.log(a);
+        // console.log(value);
+
+        console.log("hello")
+
+        if (value)
+        {
+            setRemove(r => {
+                r.push(a)
+                console.log(r)
+                return r
+            })
+        }
+        else
+        {
+            setRemove(r => {
+                r.pop(a)
+                console.log(r)
+
+                return r
+            })
+        }
+    }
+
+
+
+    let temp = []
+
+    let tempmap = new Map()
+
+    for (let i = 0; i < 7; i++)
+    {
+        let card = <LikedCard name='Abba the museum' location='Stockholm' func={(value) => {fn(i, value)}}
+                    img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>
+
+        // Object.assign(tempmap, {[i]: card})
+        tempmap.set(i, card)
+        console.log(tempmap.get(i))
+        temp.push(card)
+    }
+
+
+    var [list, setList] = useState(temp)
+    
+    var [remove, setRemove] = useState([])
+    
+    var [map, setMap] = useState(tempmap)
+    console.log(tempmap)
 
     const func = () => {
         setDel(!del);
+    }
+
+    const performRemove = () => {
+        list = list.slice()
+
+        console.log(remove)
+
+        for (let id of remove)
+        {
+            console.log("removing " + id)
+            console.log(map.get(id))
+            list.pop(map.get(id))
+
+            map.delete(id)
+            
+        }
+
+        setList(list);
+        setRemove([]);
+        setMap(map);
     }
 
     return (
@@ -72,6 +125,9 @@ const Liked = () => {
             </div>
             <button onClick={func}>
                 hshshsshhs
+            </button>
+            <button onClick={performRemove}>
+                REMOVE
             </button>
         </div>
     )
