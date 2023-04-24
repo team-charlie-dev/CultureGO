@@ -8,12 +8,12 @@ import TagCard from './TagCard'
 export default function Tags() {
   return (
     <div>
-      <p className='bg-white text-center relative top-28 '>What mood are you in?</p>
+      <p className='bg-white text-center absolute top-28 w-full'>What mood are you in?</p>
       <div className='grid grid-cols-2 h-screen'>
-          <TagCard image={Outdoor} text = "Outdoor" position = 'right'/>
-          <TagCard image={Indoor} text = "Indoor" position = 'left'/>
-          <TagCard image={Free} text = "Free" position = 'right'/>
-          <TagCard image={Random} text = "Random" position = 'left'/>
+          <TagCard image={Outdoor} text = "Outdoor" xPosition = 'right' yPosition= 'bottom'/>
+          <TagCard image={Indoor} text = "Indoor" xPosition = 'left' yPosition='bottom'/>
+          <TagCard image={Free} text = "Free" xPosition = 'right' yPosition = 'top'/>
+          <TagCard image={Random} text = "Random" xPosition = 'left' yPosition = 'top'/>
       </div>
     </div>
   )
