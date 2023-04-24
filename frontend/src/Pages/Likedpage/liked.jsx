@@ -9,26 +9,38 @@ import LogoText from "../../Components/icons/LogoText";
 
 import LikedCard from "./LikedCard";
 
-import {useState} from 'react'
+import {useState, useContext, createContext} from 'react'
+
+import {deleteContext} from './DeleteContext'
 
 const Liked = () => {
 
+    var dell = useState(false);
+
+    var [del, setDel] = dell
+
+
     var [list, setList] = useState(
-        [<LikedCard name='Abba the museum' location='Stockholm'
+        [<LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={dell[0]}
         img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm'
+        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
         img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm'
+        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
         img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm'
+        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
         img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm'
+        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
         img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm'
+        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
         img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>,
-        <LikedCard name='Abba the museum' location='Stockholm'
+        <LikedCard name='Abba the museum' location='Stockholm' showDeleteOption={del}
         img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>]
     )
+
+
+    const func = () => {
+        setDel(!del);
+    }
 
     return (
         <div className=" w-screen h-screen bg-white overflow-hidden">
@@ -48,13 +60,19 @@ const Liked = () => {
                 <Sort/>
 
             </div>
-            <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100vh-var(--navbar-height)-8rem)]">
+            <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100vh-var(--navbar-height)-8rem)] overflow-x-hidden">
                 {/* container for list */}
+                
+                <deleteContext.Provider value={del}>
                 {
                     list
                 }
+                </deleteContext.Provider>
                 
             </div>
+            <button onClick={func}>
+                hshshsshhs
+            </button>
         </div>
     )
 }
