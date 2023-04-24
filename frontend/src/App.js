@@ -3,7 +3,7 @@ import HomeIcon from "./Components/icons/HomeIcons";
 
 function App() {
   return (
-    <div>
+    <div className="w-screen h-screen bg-primary">
       <CultureGo />
     </div>
   );
