@@ -4,8 +4,8 @@ const LikedCard = ({name, location, img}) => {
 
     console.log(img);
     return (
-        <div style={{backgroundImage: `url(${img}`, backgroundSize: 'cover'}} className="w-full rounded-lg pt-10 mt-5 relative">
-            <div className=" pt-2 pb-12 bg-primaryDark w-full text-center bg-opacity-50 rounded-lg ">
+        <div style={{backgroundImage: `url(${img}`, backgroundSize: 'cover'}} className="w-full rounded-lg pt-12 mt-2 relative text-white">
+            <div className=" pt-2 pb-12 bg-black w-full text-center bg-opacity-20 rounded-lg ">
                 {name}
             </div>
             
