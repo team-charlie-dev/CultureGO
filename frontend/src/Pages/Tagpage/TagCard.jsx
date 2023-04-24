@@ -1,9 +1,10 @@
 import React from 'react'
-import Outdoor from '../../Components/icons/tag-page-icons/Outdoor.svg'
 
-export default function TagCard() {
+export default function TagCard({image, text}) {
   return (
-    <div class = "bg-[url('../../Components/icons/tag-page-icons/Outdoor.svg')]">
+    <div style = {{backgroundImage: `url(${image})`, backgroundSize: 'cover'}}
+    className='w-16 h-24'>
+      <p className='text-center bg-black bg-opacity-40 text-white'>{text}</p>
     </div>
   )
 }
