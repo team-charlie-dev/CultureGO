@@ -3,7 +3,7 @@ import React from 'react'
 export default function button({text, icon, size}) {
     if(size === 'large'){
         return (
-            <div className='bg-primaryDark rounded-2xl h-16 w-5/6 m-6 text-center flex justify-around px-16 text-white font-bold italic relative text-lg'>
+            <div className='bg-primaryDark rounded-2xl h-16 w-5/6 text-center flex justify-around px-16 text-white font-bold italic relative text-lg'>
                 <div className='h-full'>
                     {icon()}
                 </div>
