@@ -1,4 +1,5 @@
 import Tags from "./Pages/Tagpage/tags";
+import Logo from "./Components/icons/CultureGo"
 
 function App() {
   return (
