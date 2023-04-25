@@ -10,6 +10,8 @@ export default {
       secondaryLight: "#918450",
       secondaryDark: "#A41623",
       white: "#FFFFFF",
+      gray: "#808080",
+      infoColor: "#FFECCC",
     },
   },
   plugins: [],

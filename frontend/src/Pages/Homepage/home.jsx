@@ -1,12 +1,14 @@
 import React from "react";
 import Like from "../../Components/icons/Like.svg";
 import Dislike from "../../Components/icons/Dislike.svg";
+import Logo from "../../Components/icons/Logo.svg";
 
 // const images = [HomeIcon, CultureGo]
 
 const home = () => {
   return (
-    <div className="bg-white flex flex-col justify-center items-center gap-10 h-screen">
+    <div className="bg-white flex flex-col justify-center gap-10 h-screen">
+      <Header />
       <Image />
       <InfoBox />
       <Buttons />
@@ -28,7 +30,7 @@ const Image = () => {
 
 const InfoBox = () => {
   return (
-    <div>
+    <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px]">
       <h1>Title</h1>
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit eligendi
@@ -42,9 +44,17 @@ const InfoBox = () => {
 
 const Buttons = () => {
   return (
-    <div className="flex flex-row gap-24">
+    <div className="flex flex-row gap-24 justify-center">
       <img src={Dislike}></img>
       <img src={Like}></img>
     </div>
+  );
+};
+
+const Header = () => {
+  return (
+    <header className="p-3">
+      <img src={Logo}></img>
+    </header>
   );
 };
