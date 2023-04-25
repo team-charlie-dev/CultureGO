@@ -15,7 +15,10 @@ export default function Tags() {
         <TagCard image={Random} text="Random" xPosition='left' yPosition='top' />
       </div>
       <div className = 'flex justify-center'>
-        <p className='bg-white text-center absolute top-[15%] px-[15%] font-inriaSans'>What mood are you in?</p>
+        <p className='bg-white text-center absolute top-[10%] px-[15%] font-inriaSans'>What mood are you in?</p>
+        <button className = 'absolute bottom-[12%] text-white font-inriaSans text-xs italic bg-primaryDark px-[10%] py-[2%] rounded-full'>
+        Done
+      </button>
       </div>
     </div>
   )

@@ -9,16 +9,16 @@ export default function TagCard({ image, text, xPosition, yPosition }) {
   }
 
   const clickedStyle = 'opacity-50 scale-[1.4]' 
-  const clickedLogoStyle = 'relative -top-8 float-right opacity-100 right-[15%]'
+  const clickedLogoStyle = 'opacity-100'
 
   return (
-    <div className = 'overflow-hidden' onClick={handleClick}>
+    <div className = 'overflow-hidden flex items-center justify-center' onClick={handleClick}>
       <div style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPositionX: `${xPosition}`, backgroundPositionY: `${yPosition}` }}
         className={`transition-all duration-500 w-full h-full ${clicked ? clickedStyle : ''}`}>
       </div>
-      <div className='relative bottom-1/2'>
-        <p className={`text-center transition-all duration-500 bg-opacity-50 text-white w-full ${clicked ? '' : 'bg-black'} relative bottom-1/2 font-inriaSans italic`}>{text}</p>
-        <img src = {Logo} className={`${clicked ? clickedLogoStyle : 'relative top-32 float-right opacity-0 right-[15%]'} transition-all duration-500`}/>
+      <div className={`transition-all duration-500 ${clicked ? '' : ''} bg-opacity-50 text-center absolute`}>
+        <p className={`text-white font-inriaSans italic`}>{text}</p>
+        <img src = {Logo} className={`${clicked ? clickedLogoStyle : 'opacity-0'} transition-all duration-500 mx-auto`}/>
       </div>
     </div>
   )
