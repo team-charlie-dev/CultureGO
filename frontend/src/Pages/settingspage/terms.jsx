@@ -4,8 +4,8 @@ export default function Terms({info}) {
   return (
     <div className='w-full h-full flex flex-col text-white text-l p-7'>
         
-        <div className=' h-full overflow-scroll text-black bg-white rounded-xl p-5'>
-          <div className='text-center text-xl font-bold mb-5'>User Terms</div>
+        <div className=' h-full overflow-scroll text-black bg-white rounded-xl p-5 overflow-x-hidden m-width'>
+          <div className='text-center text-xl font-bold mb-5 '>User Terms</div>
 
           <p>
 
