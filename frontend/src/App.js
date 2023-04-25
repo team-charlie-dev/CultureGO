@@ -1,15 +1,14 @@
 import CultureGo from "./Components/icons/CultureGo";
 import HomeIcon from "./Components/icons/HomeIcons";
-import Home from "./Pages/Homepage/home"
+import Home from "./Pages/Homepage/home";
 
 function App() {
   return (
-    <div className="bg-primary">
-      <div className="bg-white h-screen m-auto w-screen max-w-sm">
-      <Home />
+    <div className="w-screen bg-primary">
+      <div className="h-screen m-auto w-screen max-w-md relative">
+        <Home />
       </div>
     </div>
-
   );
 }
 
