@@ -9,8 +9,14 @@ const home = () => {
   return (
     <div className="bg-white flex flex-col justify-center gap-10 h-screen">
       <Header />
-      <Image />
-      <InfoBox />
+
+      <div className="relative">
+        <Image />
+        <div className="absolute bottom-0 left-0 right-0">
+          <InfoBox />
+        </div>
+      </div>
+
       <Buttons />
     </div>
   );
@@ -30,7 +36,7 @@ const Image = () => {
 
 const InfoBox = () => {
   return (
-    <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px]">
+    <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-30">
       <h1>Title</h1>
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit eligendi
