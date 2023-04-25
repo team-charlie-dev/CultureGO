@@ -96,7 +96,7 @@ const Liked = () => {
     }
 
     return (
-        <div className=" w-screen h-screen bg-white overflow-hidden">
+        <div className=" w-full h-screen bg-white overflow-hidden">
             <div className=" w-screen h-20">
                 {/* top of screen w/ logo */}
 
