@@ -35,7 +35,7 @@ export default function Settings() {
     }
   }
     return   (
-        <div className="bg-white h-full w-full">
+        <div className="bg-white h-full w-full relative overflow-hidden">
         
           <div className="h-1/3 ">
             <div className="flex flex-col justify-center h-full">  
