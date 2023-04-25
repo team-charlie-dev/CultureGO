@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Navbar from "./Components/Navbar/Navbar";
 import Home from "./Pages/Homepage/home";
@@ -32,7 +31,6 @@ function App() {
           }
         </Navbar>
       </div>
-
     </div>
   );
 }

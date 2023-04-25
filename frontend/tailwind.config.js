@@ -11,11 +11,15 @@ export default {
       primaryDark: "#F85E00",
       primaryLight: "#FFD29D",
       secondaryLight: "#918450",
-      secondaryDark: "#A41623", 
+      secondaryDark: "#A41623",
       white: "#FFFFFF", 
       black: "#000000", 
       red: "#FF0000",
-    }
+    },
+    fontFamily: {
+      'inriaSans' : ['Inria Sans'],
+    },
+
   },
   plugins: [],
 }
