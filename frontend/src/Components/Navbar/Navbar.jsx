@@ -8,9 +8,6 @@ export default function Navbar(props) {
     const {children} = props
     const {state:[currentPage, setCurrentPage]} = props
 
-    const handleClick = (page) => {
-        console.log(page)
-    }
     return (
         <>
             <div className="absolute w-full bg-primary bottom-0 z-20 shadow-[0_35px_60px_-15px_rgba(0,0,0,1)]">
