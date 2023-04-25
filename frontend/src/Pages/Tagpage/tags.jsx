@@ -1,8 +1,8 @@
 import React from 'react'
-import Outdoor from '../../Components/icons/tag-page-icons/Outdoor.svg'
-import Indoor from '../../Components/icons/tag-page-icons/Indoor.svg'
-import Free from '../../Components/icons/tag-page-icons/Free.svg'
-import Random from '../../Components/icons/tag-page-icons/Random.svg'
+import Outdoor from '../../Components/icons/tag-page-icons/Outdoor.png'
+import Indoor from '../../Components/icons/tag-page-icons/Indoor.png'
+import Free from '../../Components/icons/tag-page-icons/Free.png'
+import Random from '../../Components/icons/tag-page-icons/Random.png'
 import TagCard from './TagCard'
 
 export default function Tags() {
