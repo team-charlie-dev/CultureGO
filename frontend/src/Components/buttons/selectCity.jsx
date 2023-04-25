@@ -29,3 +29,4 @@ export default function Button({text, icon, size, clickHandler}) {
             </div>
         )
     }
+}
