@@ -40,8 +40,6 @@ const Liked = () => {
         }
     }
 
-    console.log(map)
-
     const getLikes = useCallback(() => {
 
         let ignore = false
@@ -50,11 +48,9 @@ const Liked = () => {
             let data = await fetch(`http://localhost:4000/likes?page=0&sort=${sortNew?"new":"old"}`)
                 .then(res => {
                     let json = res.json();
-                    console.log(json)
                     return json
                 })
                 .then(json => {
-                    console.log(json)
                     return json
                 })
             
@@ -63,8 +59,6 @@ const Liked = () => {
 
             for (let sight of data)
             {
-                console.log(sight)
-
                 let card = <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
                                 img={`https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
 
