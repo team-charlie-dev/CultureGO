@@ -9,10 +9,14 @@ import City from "../../Components/icons/City"
 
 const home = () => {
   return (
-    <div className="bg-white flex flex-col gap-10 h-screen">
-      <Header />
+    <div className="bg-white">
+       <Header />
+      <div className="flex justify-end">
       <CitySelector />
-      <div className="relative h-144 w-auto">
+      </div>
+
+      <div className="bg-white flex flex-col gap-10 h-screen">
+      <div className="relative h-[65%] w-auto font-inriaSans">
         <div className="bg-gradient-to-t from-transparent from-30% to-white absolute top-0 bottom-0 left-0 right-0 z-10">
         </div>
         <Image />
@@ -20,9 +24,10 @@ const home = () => {
           <InfoBox />
         </div>
       </div>
-
       <Buttons />
     </div>
+    </div>
+
   );
 };
 
@@ -32,8 +37,8 @@ const Image = () => {
   let img =
     "https://www.city-guide-stockholm.com/_bibli/annonces/455/hd/abba-museum-03.jpg";
   return (
-    <div className="">
-      <img src={img} className="rounded-[30px] object-none h-144"></img>
+    <div className="h-full">
+      <img src={img} className="rounded-[30px] object-none h-full"></img>
     </div>
   );
 };
@@ -41,8 +46,8 @@ const Image = () => {
 const InfoBox = () => {
   return (
     <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-30">
-      <h1>Title</h1>
-      <p>
+      <h1 className="italic text-[24px]">Abba The Museum</h1>
+      <p className="text-[16px]">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit eligendi
         unde facilis officia ad temporibus. Molestias beatae expedita,
         doloremque consequuntur, voluptatum nesciunt reprehenderit eius enim

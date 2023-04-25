@@ -18,6 +18,10 @@ export default {
       infoColor: "#FFECCC",
       transparent: "rgba(255,255,255,0)"
     },
+    fontFamily: {
+      'inriaSans' : ['Inria Sans'],
+      'inriaSansItalic' : ['Inria Sans', 'Italic']
+    },
   },
   plugins: [],
 };
