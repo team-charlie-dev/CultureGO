@@ -22,6 +22,22 @@ export const getItems = async (amount, user) => {
   })
 }
 
+
+export const getLikes = async (userId, page, filter, sort) => {
+  const { data, error } = await supabase
+    .from('liked_sights')
+    .select('user_id, liked_at, sights (sight_id, name)')
+    .order('liked_at', { ascending: sort === "old" })
+    
+  if (error) return error
+
+  console.log("working")
+
+  console.log(data)
+
+  return data.splice(page * 10, 10)
+}
+
 export const getUser = async (userId) => {
   const { data, error } = await supabase.from('users').select('username, user_id').eq('user_id', userId)
   if (error) return error

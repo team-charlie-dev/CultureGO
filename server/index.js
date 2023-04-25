@@ -4,9 +4,11 @@ import express from 'express';
 const app = express()
 const port = 4000
 
-import {getItems, getUser, supabase} from './dbfuncs.js'
+import {getItems, getLikes, getUser, supabase} from './dbfuncs.js'
 
 app.use(cors())
+
+app.use(express.json())
 
 app.get('/charlie', (req, res) => {
   res.send('<img src="https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg" style="width:100%"/>')
@@ -46,6 +48,23 @@ app.get('/getitem', async (req, res) => {
   res.send(await getItems(amount, null))
 })
 
+app.get('/likes', async (req, res) => {
+  let userId = req.query.userId
+  let page = req.query.page || 0
+  let filter = req.query.filter || 'none'
+  let sort = req.query.sort || 'new'
+
+  console.log("yes")
+
+  res.send(await getLikes(userId, page, filter, sort))
+})
+
+app.delete('/likes', (req, res) => {
+  console.log(req.body)
+
+  res.status(204).send()
+ })
+ 
 app.get('/getuser', async(req,res) => {
   const userId = req.query.userid
   const user = await getUser(userId)
