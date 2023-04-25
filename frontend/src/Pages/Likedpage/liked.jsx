@@ -71,6 +71,14 @@ const Liked = () => {
             map.delete(id)
         }
 
+        fetch('http://localhost:4000/likes', {
+            method: "DELETE",
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify(remove)
+        })
+
         setList(list);
         setRemove([]);
         setMap(map);

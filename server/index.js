@@ -8,6 +8,8 @@ import {getItems, supabase} from './dbfuncs.js'
 
 app.use(cors())
 
+app.use(express.json())
+
 app.get('/charlie', (req, res) => {
   res.send('<img src="https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg" style="width:100%"/>')
 })
@@ -44,6 +46,12 @@ app.get('/getitem', async (req, res) => {
   const amount = parseInt(req.query.amount) || 1
 
   res.send(await getItems(amount, null))
+})
+
+app.delete('/likes', (req, res) => {
+  console.log(req.body)
+
+  res.status(204).send()
 })
 
 app.listen(port, () => {
