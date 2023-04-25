@@ -23,7 +23,16 @@ export default function Settings() {
   }
 
   const handleClick = async (type)=>{
-
+    if(type === 'about'){
+      const userData = await fetchUserData(userID)
+      setData({showMoreInfo: true, info: userData, type: type})
+    }
+    else if(type === 'achievements'){
+      setData({showMoreInfo: true, info: 'achievements info', type: type})
+    }
+    else if(type === 'terms'){
+      setData({showMoreInfo: true, info: 'user terms info', type: type})
+    }
   }
     return   (
         <div className="bg-white h-full w-full">
@@ -38,7 +47,7 @@ export default function Settings() {
           </div>
           <Moreinfo dataState={[data, setData]} />
           <div className='items-center flex flex-col h-1/2 justify-between relative' style={{opacity: data.showMoreInfo? 0:1 ,transition: 'all 0.2s ease-in-out'}}>
-            <Button clickHandler={async()=>setData({showMoreInfo: true, info: (await fetchUserData(userID)), type:'about'})} text="About Me" icon={ProfileIcon} size="large"></Button>
+            <Button clickHandler={async()=>handleClick('about')} text="About Me" icon={ProfileIcon} size="large"></Button>
             <Button clickHandler={()=>setData({showMoreInfo: true, info: 'achievements info', type:'achievements'})} text="Achievements" icon={AchievementsIcon} size="large"></Button>
             <Button clickHandler={()=>setData({showMoreInfo: true, info: 'user terms info', type:'terms'})} text="User Terms" icon={UserTermsIcon} size="large"></Button>
             <Button text="Logout" icon={LogoutIcon} size="large"></Button>
