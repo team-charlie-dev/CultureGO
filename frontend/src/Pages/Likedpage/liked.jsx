@@ -9,7 +9,7 @@ import LogoText from "../../Components/icons/LogoText";
 
 import LikedCard from "./LikedCard";
 
-import {useState, useContext, createContext} from 'react'
+import {useState, useEffect} from 'react'
 
 import {deleteContext} from './DeleteContext'
 
@@ -17,36 +17,27 @@ const Liked = () => {
 
     var [del, setDel] = useState(false)
 
-
-
-
     const fn = (a, value) => {
-
-        // console.log(a);
-        // console.log(value);
-
-        console.log("hello")
 
         if (value)
         {
             setRemove(r => {
-                r.push(a)
-                console.log(r)
+                if (r.indexOf(a) == -1)
+                    r.push(a)
+
                 return r
             })
         }
         else
         {
             setRemove(r => {
-                r.pop(a)
-                console.log(r)
+                if (r.indexOf(a) != -1)
+                    r.splice(r.indexOf(a), 1)
 
                 return r
             })
         }
     }
-
-
 
     let temp = []
 
@@ -54,40 +45,30 @@ const Liked = () => {
 
     for (let i = 0; i < 7; i++)
     {
-        let card = <LikedCard name='Abba the museum' location='Stockholm' func={(value) => {fn(i, value)}}
+        let card = <LikedCard key={i} name={`Abba the museum ${i}`} location='Stockholm' callbackFunc={(value) => {fn(i, value)}}
                     img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>
 
-        // Object.assign(tempmap, {[i]: card})
         tempmap.set(i, card)
-        console.log(tempmap.get(i))
         temp.push(card)
     }
-
 
     var [list, setList] = useState(temp)
     
     var [remove, setRemove] = useState([])
     
     var [map, setMap] = useState(tempmap)
-    console.log(tempmap)
 
     const func = () => {
-        setDel(!del);
+        setDel(del => !del);
     }
 
     const performRemove = () => {
         list = list.slice()
 
-        console.log(remove)
-
         for (let id of remove)
         {
-            console.log("removing " + id)
-            console.log(map.get(id))
-            list.pop(map.get(id))
-
+            list.splice(list.indexOf(map.get(id)), 1)
             map.delete(id)
-            
         }
 
         setList(list);
