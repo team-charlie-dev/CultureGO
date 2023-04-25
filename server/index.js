@@ -4,7 +4,7 @@ import express from 'express';
 const app = express()
 const port = 4000
 
-import {getItems, supabase} from './dbfuncs.js'
+import {getItems, getUser, supabase} from './dbfuncs.js'
 
 app.use(cors())
 
@@ -44,6 +44,12 @@ app.get('/getitem', async (req, res) => {
   const amount = parseInt(req.query.amount) || 1
 
   res.send(await getItems(amount, null))
+})
+
+app.get('/getuser', async(req,res) => {
+  const userId = req.query.userid
+  const user = await getUser(userId)
+  res.send(user)
 })
 
 app.listen(port, () => {

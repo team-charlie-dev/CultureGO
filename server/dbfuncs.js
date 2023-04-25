@@ -21,3 +21,10 @@ export const getItems = async (amount, user) => {
     return {sight_id, name, short_info, long_info, price, main_tag_id, address_id, images}
   })
 }
+
+export const getUser = async (userId) => {
+  const { data, error } = await supabase.from('users').select('username, user_id').eq('user_id', userId)
+  if (error) return error
+
+  return data[0]
+}
