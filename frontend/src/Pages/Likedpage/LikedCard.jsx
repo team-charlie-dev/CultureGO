@@ -9,7 +9,7 @@ const LikedCard = ({name, location, img, callbackFunc}) => {
     var del = useContext(deleteContext)
 
     return (
-        <div style={{backgroundColor: 'red'}} className="rounded-xl relative mt-2">
+        <div  className="rounded-2xl relative mt-2 bg-primaryDark">
             <div className="absolute left-2 top-12">
                 
                 <CheckboxButton clickHandler={callbackFunc}/>
@@ -18,14 +18,14 @@ const LikedCard = ({name, location, img, callbackFunc}) => {
 
             <div style={{backgroundImage: `url(${img}`, backgroundSize: 'cover', backgroundPosition: 'center',
                 transform: `translate(${del ? 70 : 0}px, 0)`, transition: 'transform 300ms ease-in-out'}} 
-                className="w-full rounded-lg pt-12  text-white">
-                <div className=" pt-2 pb-12 bg-black w-full text-center bg-opacity-20 rounded-lg ">
-                    {name}
+                className="w-full rounded-xl pt-12 pb-12 text-white">
+                <div className=" pt-2 pb-2 bg-black w-full text-center bg-opacity-20 rounded-2xl">
+                    <p style={{textShadow: '1px 1px 5px black'}}><i>{name}</i></p>
                 </div>
                 
                 <div className=" absolute left-0 bottom-0 flex">
                     <img src={LocationPin} alt=""/>
-                    {location}
+                    <p style={{textShadow: '1px 1px 5px black'}}>{location}</p>
                 </div>
             </div>
         </div>
