@@ -14,7 +14,12 @@ export default {
       secondaryDark: "#A41623", 
       white: "#FFFFFF",
       black: "#000000",
-    }
+    },
+    fontFamily: {
+      'inriaSans' : ['Inria Sans'],
+      'inriaSansItalic' : ['Inria Sans', 'Italic']
+    },
+
   },
   plugins: [],
 }
