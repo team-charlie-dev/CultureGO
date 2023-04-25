@@ -6,7 +6,7 @@ export default function Achievements({info}) {
         
         <div>
             Achievements: {info}
-        </div>´
+        </div>
     </div>
   )
 }
