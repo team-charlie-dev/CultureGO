@@ -12,9 +12,9 @@ export default function TagCard({ image, text, xPosition, yPosition }) {
   return (
     <div className = 'overflow-hidden' onClick={handleClick}>
       <div style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPositionX: `${xPosition}`, backgroundPositionY: `${yPosition}` }}
-        className={`hover:opacity-50 transition-all duration-500 w-full h-full ${clicked ? clickedStyle : ''}`}>
+        className={`transition-all duration-500 w-full h-full ${clicked ? clickedStyle : ''}`}>
       </div>
-      <p className='text-center bg-black bg-opacity-50 text-white w-full relative bottom-1/2 font-inriaSans italic'>{text}</p>
+      <p className={`text-center transition-all duration-500 bg-opacity-50 text-white w-full ${clicked ? '' : 'bg-black'} relative bottom-1/2 font-inriaSans italic`}>{text}</p>
     </div>
   )
 }

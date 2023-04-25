@@ -17,7 +17,6 @@ export default {
     },
     fontFamily: {
       'inriaSans' : ['Inria Sans'],
-      'inriaSansItalic' : ['Inria Sans', 'Italic']
     },
 
   },
