@@ -10,13 +10,13 @@ import Arrow from "../../Components/icons/Arrow";
 
 const home = () => {
   return (
-    <div className="bg-white">
+    <div className="bg-white h-full w-full relative overflow-hidden ">
       <Header />
       <div className="flex justify-end">
         <CitySelector />
       </div>
 
-      <div className="bg-white flex flex-col gap-10 h-screen">
+      <div className="bg-white flex flex-col h-screen">
         <div className="relative h-[65%] w-auto font-inriaSans p-3">
           <div className="bg-gradient-to-t from-transparent from-30% to-white absolute top-0 bottom-0 left-0 right-0 z-10"></div>
           <Image />
@@ -70,7 +70,7 @@ const Buttons = () => {
 
 const Header = () => {
   return (
-    <header className="p-3 pt-10">
+    <header className="p-3 pt-5">
       <img src={Logo}></img>
     </header>
   );
@@ -104,4 +104,3 @@ const getPicture = async () => {
 };
 
 const ArrowButton = () => {};
-
