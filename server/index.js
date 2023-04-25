@@ -4,7 +4,7 @@ import express from 'express';
 const app = express()
 const port = 4000
 
-import {getItems, getLikes, supabase} from './dbfuncs.js'
+import {getItems, getLikes, getUser, supabase} from './dbfuncs.js'
 
 app.use(cors())
 
@@ -63,6 +63,12 @@ app.delete('/likes', (req, res) => {
   console.log(req.body)
 
   res.status(204).send()
+ })
+ 
+app.get('/getuser', async(req,res) => {
+  const userId = req.query.userid
+  const user = await getUser(userId)
+  res.send(user)
 })
 
 app.listen(port, () => {

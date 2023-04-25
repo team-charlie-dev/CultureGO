@@ -22,6 +22,7 @@ export const getItems = async (amount, user) => {
   })
 }
 
+
 export const getLikes = async (userId, page, filter, sort) => {
   const { data, error } = await supabase
     .from('liked_sights')
@@ -35,4 +36,11 @@ export const getLikes = async (userId, page, filter, sort) => {
   console.log(data)
 
   return data.splice(page * 10, 10)
+}
+
+export const getUser = async (userId) => {
+  const { data, error } = await supabase.from('users').select('username, user_id').eq('user_id', userId)
+  if (error) return error
+
+  return data[0]
 }

@@ -12,10 +12,10 @@ export default {
       primaryLight: "#FFD29D",
       secondaryLight: "#918450",
       secondaryDark: "#A41623", 
-      black: "#000000",
-      white: "#FFFFFF",
-      red: "#FF0000"
-    },
+      white: "#FFFFFF", 
+      black: "#000000", 
+      red: "#FF0000",
+    }
   },
   plugins: [],
 }
