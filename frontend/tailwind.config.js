@@ -14,6 +14,7 @@ export default {
       secondaryDark: "#A41623", 
       black: "#000000",
       white: "#FFFFFF",
+      red: "#FF0000"
     },
   },
   plugins: [],

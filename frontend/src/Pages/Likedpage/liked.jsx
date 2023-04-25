@@ -1,7 +1,3 @@
-// import CultureGo from "../../Components/icons/CultureGo";
-// import HomeIcon from "../../Components/icons/HomeIcons";
-import TrashIcon from "../../Components/icons/Trash.svg";
-import SortIcon from "../../Components/icons/Sort.svg";
 import Sort from "../../Components/icons/Sort.jsx";
 import Trash from "../../Components/icons/Trash.jsx";
 
@@ -27,7 +23,7 @@ const Liked = () => {
         if (value)
         {
             setRemove(r => {
-                if (r.indexOf(a) == -1)
+                if (r.indexOf(a) === -1)
                     r.push(a)
 
                 return r
@@ -36,7 +32,7 @@ const Liked = () => {
         else
         {
             setRemove(r => {
-                if (r.indexOf(a) != -1)
+                if (r.indexOf(a) !== -1)
                     r.splice(r.indexOf(a), 1)
 
                 return r
@@ -51,7 +47,7 @@ const Liked = () => {
         let ignore = false
 
         const getData = async () => {
-            let data = await fetch(`http://130.229.169.104:4000/likes?page=0&sort=${sortNew?"new":"old"}`)
+            let data = await fetch(`http://localhost:4000/likes?page=0&sort=${sortNew?"new":"old"}`)
                 .then(res => {
                     let json = res.json();
                     console.log(json)
@@ -70,7 +66,7 @@ const Liked = () => {
                 console.log(sight)
 
                 let card = <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
-                                img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>
+                                img={`https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
 
                 setList(ls => {
                     ls = ls.slice()
@@ -91,7 +87,7 @@ const Liked = () => {
         return () => ignore = true
     }, [sortNew])
 
-    useEffect(getLikes, [cntr])
+    useEffect(getLikes, [cntr, getLikes])
 
     const clickHandlerTrash = () => {
         setDel(del => !del);
@@ -106,7 +102,7 @@ const Liked = () => {
             map.delete(id)
         }
 
-        fetch('http://130.229.169.104:4000/likes', {
+        fetch('http://localhost:4000/likes', {
             method: "DELETE",
             headers: {
                 "Content-Type" : "application/json"
@@ -117,12 +113,14 @@ const Liked = () => {
         setList(list);
         setRemove([]);
         setMap(map);
+        setDel(false);
     }
 
     const clickHandlerSort = () => {
         setSort( !sortNew )
         clearSights()
         setCntr(cntr+1)
+        setDel(false)
     }
 
     const clearSights = () => {
@@ -140,9 +138,9 @@ const Liked = () => {
                 </div>
 
             </div>
-            <div className="w-full p-2 relative flex justify-normal h-12">
+            <div className="w-full pl-3 pr-3 relative flex justify-normal h-12">
                 {/* options bar */}
-                <p className="pt-3 text-xl text p-2 flex-grow">Your liked items:</p>
+                <p className="pt-3 text-xl text p-2 flex-grow">Your liked items: </p>
                 <button onClick={clickHandlerTrash}>
                     <Trash />
                 </button>
@@ -163,9 +161,13 @@ const Liked = () => {
                 
             </div>
             
-            <button onClick={performRemove}>
-                REMOVE
-            </button>
+            <div className="absolute w-full bottom-0 flex justify-around">
+                <button onClick={performRemove} className="bg-red p-2 rounded-md" 
+                    style={{transform: `translate(0, ${del ? -5 : 0}rem)`, transition: "transform 300ms ease-in-out"}}>
+                    REMOVE
+                </button>
+            </div>
+            
         </div>
     )
 }

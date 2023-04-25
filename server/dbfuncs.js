@@ -27,6 +27,7 @@ export const getLikes = async (userId, page, filter, sort) => {
     .from('liked_sights')
     .select('user_id, liked_at, sights (sight_id, name)')
     .order('liked_at', { ascending: sort === "old" })
+    
   if (error) return error
 
   console.log("working")
