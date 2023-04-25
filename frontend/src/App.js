@@ -32,6 +32,7 @@ function App() {
           }
         </Navbar>
       </div>
+
     </div>
   );
 }
