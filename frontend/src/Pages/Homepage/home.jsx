@@ -7,10 +7,12 @@ import Logo from "../../Components/icons/Logo.svg";
 
 const home = () => {
   return (
-    <div className="bg-white flex flex-col justify-center gap-10 h-screen">
+    <div className="bg-white flex flex-col gap-10 h-screen">
       <Header />
 
       <div className="relative">
+        <div className="bg-gradient-to-t from-transparent to-white absolute top-0 bottom-0 left-0 right-0 z-10">
+        </div>
         <Image />
         <div className="absolute bottom-0 left-0 right-0">
           <InfoBox />
@@ -28,8 +30,8 @@ const Image = () => {
   let img =
     "https://imgv3.fotor.com/images/blog-cover-image/part-blurry-image.jpg";
   return (
-    <div className="bg-gradient-to-t from-primary-100 to-primaryLight-500">
-      <img src={img} className=""></img>
+    <div className="">
+      <img src={img} className="rounded-[30px]"></img>
     </div>
   );
 };

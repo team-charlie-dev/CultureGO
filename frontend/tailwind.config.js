@@ -12,6 +12,7 @@ export default {
       white: "#FFFFFF",
       gray: "#808080",
       infoColor: "#FFECCC",
+      transparent: "rgba(255,255,255,0)"
     },
   },
   plugins: [],
