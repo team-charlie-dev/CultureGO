@@ -7,8 +7,8 @@ import TagCard from './TagCard'
 
 export default function Tags() {
   return (
-    <div>
-      <div className='grid grid-cols-2 h-screen bg-black'>
+    <div className='h-[calc(100%-var(--navbar-height))]'>
+      <div className='grid grid-cols-2 h-full bg-black'>
         <TagCard image={Outdoor} text="Outdoor" xPosition='right' yPosition='bottom' />
         <TagCard image={Indoor} text="Indoor" xPosition='left' yPosition='bottom' />
         <TagCard image={Free} text="Free" xPosition='right' yPosition='top' />
