@@ -40,14 +40,6 @@ const Liked = () => {
     }
 
 
-    // for (let i = 0; i < 7; i++)
-    // {
-    //     let card = <LikedCard key={i} name={`Abba the museum ${i}`} location='Stockholm' callbackFunc={(value) => {fn(i, value)}}
-    //                 img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>
-
-    //     tempmap.set(i, card)
-    //     temp.push(card)
-    // }
 
     var [list, setList] = useState([])
     var [remove, setRemove] = useState([])
@@ -76,7 +68,9 @@ const Liked = () => {
 
             for (let sight of data)
             {
-                let card = <LikedCard key={sight.sight_id} name={sight.sight_id} location='Stockholm' callbackFunc={(value) => {fn(sight.sight_id, value)}}
+                console.log(sight)
+
+                let card = <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
                                 img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>
 
                 setList(ls => {
@@ -86,7 +80,7 @@ const Liked = () => {
                 })
 
                 setMap(rm => {
-                    rm.set(sight.sight_id, card)
+                    rm.set(sight.sights.sight_id, card)
                     return rm
                 })
             }

@@ -23,7 +23,7 @@ export const getItems = async (amount, user) => {
 }
 
 export const getLikes = async (userId, page, filter, sort) => {
-  const { data, error } = await supabase.from('liked_sights').select()
+  const { data, error } = await supabase.from('liked_sights').select('user_id, sights (sight_id, name)')
   if (error) return error
 
   console.log("working")
