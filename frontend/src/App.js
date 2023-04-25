@@ -5,6 +5,7 @@ import Liked from "./Pages/Likedpage/liked";
 import Tags from "./Pages/Tagpage/tags";
 import Settings from "./Pages/settingspage/settings";
 
+
 function App() {
   const [currentPage, setCurrentPage] = useState('settings');
 
@@ -25,6 +26,7 @@ function App() {
   return (
     <div className="w-screen bg-primary">
       <div className="h-screen m-auto w-screen max-w-md relative">
+
         <Navbar state={[currentPage, setCurrentPage]} >
           {
             getPage(currentPage)
