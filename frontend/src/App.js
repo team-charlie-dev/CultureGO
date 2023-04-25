@@ -24,7 +24,7 @@ function App() {
     }
   }
   return (
-    <div className="w-screen bg-primary">
+    <div className="w-screen bg-primary font-inriaSans">
       <div className="h-screen m-auto w-screen max-w-md relative">
 
         <Navbar state={[currentPage, setCurrentPage]} >
