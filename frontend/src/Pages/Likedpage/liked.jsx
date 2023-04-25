@@ -9,13 +9,18 @@ import LogoText from "../../Components/icons/LogoText";
 
 import LikedCard from "./LikedCard";
 
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useCallback} from 'react'
 
 import {deleteContext} from './DeleteContext'
 
 const Liked = () => {
 
+    var [list, setList] = useState([])
+    var [remove, setRemove] = useState([])
+    var [map, setMap] = useState(new Map())
     var [del, setDel] = useState(false)
+    var [sortNew, setSort] = useState(true)
+    var [cntr, setCntr] = useState(0)
 
     const fn = (a, value) => {
 
@@ -39,20 +44,14 @@ const Liked = () => {
         }
     }
 
-
-
-    var [list, setList] = useState([])
-    var [remove, setRemove] = useState([])
-    var [map, setMap] = useState(new Map())
-
     console.log(map)
 
-    useEffect(() => {
+    const getLikes = useCallback(() => {
 
         let ignore = false
 
         const getData = async () => {
-            let data = await fetch('http://localhost:4000/likes?page=0')
+            let data = await fetch(`http://130.229.169.104:4000/likes?page=0&sort=${sortNew?"new":"old"}`)
                 .then(res => {
                     let json = res.json();
                     console.log(json)
@@ -90,9 +89,11 @@ const Liked = () => {
 
         // destructor function
         return () => ignore = true
-    }, [])
+    }, [sortNew])
 
-    const func = () => {
+    useEffect(getLikes, [cntr])
+
+    const clickHandlerTrash = () => {
         setDel(del => !del);
     }
 
@@ -105,7 +106,7 @@ const Liked = () => {
             map.delete(id)
         }
 
-        fetch('http://localhost:4000/likes', {
+        fetch('http://130.229.169.104:4000/likes', {
             method: "DELETE",
             headers: {
                 "Content-Type" : "application/json"
@@ -116,6 +117,16 @@ const Liked = () => {
         setList(list);
         setRemove([]);
         setMap(map);
+    }
+
+    const clickHandlerSort = () => {
+        setSort( !sortNew )
+        clearSights()
+        setCntr(cntr+1)
+    }
+
+    const clearSights = () => {
+        setList([]);
     }
 
     return (
@@ -132,8 +143,13 @@ const Liked = () => {
             <div className="w-full p-2 relative flex justify-normal h-12">
                 {/* options bar */}
                 <p className="pt-3 text-xl text p-2 flex-grow">Your liked items:</p>
-                <Trash/>
-                <Sort/>
+                <button onClick={clickHandlerTrash}>
+                    <Trash />
+                </button>
+                <button onClick={clickHandlerSort}>
+                    <Sort />
+                </button>
+                
 
             </div>
             <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100vh-var(--navbar-height)-8rem)] overflow-x-hidden">
@@ -146,9 +162,7 @@ const Liked = () => {
                 </deleteContext.Provider>
                 
             </div>
-            <button onClick={func}>
-                hshshsshhs
-            </button>
+            
             <button onClick={performRemove}>
                 REMOVE
             </button>

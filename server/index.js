@@ -52,7 +52,7 @@ app.get('/likes', async (req, res) => {
   let userId = req.query.userId
   let page = req.query.page || 0
   let filter = req.query.filter || 'none'
-  let sort = req.query.sort || 'old'
+  let sort = req.query.sort || 'new'
 
   console.log("yes")
 
