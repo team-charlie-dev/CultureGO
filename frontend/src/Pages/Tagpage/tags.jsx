@@ -13,7 +13,9 @@ export default function Tags() {
         <TagCard image={Indoor} text="Indoor" xPosition='left' yPosition='bottom' />
         <TagCard image={Free} text="Free" xPosition='right' yPosition='top' />
         <TagCard image={Random} text="Random" xPosition='left' yPosition='top' />
-        <p className='bg-white text-center absolute top-28 w-full font-inriaSans'>What mood are you in?</p>
+      </div>
+      <div className = 'flex justify-center'>
+        <p className='bg-white text-center absolute top-[15%] px-[15%] font-inriaSans'>What mood are you in?</p>
       </div>
     </div>
   )
