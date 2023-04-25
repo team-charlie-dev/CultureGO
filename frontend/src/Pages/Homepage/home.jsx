@@ -10,8 +10,8 @@ const home = () => {
     <div className="bg-white flex flex-col gap-10 h-screen">
       <Header />
 
-      <div className="relative">
-        <div className="bg-gradient-to-t from-transparent to-white absolute top-0 bottom-0 left-0 right-0 z-10">
+      <div className="relative min-h-[500px] w-auto">
+        <div className="bg-gradient-to-t from-transparent from-10% to-white absolute top-0 bottom-0 left-0 right-0 z-10">
         </div>
         <Image />
         <div className="absolute bottom-0 left-0 right-0">
@@ -28,10 +28,10 @@ export default home;
 
 const Image = () => {
   let img =
-    "https://imgv3.fotor.com/images/blog-cover-image/part-blurry-image.jpg";
+    "https://www.city-guide-stockholm.com/_bibli/annonces/455/hd/abba-museum-03.jpg";
   return (
-    <div className="">
-      <img src={img} className="rounded-[30px]"></img>
+    <div className="min-h-[500px]">
+      <img src={img} className="rounded-[30px] object-none h-[600px]"></img>
     </div>
   );
 };
