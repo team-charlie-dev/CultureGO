@@ -5,7 +5,7 @@ import LineIcon from "./LineIcon";
 export default function LikeButton({state:[currentPage, setCurrentPage]}) {
   const isSelected = currentPage === "liked";
     return (
-        <div className="w-10 h-10 justify-center flex-row">
+        <div className="w-10 h-10 justify-center flex-ro cursor-pointer">
       <svg
         onClick={()=>setCurrentPage("liked")}
         width="37"

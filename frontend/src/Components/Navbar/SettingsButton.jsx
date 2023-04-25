@@ -5,7 +5,7 @@ import LineIcon from "./LineIcon";
 export default function SettingsButton({state:[currentPage, setCurrentPage]}) {
   const isSelected = currentPage === "settings";
     return (
-      <div className="w-10 h-10 justify-center flex-row">
+      <div className="w-10 h-10 justify-center flex-row cursor-pointer">
         <svg
           onClick={() => setCurrentPage("settings")}
           width="38"
