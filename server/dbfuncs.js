@@ -21,3 +21,14 @@ export const getItems = async (amount, user) => {
     return {sight_id, name, short_info, long_info, price, main_tag_id, address_id, images}
   })
 }
+
+export const getLikes = async (userId, page, filter, sort) => {
+  const { data, error } = await supabase.from('liked_sights').select()
+  if (error) return error
+
+  console.log("working")
+
+  console.log(data)
+
+  return data.splice(page * 10, 10)
+}

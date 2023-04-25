@@ -39,24 +39,64 @@ const Liked = () => {
         }
     }
 
-    let temp = []
 
-    let tempmap = new Map()
+    // for (let i = 0; i < 7; i++)
+    // {
+    //     let card = <LikedCard key={i} name={`Abba the museum ${i}`} location='Stockholm' callbackFunc={(value) => {fn(i, value)}}
+    //                 img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>
 
-    for (let i = 0; i < 7; i++)
-    {
-        let card = <LikedCard key={i} name={`Abba the museum ${i}`} location='Stockholm' callbackFunc={(value) => {fn(i, value)}}
-                    img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>
+    //     tempmap.set(i, card)
+    //     temp.push(card)
+    // }
 
-        tempmap.set(i, card)
-        temp.push(card)
-    }
-
-    var [list, setList] = useState(temp)
-    
+    var [list, setList] = useState([])
     var [remove, setRemove] = useState([])
-    
-    var [map, setMap] = useState(tempmap)
+    var [map, setMap] = useState(new Map())
+
+    console.log(map)
+
+    useEffect(() => {
+
+        let ignore = false
+
+        const getData = async () => {
+            let data = await fetch('http://localhost:4000/likes?page=0')
+                .then(res => {
+                    let json = res.json();
+                    console.log(json)
+                    return json
+                })
+                .then(json => {
+                    console.log(json)
+                    return json
+                })
+            
+            if (ignore)
+                return;
+
+            for (let sight of data)
+            {
+                let card = <LikedCard key={sight.sight_id} name={sight.sight_id} location='Stockholm' callbackFunc={(value) => {fn(sight.sight_id, value)}}
+                                img='https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg'/>
+
+                setList(ls => {
+                    ls = ls.slice()
+                    ls.push(card)
+                    return ls
+                })
+
+                setMap(rm => {
+                    rm.set(sight.sight_id, card)
+                    return rm
+                })
+            }
+        }
+
+        getData()
+
+        // destructor function
+        return () => ignore = true
+    }, [])
 
     const func = () => {
         setDel(del => !del);
