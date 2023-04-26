@@ -5,6 +5,7 @@ import Logo from "../../Components/icons/Logo.svg";
 import CityButton from "../../Components/buttons/button";
 import City from "../../Components/icons/City";
 import Arrow from "../../Components/icons/Arrow";
+import serverUrl from '../../address'
 
 // const images = [HomeIcon, CultureGo]
 
@@ -21,7 +22,7 @@ const Home = () => {
   useEffect(() => {
     // Update the document title using the browser API
     const fetchData = async () => {
-      const response = await fetch("http://localhost:4000/getitem?amount=50");
+      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`);
       const data = await response.json();
       setSights(data)
       setItemData({

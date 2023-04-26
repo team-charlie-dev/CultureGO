@@ -9,6 +9,8 @@ import {useState, useEffect, useCallback} from 'react'
 
 import {deleteContext} from './DeleteContext'
 
+import serverUrl from '../../address'
+
 const Liked = () => {
 
     var [list, setList] = useState([])
@@ -47,7 +49,7 @@ const Liked = () => {
         let ignore = false
 
         const getData = async () => {
-            let data = await fetch(`http://localhost:4000/likes?page=0&sort=${sortNew?"new":"old"}`)
+            let data = await fetch(`http://${serverUrl}:4000/likes?page=0&sort=${sortNew?"new":"old"}`)
                 .then(res => {
                     let json = res.json();
                     console.log(json)
@@ -102,7 +104,7 @@ const Liked = () => {
             map.delete(id)
         }
 
-        fetch('http://localhost:4000/likes', {
+        fetch(`http://${serverUrl}/likes`, {
             method: "DELETE",
             headers: {
                 "Content-Type" : "application/json"
