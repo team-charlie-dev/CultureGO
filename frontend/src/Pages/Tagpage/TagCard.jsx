@@ -1,12 +1,7 @@
 import React, { useState } from 'react'
 import Logo from "../../Components/icons/tag-page-icons/Logo.svg"
 
-export default function TagCard({ image, text, xPosition, yPosition }) {
-  const [clicked, changeClicked] = useState(false)
-
-  function handleClick() {
-    changeClicked(clicked => !clicked)
-  }
+export default function TagCard({image, text, xPosition, yPosition, clicked, handleClick}) {
 
   const clickedStyle = 'opacity-50 scale-[1.4]' 
   const clickedLogoStyle = 'opacity-100'
