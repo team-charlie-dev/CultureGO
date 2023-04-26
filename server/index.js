@@ -48,6 +48,11 @@ app.get('/getitem', async (req, res) => {
   res.send(await getItems(amount, null))
 })
 
+app.post('/tags', async (req, res) => {
+  console.log(req.body)
+  res.status(200).send()
+})
+
 app.get('/likes', async (req, res) => {
   let userId = req.query.userId
   let page = req.query.page || 0
