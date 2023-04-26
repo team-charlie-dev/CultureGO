@@ -14,7 +14,7 @@ const Home = () => {
     shortInfo: "",
     images: [],
   });
-  const [currentSight, setCurrentSight] = useState(1)
+  const [currentSight, setCurrentSight] = useState(0)
   const [sights, setSights] = useState([])
 
   useEffect(() => {
@@ -30,6 +30,7 @@ const Home = () => {
       });
     };
     fetchData();
+    setCurrentSight(currentSight + 1)
   }, []);
 
   return (
@@ -73,7 +74,7 @@ const Image = ({ imgUrl }) => {
 
 const InfoBox = ({ name, info }) => {
   return (
-    <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-30">
+    <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
       <h1 className="italic text-2xl px-5 font-bold">{name}</h1>
       <p className="text-base p-5">{info} </p>
       <div className="flex justify-end">
@@ -89,16 +90,12 @@ const Buttons = ({currentSightData: [currentSight, setCurrentSight], itemData, s
       setCurrentSight(0)
     } else {
       setCurrentSight(currentSight + 1)
-      console.log(currentSight + 'sfsfes')
     }
     itemData({
       name: sights[currentSight].name,
       shortInfo: sights[currentSight].short_info,
       images: sights[currentSight].images,
     });
-
-    console.log(currentSight)
-    console.log(sights[currentSight].name)
   }
 
   return (
