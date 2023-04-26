@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Like from "../../Components/icons/Like.svg";
 import Dislike from "../../Components/icons/Dislike.svg";
 import Logo from "../../Components/icons/Logo.svg";
@@ -8,7 +8,28 @@ import Arrow from "../../Components/icons/Arrow";
 
 // const images = [HomeIcon, CultureGo]
 
-const home = () => {
+
+const Home = () => {
+  const [itemData, setItemData] = useState({
+    name: "",
+    shortInfo: "",
+    images: [],
+  });
+  
+  useEffect(() => {
+    // Update the document title using the browser API
+    const fetchData = async () => {
+      const response = await fetch("http://localhost:4000/getitem?amount=3");
+      const data = await response.json();
+      setItemData({
+        name: data[1].name,
+        shortInfo: data[1].short_info,
+        images: data[1].images,
+      });
+    }
+    fetchData()
+  }, []);
+  
   return (
     <div className="bg-white h-full w-full relative overflow-hidden">
       <Header />
@@ -18,10 +39,10 @@ const home = () => {
 
       <div className="bg-white flex flex-col h-screen">
         <div className="relative h-[65%] w-auto font-inriaSans p-3">
-          <div style={{backgroundImage: 'linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,1))', position: 'absolute', width: '100%', height: '50%'}}></div>
-          <Image />
+          <div style={{backgroundImage: 'linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,1))', position: 'absolute', width: '100%', height: '10%'}}></div>
+          <Image imgUrl={itemData.images[0]} />
           <div className="absolute bottom-0 left-0 right-0 p-3">
-            <InfoBox />
+            <InfoBox name={itemData.name} info={itemData.shortInfo} />
           </div>
         </div>
         <Buttons />
@@ -30,27 +51,22 @@ const home = () => {
   );
 };
 
-export default home;
+export default Home;
 
-const Image = () => {
-  let img =
-    "https://www.city-guide-stockholm.com/_bibli/annonces/455/hd/abba-museum-03.jpg";
+const Image = ({imgUrl}) => {
   return (
     <div className="h-full">
-      <img src={img} className="rounded-b-[30px] object-none h-full"></img>
+      <img src={imgUrl} className="rounded-b-[30px] object-cover h-full"></img>
     </div>
   );
 };
 
-const InfoBox = () => {
+const InfoBox = ({name, info}) => {
   return (
     <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-30">
-      <h1 className="italic text-[24px]">Abba The Museum</h1>
+      <h1 className="italic text-[24px]">{name}</h1>
       <p className="text-[16px]">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit eligendi
-        unde facilis officia ad temporibus. Molestias beatae expedita,
-        doloremque consequuntur, voluptatum nesciunt reprehenderit eius enim
-        labore, modi assumenda perspiciatis obcaecati?
+        {info}
       </p>
       <div className="flex justify-end">
         <Arrow />
@@ -88,18 +104,6 @@ const CitySelector = () => {
       size="small"
       clickHandler={clickHandle}
     />
-  );
-};
-
-const getPicture = async () => {
-  return await fetch(
-    "https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg",
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
   );
 };
 
