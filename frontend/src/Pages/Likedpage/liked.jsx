@@ -5,9 +5,11 @@ import LogoText from "../../Components/icons/LogoText";
 
 import LikedCard from "./LikedCard";
 
-import {useState, useEffect, useCallback} from 'react'
+import {useState, useEffect, useCallback, useRef} from 'react'
 
 import {deleteContext} from './DeleteContext'
+
+import Address from "../../adress";
 
 const Liked = () => {
 
@@ -18,6 +20,8 @@ const Liked = () => {
     var [sortNew, setSort] = useState(true)
     var [cntr, setCntr] = useState(0)
     var [contentPage, setContentPage] = useState(0)
+
+    var scrollRef = useRef()
 
     const fn = (a, value) => {
 
@@ -46,7 +50,8 @@ const Liked = () => {
         let ignore = false
 
         const getData = async () => {
-            let data = await fetch(`http://localhost:4000/likes?page=${contentPage}&sort=${sortNew?"new":"old"}`)
+            console.log(`fetching page ${contentPage}`)
+            let data = await fetch(`http://${Address}:4000/likes?page=${contentPage}&sort=${sortNew?"new":"old"}`)
                 .then(res => {
                     let json = res.json();
                     return json
@@ -56,8 +61,10 @@ const Liked = () => {
                 })
             
             if (ignore)
+            {
+                console.log("ignoring fetch!")
                 return;
-
+            }
             for (let sight of data)
             {
                 let card = <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
@@ -97,7 +104,7 @@ const Liked = () => {
             map.delete(id)
         }
 
-        fetch('http://localhost:4000/likes', {
+        fetch(`http://${Address}:4000/likes`, {
             method: "DELETE",
             headers: {
                 "Content-Type" : "application/json"
@@ -117,7 +124,29 @@ const Liked = () => {
         setCntr(cntr+1)
         setDel(false)
         setContentPage(0)
+
+        console.log(scrollRef.current)
     }
+
+    var ignoreScrollFetch;
+
+    const fuckyou = useCallback(() => {
+        if (scrollRef.current.scrollHeight - scrollRef.current.scrollTop - scrollRef.current.clientHeight < 400 && scrollRef.current.scrollHeight > 800)
+        {
+            if (!ignoreScrollFetch){
+                setContentPage(cp => cp + 1)
+                ignoreScrollFetch=true
+            }
+        }
+        else
+            ignoreScrollFetch=false
+    }, [])
+
+    useEffect(() => {
+        console.log("this does run!")
+        // scrollRef.current.removeEventListener("scroll", fuckyou)
+        scrollRef.current.addEventListener("scroll", fuckyou)
+    }, [fuckyou])
 
     const clearSights = () => {
         setList([]);
@@ -130,10 +159,9 @@ const Liked = () => {
 
                 <div className="p-4">
                     <LogoText/>
-
                 </div>
-
             </div>
+            
             <div className="w-full pl-3 pr-3 relative flex justify-normal h-12">
                 {/* options bar */}
                 <p className="pt-3 text-xl text p-2 flex-grow">Your liked items: </p>
@@ -143,10 +171,9 @@ const Liked = () => {
                 <button onClick={clickHandlerSort}>
                     <Sort />
                 </button>
-                
-
             </div>
-            <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100vh-var(--navbar-height)-8rem)] overflow-x-hidden">
+
+            <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100vh-var(--navbar-height)-8rem)] overflow-x-hidden" ref={scrollRef}>
                 {/* container for list */}
                 
                 <deleteContext.Provider value={del}>
@@ -154,11 +181,6 @@ const Liked = () => {
                     list
                 }
                 </deleteContext.Provider>
-                
-                <button onClick={() => {setContentPage(contentPage + 1)}} className=" ">
-                    HEHEHEHEH
-                </button>
-                
             </div>
             
             <div className="absolute w-full bottom-0 flex justify-around">
