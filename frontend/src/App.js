@@ -16,7 +16,7 @@ function App() {
       case 'liked':
         return <Liked />;
       case 'tags':
-        return <Tags />;
+        return <Tags changeScreen = {setCurrentPage}/>;
       case 'settings':
         return <Settings />;
       default:

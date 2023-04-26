@@ -5,12 +5,13 @@ import Free from '../../Components/icons/tag-page-icons/Free.png'
 import Random from '../../Components/icons/tag-page-icons/Random.png'
 import TagCard from './TagCard'
 
-export default function Tags() {
+export default function Tags({changeScreen}) {
   const [clicked, changeClicked] = useState([false, false, false, false, false])
   
   function handleClick(index) {
     const newClicked = clicked.slice()
     newClicked[index] = !newClicked[index]
+    // newClicked[4] = true
     if (newClicked[0] !== false || newClicked[1] !== false || newClicked[2] !== false || newClicked[3] !== false)
     {
       newClicked[4] = true
@@ -20,6 +21,10 @@ export default function Tags() {
       newClicked[4] = false
     }
     changeClicked(newClicked)
+  }
+
+  function handleClickDone() {
+    changeScreen('home')
   }
 
   return (
@@ -32,7 +37,7 @@ export default function Tags() {
       </div>
       <div className='flex justify-center'>
         <p className='bg-white text-center absolute top-[10%] px-[15%] font-inriaSans'>What mood are you in?</p>
-        <button className={`absolute text-white font-inriaSans text-xs italic bg-primaryDark px-[10%] py-[2%] rounded-full transition-all duration-500 ${clicked[4] ? 'bottom-[12%]' : 'bottom-[0%]'}`}>
+        <button onClick = {handleClickDone} className={`absolute text-white font-inriaSans text-xs italic bg-primaryDark px-[10%] py-[2%] rounded-full transition-all duration-500 ${clicked[4] ? 'bottom-[12%]' : 'bottom-[0%]'}`}>
           Done
         </button>
       </div>
