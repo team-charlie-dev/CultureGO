@@ -28,6 +28,7 @@ export const getLikes = async (userId, page, filter, sort) => {
     .from('liked_sights')
     .select('user_id, liked_at, sights (sight_id, name)')
     .order('liked_at', { ascending: sort === "old" })
+    .range(page * 10, page * 10 + 9)
     
   if (error) return error
 
@@ -35,7 +36,7 @@ export const getLikes = async (userId, page, filter, sort) => {
 
   console.log(data)
 
-  return data.splice(page * 10, 10)
+  return data
 }
 
 export const getUser = async (userId) => {

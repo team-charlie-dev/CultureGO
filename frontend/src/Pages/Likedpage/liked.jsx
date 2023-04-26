@@ -17,6 +17,7 @@ const Liked = () => {
     var [del, setDel] = useState(false)
     var [sortNew, setSort] = useState(true)
     var [cntr, setCntr] = useState(0)
+    var [contentPage, setContentPage] = useState(0)
 
     const fn = (a, value) => {
 
@@ -45,7 +46,7 @@ const Liked = () => {
         let ignore = false
 
         const getData = async () => {
-            let data = await fetch(`http://localhost:4000/likes?page=0&sort=${sortNew?"new":"old"}`)
+            let data = await fetch(`http://localhost:4000/likes?page=${contentPage}&sort=${sortNew?"new":"old"}`)
                 .then(res => {
                     let json = res.json();
                     return json
@@ -79,7 +80,7 @@ const Liked = () => {
 
         // destructor function
         return () => ignore = true
-    }, [sortNew])
+    }, [sortNew, contentPage])
 
     useEffect(getLikes, [cntr, getLikes])
 
@@ -115,6 +116,7 @@ const Liked = () => {
         clearSights()
         setCntr(cntr+1)
         setDel(false)
+        setContentPage(0)
     }
 
     const clearSights = () => {
@@ -152,6 +154,10 @@ const Liked = () => {
                     list
                 }
                 </deleteContext.Provider>
+                
+                <button onClick={() => {setContentPage(contentPage + 1)}} className=" ">
+                    HEHEHEHEH
+                </button>
                 
             </div>
             
