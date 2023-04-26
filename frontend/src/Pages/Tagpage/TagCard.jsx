@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import Logo from "../../Components/icons/tag-page-icons/Logo.svg"
 
 export default function TagCard({image, text, xPosition, yPosition, clicked, handleClick}) {
