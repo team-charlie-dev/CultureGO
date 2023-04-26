@@ -9,7 +9,7 @@ const LikedCard = ({name, location, img, callbackFunc}) => {
     var del = useContext(deleteContext)
 
     return (
-        <div  className="rounded-2xl relative mt-2 bg-primaryDark">
+        <div  className="rounded-2xl relative mt-2 bg-secondaryDark">
             <div className="absolute left-2 top-12">
                 
                 <CheckboxButton clickHandler={callbackFunc}/>

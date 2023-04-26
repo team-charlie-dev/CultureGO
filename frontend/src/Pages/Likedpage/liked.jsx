@@ -178,7 +178,7 @@ const Liked = () => {
             </div>
             
             <div className="absolute w-full bottom-0 flex justify-around">
-                <button onClick={performRemove} className="bg-primaryDark p-2 rounded-md text-white" 
+                <button onClick={performRemove} className="bg-secondaryDark p-2 rounded-md text-white" 
                     style={{transform: `translate(0, ${del ? -5 : 0}rem)`, transition: "transform 300ms ease-in-out"}}>
                     REMOVE
                 </button>
