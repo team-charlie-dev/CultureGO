@@ -13,7 +13,7 @@ export default function TagCard({image, text, xPosition, yPosition, clicked, han
       </div>
       <div className={`transition-all duration-500 ${clicked ? '' : ''} absolute`}>
         <p className={`text-white font-inriaSans italic ${clicked ? '' : 'bg-black bg-opacity-50 rounded-full'} transition-all duration-500 px-3`}>{text}</p>
-        <img src = {Logo} className={`${clicked ? clickedLogoStyle : 'opacity-0'} transition-all duration-500 mx-auto`}/>
+        <img src = {Logo} className={`${clicked ? clickedLogoStyle : 'opacity-0'} transition-all duration-500 mx-auto`} alt = 'Lightning-Logo'/>
       </div>
     </div>
   )
