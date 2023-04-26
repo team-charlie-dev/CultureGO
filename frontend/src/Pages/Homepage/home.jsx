@@ -14,13 +14,14 @@ const Home = () => {
     shortInfo: "",
     images: [],
   });
-  const [currentSight, setCurrentSight] = useState(0)
+  const [currentSight, setCurrentSight] = useState(23)
+  const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
 
   useEffect(() => {
     // Update the document title using the browser API
     const fetchData = async () => {
-      const response = await fetch("http://localhost:4000/getitem?amount=20");
+      const response = await fetch("http://localhost:4000/getitem?amount=50");
       const data = await response.json();
       setSights(data)
       setItemData({
@@ -30,8 +31,28 @@ const Home = () => {
       });
     };
     fetchData();
-    setCurrentSight(currentSight + 1)
+    if(currentSight === 23) {
+      setCurrentSight(0)
+    } else {
+      setCurrentSight(currentSight + 1)
+    }
   }, []);
+
+  const handleImageChange = (side) => {
+    if(side === "left") {
+      if(currentImage === 0) {
+        setCurrentImage(itemData.images.length - 1)
+      } else {
+        setCurrentImage(currentImage - 1)
+      }
+    } else if(side === "right"){
+      if(currentImage === itemData.images.length - 1) {
+        setCurrentImage(0)
+      } else {
+        setCurrentImage(currentImage + 1)
+      }
+    }
+  }
 
   return (
     <div className="bg-white w-full relative overflow-hidden h-[calc(100%-var(--navbar-height))]">
@@ -42,6 +63,10 @@ const Home = () => {
 
       <div className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
         <div className="relative h-[85%] w-auto font-inriaSans px-3">
+          <div className="w-full h-full absolute flex">
+            <div className="w-1/2 h-full relative" onClick={()=>handleImageChange('left')}></div>
+            <div className="w-1/2 h-full relative" onClick={()=>handleImageChange('right')}></div>
+          </div>
           <div
             style={{
               backgroundImage:
@@ -51,12 +76,22 @@ const Home = () => {
               height: "10%",
             }}
           ></div>
-          <Image imgUrl={itemData.images[0]} />
+          <Image imgUrl={itemData.images[currentImage]} />
           <div className="absolute bottom-0 left-0 right-0 px-3">
             <InfoBox name={itemData.name} info={itemData.shortInfo} />
           </div>
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-3 flex gap-x-5">
+            {itemData.images.map((image, index) => {
+              return <div 
+                className={`${index===currentImage?'bg-primaryDark':'bg-white'} rounded-full w-3 h-3`} 
+                key={image}
+                onClick={()=>setCurrentImage(index)}
+                />
+            })}
+            
+          </div>
         </div>
-        <Buttons currentSightData={[currentSight, setCurrentSight]} itemData={setItemData} sights={sights}/>
+        <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights}/>
       </div>
     </div>
   );
@@ -84,18 +119,19 @@ const InfoBox = ({ name, info }) => {
   );
 };
 
-const Buttons = ({currentSightData: [currentSight, setCurrentSight], itemData, sights}) => {
+const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItemData: [itemData, setItemData], sights, currentImageData:[currentImage, setCurrentImage]}) => {
   function handleClick() {
-    if(currentSight === 19) {
+    if(currentSight === 23) {
       setCurrentSight(0)
     } else {
       setCurrentSight(currentSight + 1)
     }
-    itemData({
+    setItemData({
       name: sights[currentSight].name,
       shortInfo: sights[currentSight].short_info,
       images: sights[currentSight].images,
     });
+    setCurrentImage(0)
   }
 
   return (
