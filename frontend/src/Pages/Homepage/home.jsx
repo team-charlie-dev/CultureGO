@@ -18,7 +18,7 @@ const home = () => {
 
       <div className="bg-white flex flex-col h-screen">
         <div className="relative h-[65%] w-auto font-inriaSans p-3">
-          <div className="bg-gradient-to-t from-transparent from-30% to-white absolute top-0 bottom-0 left-0 right-0 z-10"></div>
+          <div style={{backgroundImage: 'linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,1))', position: 'absolute', width: '100%', height: '50%'}}></div>
           <Image />
           <div className="absolute bottom-0 left-0 right-0 p-3">
             <InfoBox />
