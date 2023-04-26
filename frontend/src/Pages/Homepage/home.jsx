@@ -10,7 +10,7 @@ import Arrow from "../../Components/icons/Arrow";
 
 const home = () => {
   return (
-    <div className="bg-white h-full w-full relative overflow-hidden ">
+    <div className="bg-white h-full w-full relative overflow-hidden">
       <Header />
       <div className="flex justify-end">
         <CitySelector />
@@ -61,7 +61,7 @@ const InfoBox = () => {
 
 const Buttons = () => {
   return (
-    <div className="flex flex-row gap-24 justify-center">
+    <div className="flex flex-row gap-[40%] justify-center">
       <img src={Dislike}></img>
       <img src={Like}></img>
     </div>
