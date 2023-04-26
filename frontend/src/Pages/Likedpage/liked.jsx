@@ -21,7 +21,14 @@ const Liked = () => {
     var [cntr, setCntr] = useState(0)
 
     /* state for info/full card */
-    const [infoCard, setInfoCard] = useState({show: false, id: 'fejk'});
+    const [infoCard, setInfoCard] = useState(
+        {
+            show: false, 
+            id: 'null',
+            name: 'null',
+            nmbrOfPics: 1
+        }
+    );
 
     const fn = (a, value) => {
 
@@ -70,8 +77,15 @@ const Liked = () => {
             {
                 console.log(sight)
 
-                let card = 
-                <div className=" cursor-pointer" onClick={() => setInfoCard({show: true, id: sight.sights.sight_id})}>
+                let card = <div 
+                className=" cursor-pointer" 
+                onClick={() => setInfoCard(
+                    {
+                        show: true, 
+                        id: sight.sights.sight_id,
+                        name: sight.sights.name,
+                        nmbrOfPics: 1
+                    })}>
                     <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
                     img={`https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
                 </div>
@@ -164,18 +178,15 @@ const Liked = () => {
                 <button onClick={clickHandlerSort}>
                     <Sort />
                 </button>
-                
-
             </div>
+
             <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100vh-var(--navbar-height)-8rem)] overflow-x-hidden">
                 {/* container for list */}
-                
                 <deleteContext.Provider value={del}>
                 {
                     list
                 }
                 </deleteContext.Provider>
-                
             </div>
 
             <div className="absolute w-full bottom-0 flex justify-around">

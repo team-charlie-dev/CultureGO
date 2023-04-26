@@ -5,20 +5,24 @@ import WalletIcon from "../icons/WalletIcon";
 import LocationIcon from "../icons/LocationIcon";
 import { useState } from "react";
 
-const Image = () => {
+const Image = ( {data} ) => {
+    const [id, pics] = data;
+    
     let img =
-        "https://www.city-guide-stockholm.com/_bibli/annonces/455/hd/abba-museum-03.jpg";
+    `https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${id}/1.jpg`;
     return (
         <div className="h-full">
-            <img src={img} className="object-none h-full"></img>
+            <img src={img} className=" h-full object-cover "></img>
         </div>
     );
 };
 
-const InfoBox = () => {
+const InfoBox = ( {data} ) => {
+    console.log(data)
+
     return (
         <div className="items-center rounded-[30px] p-3 text-white bg-infoColor backdrop-blur-[2px] bg-opacity-30">
-            <h1 className="italic text-[24px] font-semibold m-3">Abba The Museum</h1>
+            <h1 className="italic text-[24px] font-semibold m-3">{data}</h1>
             <p className="text-[16px]">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit eligendi
                 unde facilis officia ad temporibus. Molestias beatae expedita,
@@ -56,21 +60,27 @@ const InfoBox = () => {
     );
 };
 
-export default function FullCard({infoState}) {
+function getLongInfo () {
+    
+}
 
-    console.log(infoState)
+export default function FullCard({infoState}) {
 
     const [infoCard, setInfoCard] = infoState;
 
-    console.log(infoCard.id)
+    var id = infoCard.id
+    var pics = infoCard.nmbrOfPics
+    var name = infoCard.name
+
+    
 
     return (
         /* Card body */
         <div className=" z-30 w-full h-full bg-opacity-0 font-inriaSans ">
             <div className=" relative h-[calc(100vh-var(--navbar-height)-5rem)] ">
-                <Image />
+                <Image data={[id, pics]} />
                 <div className=" absolute bottom-6 left-0 right-0 p-3">
-                    <InfoBox />
+                    <InfoBox data={name}/>
                 </div>
             </div>           
             
