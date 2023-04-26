@@ -14,16 +14,19 @@ const Home = () => {
     shortInfo: "",
     images: [],
   });
+  const [currentSight, setCurrentSight] = useState(1)
+  const [sights, setSights] = useState([])
 
   useEffect(() => {
     // Update the document title using the browser API
     const fetchData = async () => {
-      const response = await fetch("http://localhost:4000/getitem?amount=3");
+      const response = await fetch("http://localhost:4000/getitem?amount=20");
       const data = await response.json();
+      setSights(data)
       setItemData({
-        name: data[2].name,
-        shortInfo: data[2].short_info,
-        images: data[2].images,
+        name: data[currentSight].name,
+        shortInfo: data[currentSight].short_info,
+        images: data[currentSight].images,
       });
     };
     fetchData();
@@ -52,7 +55,7 @@ const Home = () => {
             <InfoBox name={itemData.name} info={itemData.shortInfo} />
           </div>
         </div>
-        <Buttons />
+        <Buttons currentSightData={[currentSight, setCurrentSight]} itemData={setItemData} sights={sights}/>
       </div>
     </div>
   );
@@ -80,12 +83,33 @@ const InfoBox = ({ name, info }) => {
   );
 };
 
-const Buttons = () => {
+const Buttons = ({currentSightData: [currentSight, setCurrentSight], itemData, sights}) => {
+  function handleClick() {
+    if(currentSight === 19) {
+      setCurrentSight(0)
+    } else {
+      setCurrentSight(currentSight + 1)
+      console.log(currentSight + 'sfsfes')
+    }
+    itemData({
+      name: sights[currentSight].name,
+      shortInfo: sights[currentSight].short_info,
+      images: sights[currentSight].images,
+    });
+
+    console.log(currentSight)
+    console.log(sights[currentSight].name)
+  }
+
   return (
     <div className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
-        <img src={Dislike}></img>
-        <img src={Like}></img>
+        <div onClick={() => handleClick()}>
+          <img src={Dislike}></img>
+        </div>
+        <div onClick={() => handleClick()}>
+          <img src={Like}></img>
+        </div>
       </div>
     </div>
   );
