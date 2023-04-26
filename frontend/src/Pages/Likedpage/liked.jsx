@@ -5,11 +5,11 @@ import LogoText from "../../Components/icons/LogoText";
 
 import LikedCard from "./LikedCard";
 
-import {useState, useEffect, useCallback} from 'react'
+import {useState, useEffect, useCallback, useRef} from 'react'
 
 import {deleteContext} from './DeleteContext'
 
-import serverUrl from '../../address'
+import Address from "../../adress";
 
 const Liked = () => {
 
@@ -19,6 +19,9 @@ const Liked = () => {
     var [del, setDel] = useState(false)
     var [sortNew, setSort] = useState(true)
     var [cntr, setCntr] = useState(0)
+    var [contentPage, setContentPage] = useState(0)
+
+    var scrollRef = useRef()
 
     const fn = (a, value) => {
 
@@ -42,31 +45,26 @@ const Liked = () => {
         }
     }
 
-    console.log(map)
-
     const getLikes = useCallback(() => {
 
         let ignore = false
 
         const getData = async () => {
-            let data = await fetch(`http://${serverUrl}:4000/likes?page=0&sort=${sortNew?"new":"old"}`)
+            let data = await fetch(`http://${Address}:4000/likes?page=${contentPage}&sort=${sortNew?"new":"old"}`)
                 .then(res => {
                     let json = res.json();
-                    console.log(json)
                     return json
                 })
                 .then(json => {
-                    console.log(json)
                     return json
                 })
             
             if (ignore)
+            {
                 return;
-
+            }
             for (let sight of data)
             {
-                console.log(sight)
-
                 let card = <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
                                 img={`https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
 
@@ -87,7 +85,7 @@ const Liked = () => {
 
         // destructor function
         return () => ignore = true
-    }, [sortNew])
+    }, [sortNew, contentPage])
 
     useEffect(getLikes, [cntr, getLikes])
 
@@ -104,7 +102,7 @@ const Liked = () => {
             map.delete(id)
         }
 
-        fetch(`http://${serverUrl}/likes`, {
+        fetch(`http://${Address}:4000/likes`, {
             method: "DELETE",
             headers: {
                 "Content-Type" : "application/json"
@@ -123,7 +121,26 @@ const Liked = () => {
         clearSights()
         setCntr(cntr+1)
         setDel(false)
+        setContentPage(0)
     }
+
+    var ignoreScrollFetch;
+
+    const scrollUpdater = useCallback(() => {
+        if (scrollRef.current.scrollHeight - scrollRef.current.scrollTop - scrollRef.current.clientHeight < 400 && scrollRef.current.scrollHeight > 800)
+        {
+            if (!ignoreScrollFetch){
+                setContentPage(cp => cp + 1)
+                ignoreScrollFetch=true
+            }
+        }
+        else
+            ignoreScrollFetch=false
+    }, [])
+
+    useEffect(() => {
+        scrollRef.current.addEventListener("scroll", scrollUpdater)
+    }, [scrollUpdater])
 
     const clearSights = () => {
         setList([]);
@@ -136,10 +153,9 @@ const Liked = () => {
 
                 <div className="p-4">
                     <LogoText/>
-
                 </div>
-
             </div>
+            
             <div className="w-full pl-3 pr-3 relative flex justify-normal h-12">
                 {/* options bar */}
                 <p className="pt-3 text-xl text p-2 flex-grow">Your liked items: </p>
@@ -149,10 +165,9 @@ const Liked = () => {
                 <button onClick={clickHandlerSort}>
                     <Sort />
                 </button>
-                
-
             </div>
-            <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100vh-var(--navbar-height)-8rem)] overflow-x-hidden">
+
+            <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100vh-var(--navbar-height)-8rem)] overflow-x-hidden" ref={scrollRef}>
                 {/* container for list */}
                 
                 <deleteContext.Provider value={del}>
@@ -160,11 +175,10 @@ const Liked = () => {
                     list
                 }
                 </deleteContext.Provider>
-                
             </div>
             
             <div className="absolute w-full bottom-0 flex justify-around">
-                <button onClick={performRemove} className="bg-red p-2 rounded-md" 
+                <button onClick={performRemove} className="bg-secondaryDark p-2 rounded-md text-white" 
                     style={{transform: `translate(0, ${del ? -5 : 0}rem)`, transition: "transform 300ms ease-in-out"}}>
                     REMOVE
                 </button>
