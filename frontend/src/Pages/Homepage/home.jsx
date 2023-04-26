@@ -7,7 +7,7 @@ import City from "../../Components/icons/City";
 import Arrow from "../../Components/icons/Arrow";
 import serverUrl from '../../address'
 
-// const images = [HomeIcon, CultureGo]
+const userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a' //charlie
 
 const Home = () => {
   const [itemData, setItemData] = useState({
@@ -103,7 +103,7 @@ export default Home;
 const Image = ({ imgUrl }) => {
   return (
     <div className="h-full">
-      <img src={imgUrl} className="rounded-b-[30px] object-cover h-full"></img>
+      <img alt={imgUrl} src={imgUrl} className="rounded-b-[30px] object-cover h-full"></img>
     </div>
   );
 };
@@ -121,7 +121,7 @@ const InfoBox = ({ name, info }) => {
 };
 
 const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItemData: [itemData, setItemData], sights, currentImageData:[currentImage, setCurrentImage]}) => {
-  function handleClick() {
+  function updateSight() {
     if(currentSight === 23) {
       setCurrentSight(0)
     } else {
@@ -134,14 +134,39 @@ const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItem
     });
     setCurrentImage(0)
   }
+  async function handleLikeClick(){
+    let likedSightId = ''
+    if(currentSight === 0) {
+      likedSightId = sights[sights.length-1].sight_id
+    }
+    else {
+      likedSightId = sights[currentSight-1].sight_id
+    }
+    await fetch(`http://${serverUrl}:4000/addlikes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: userId,
+        sightId: likedSightId,
+      }),
+    });
+    updateSight()
+  }
+
+  async function handleDislikeClick(){
+    //TODO: handle dislike
+    updateSight()
+  }
 
   return (
     <div className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
-        <div onClick={() => handleClick()}>
+        <div onClick={() => handleDislikeClick()}>
           <img src={Dislike}></img>
         </div>
-        <div onClick={() => handleClick()}>
+        <div onClick={() => handleLikeClick()}>
           <img src={Like}></img>
         </div>
       </div>

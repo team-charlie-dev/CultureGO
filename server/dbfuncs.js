@@ -46,3 +46,10 @@ export const getUser = async (userId) => {
 
   return data[0]
 }
+
+export const addLikes = async (userId, sightId) => {
+  const { data, error } = await supabase.from('liked_sights').insert([{user_id: userId, sight_id: sightId}])
+  if (error) return error
+
+  return {sightId}
+}
