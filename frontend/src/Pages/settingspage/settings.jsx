@@ -6,6 +6,7 @@ import LogoutIcon from '../../Components/icons/LogoutIcon'
 import AchievementsIcon from '../../Components/icons/AchievementsIcon'
 import LogoLarge from "../../Components/icons/LogoLarge"
 import Moreinfo from './moreinfo'
+import serverUrl from '../../address'
 export default function Settings() {
 
   const userID = 'c1cdc408-853d-44b6-a236-f5c046bea6a1'
@@ -17,7 +18,7 @@ export default function Settings() {
   })
 
   const fetchUserData = async (userId)=>{
-    const featchedData = await fetch(`http://localhost:4000/getuser?userid=${userId}`)
+    const featchedData = await fetch(`http://${serverUrl}:4000/getuser?userid=${userId}`)
     
     return featchedData.json()
   }
