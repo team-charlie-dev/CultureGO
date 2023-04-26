@@ -50,7 +50,6 @@ const Liked = () => {
         let ignore = false
 
         const getData = async () => {
-            console.log(`fetching page ${contentPage}`)
             let data = await fetch(`http://${Address}:4000/likes?page=${contentPage}&sort=${sortNew?"new":"old"}`)
                 .then(res => {
                     let json = res.json();
@@ -62,7 +61,6 @@ const Liked = () => {
             
             if (ignore)
             {
-                console.log("ignoring fetch!")
                 return;
             }
             for (let sight of data)
@@ -124,13 +122,11 @@ const Liked = () => {
         setCntr(cntr+1)
         setDel(false)
         setContentPage(0)
-
-        console.log(scrollRef.current)
     }
 
     var ignoreScrollFetch;
 
-    const fuckyou = useCallback(() => {
+    const scrollUpdater = useCallback(() => {
         if (scrollRef.current.scrollHeight - scrollRef.current.scrollTop - scrollRef.current.clientHeight < 400 && scrollRef.current.scrollHeight > 800)
         {
             if (!ignoreScrollFetch){
@@ -143,10 +139,8 @@ const Liked = () => {
     }, [])
 
     useEffect(() => {
-        console.log("this does run!")
-        // scrollRef.current.removeEventListener("scroll", fuckyou)
-        scrollRef.current.addEventListener("scroll", fuckyou)
-    }, [fuckyou])
+        scrollRef.current.addEventListener("scroll", scrollUpdater)
+    }, [scrollUpdater])
 
     const clearSights = () => {
         setList([]);
