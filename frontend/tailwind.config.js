@@ -19,7 +19,7 @@ export default {
       infoColor: "#FFECCC",
       transparent: "rgba(255,255,255,0)",
       red: "#FF0000",
-       black: "#000000", 
+      black: "#000000", 
     },
     fontFamily: {
       'inriaSans' : ['Inria Sans'],
