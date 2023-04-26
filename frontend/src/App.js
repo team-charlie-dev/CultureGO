@@ -7,7 +7,7 @@ import Settings from "./Pages/settingspage/settings";
 
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('settings');
+  const [currentPage, setCurrentPage] = useState('home');
 
   const getPage = () =>{
     switch (currentPage) {
