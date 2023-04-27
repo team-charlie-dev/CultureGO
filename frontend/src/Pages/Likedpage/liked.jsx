@@ -9,7 +9,7 @@ import {useState, useEffect, useCallback, useRef} from 'react'
 
 import {deleteContext} from './DeleteContext'
 
-import Address from "../../adress";
+import Address from "../../address";
 
 const Liked = () => {
 
