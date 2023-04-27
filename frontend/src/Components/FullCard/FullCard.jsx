@@ -33,17 +33,18 @@ const InfoBox = ( {data} ) => {
                 <br/>
                 <p>Pris: {moreInfo.price}</p>
                 <br/>
-
-                <p>Öppettider: </p>
-                <ul>
-                    <li>Måndag {moreInfo.openHours[1]}</li>
-                    <li>Tisdag {moreInfo.openHours[2]}</li>
-                    <li>Onsdag {moreInfo.openHours[3]}</li>
-                    <li>Torsdag {moreInfo.openHours[4]}</li>
-                    <li>Fredag {moreInfo.openHours[5]}</li>
-                    <li>Lördag {moreInfo.openHours[6]}</li>
-                    <li>Söndag {moreInfo.openHours[0]}</li>
-                </ul>
+                <div> {/* make flexboxes and put prices list on the side of opening hours list */}
+                    <p>Öppettider: </p>
+                    <ul>
+                        <li>Måndag {moreInfo.openHours[1]}</li>
+                        <li>Tisdag {moreInfo.openHours[2]}</li>
+                        <li>Onsdag {moreInfo.openHours[3]}</li>
+                        <li>Torsdag {moreInfo.openHours[4]}</li>
+                        <li>Fredag {moreInfo.openHours[5]}</li>
+                        <li>Lördag {moreInfo.openHours[6]}</li>
+                        <li>Söndag {moreInfo.openHours[0]}</li>
+                    </ul>
+                </div>
             </div>
             {/* Opening hours, price and location */}
             <div className="mt-5 flex justify-evenly">
