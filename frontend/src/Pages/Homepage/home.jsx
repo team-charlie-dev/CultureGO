@@ -146,7 +146,7 @@ const InfoBox = ({ name, info , shortPrice, openHoursToday}) => {
       <h1 className="italic text-2xl px-5 font-bold drop-shadow-4xl">{name}</h1>
       <p className="text-base p-5 drop-shadow-4xl">{info} </p>
       <div className="flex justify-between px-5 items-center">
-        <div className="flex flex-wrap w-2/3 gap-x-[15%]">
+        <div className="grid grid-cols-2 w-2/3">
           <div className="flex">
           <Clockicon />
           <p className="drop-shadow-4xl">{openHoursToday || '-'}</p>
