@@ -9,8 +9,6 @@ import serverUrl from '../../address'
 
 const userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a' //charlie
 
-const isOnServer = !(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
-
 const Home = () => {
   const [itemData, setItemData] = useState({
     name: "",
@@ -22,9 +20,8 @@ const Home = () => {
   const [sights, setSights] = useState([])
 
   useEffect(() => {
-    // Update the document title using the browser API
     const fetchData = async () => {
-      const response = await fetch(isOnServer?`https://${serverUrl}:4000/getitem?amount=50`:`http://${serverUrl}:4000/getitem?amount=50`);
+      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`);
       const data = await response.json();
       setSights(data)
       setItemData({
