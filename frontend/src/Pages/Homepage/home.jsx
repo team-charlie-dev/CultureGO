@@ -22,7 +22,15 @@ const Home = () => {
   useEffect(() => {
     // Update the document title using the browser API
     const fetchData = async () => {
-      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`);
+      //const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`);
+      const response = await fetch("http://130.229.156.232:4000/getitem?amount=50", {
+        "referrer": "https://culture-go.vercel.app/",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "omit"
+      });
       const data = await response.json();
       setSights(data)
       setItemData({
