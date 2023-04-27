@@ -121,15 +121,15 @@ const InfoBox = ({ name, info , price}) => {
         <div className="flex flex-wrap w-2/3 gap-x-[15%]">
           <div className="flex">
           <Clockicon />
-          <p>09-23</p>
+          <p className="drop-shadow-4xl">09-23</p>
           </div>
           <div className="flex">
           <LocationIcon />
-          <p>Stockholm</p>
+          <p className="drop-shadow-4xl">Stockholm</p>
           </div>
           <div className="flex">
           <Walleticon />
-          <p>{price}</p>
+          <p className="drop-shadow-4xl">{price}</p>
           </div>
 
         </div>
