@@ -7,7 +7,7 @@ import Settings from "./Pages/settingspage/settings";
 
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('settings');
+  const [currentPage, setCurrentPage] = useState('home');
 
   const getPage = () =>{
     switch (currentPage) {
@@ -16,7 +16,7 @@ function App() {
       case 'liked':
         return <Liked />;
       case 'tags':
-        return <Tags />;
+        return <Tags changeScreen = {setCurrentPage}/>;
       case 'settings':
         return <Settings />;
       default:
@@ -24,7 +24,7 @@ function App() {
     }
   }
   return (
-    <div className="w-screen bg-primary">
+    <div className="w-screen bg-primary font-inriaSans">
       <div className="h-screen m-auto w-screen max-w-md relative">
 
         <Navbar state={[currentPage, setCurrentPage]} >

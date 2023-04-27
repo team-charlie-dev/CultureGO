@@ -19,7 +19,7 @@ export default function Button({text, icon, size, clickHandler}) {
         return(
             <div 
                 onClick={clickHandler}
-                className='bg-primaryDark h-6 w-44 m-6 text-center flex justify-around px-16 text-white font-bold relative text-base cursor-pointer select-none'>
+                className='bg-primaryDark h-6 w-44 text-center flex justify-around px-16 text-white font-bold relative text-base cursor-pointer select-none'>
                 <div className='h-full'>
                     {icon()}
                 </div>
