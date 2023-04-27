@@ -1,31 +1,10 @@
-import https from 'https'
 import cors from 'cors';
 import express from 'express';
-import fs from 'fs'
 
 const app = express()
 const port = 4000
 
 import {getItems, getLikes, getUser, addLikes, supabase} from './dbfuncs.js'
-
-  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-    app.listen(port, function(err){
-      if (err) console.log("Error in server setup")
-      console.log("Server listening on Port", port);
-  })
-  } else {
-    https
-    .createServer(
-      {
-        key: fs.readFileSync("key.pem"),
-        cert: fs.readFileSync("cert.pem"),
-      },
-      app
-    )
-    .listen(port, () => {
-      console.log(`serever is runing at port ${port}`);
-    });
-  }
 
 app.use(cors())
 
@@ -102,4 +81,9 @@ app.get('/getuser', async(req,res) => {
   const userId = req.query.userid
   const user = await getUser(userId)
   res.send(user)
+})
+
+app.listen(port, function(err){
+  if (err) console.log("Error in server setup")
+  console.log("Server listening on Port", port);
 })
