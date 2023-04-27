@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Navbar from "./Components/Navbar/Navbar";
+import Home from "./Pages/Homepage/home";
+import Liked from "./Pages/Likedpage/liked";
+import Tags from "./Pages/Tagpage/tags";
+import Settings from "./Pages/settingspage/settings";
+
 
 function App() {
+  const [currentPage, setCurrentPage] = useState('home');
+
+  const getPage = () =>{
+    switch (currentPage) {
+      case 'home':
+        return <Home />;
+      case 'liked':
+        return <Liked />;
+      case 'tags':
+        return <Tags changeScreen = {setCurrentPage}/>;
+      case 'settings':
+        return <Settings />;
+      default:
+        return <Home />;
+    }
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="w-screen bg-primary font-inriaSans">
+      <div className="h-screen m-auto w-screen max-w-md relative">
+
+        <Navbar state={[currentPage, setCurrentPage]} >
+          {
+            getPage(currentPage)
+          }
+        </Navbar>
+      </div>
     </div>
   );
 }
