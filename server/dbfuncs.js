@@ -12,14 +12,28 @@ export const getItems = async (amount, user) => {
   if (error) return error
 
   // TODO fixa så att den väljer annorlunda varje gång
-  return data.splice(0, amount).map(({sight_id, name, short_info, long_info, price, main_tag_id, address_id, number_of_img}) => {
+  const splicedData = data.splice(0, amount)
+  return await Promise.all(splicedData.map(async ({sight_id, name, short_info, long_info, price, main_tag_id, address_id, number_of_img, short_price}) => {
     const images = []
+    const open_hours = await getOpenHours(sight_id)
+    const location = await getLocation(address_id)
 
     for (let i = 1; i <= number_of_img; i++)
       images.push(BASE_IMG_URL + 'sights/' + sight_id + '/' + i + '.jpg')
 
-    return {sight_id, name, short_info, long_info, price, main_tag_id, address_id, images}
-  })
+    return {sight_id, name, short_info, long_info, price, main_tag_id, address_id, images, short_price, open_hours, location}
+  }))
+}
+
+export const getOpenHours = async (sightId) => {
+  const {data, error} = await supabase.from('open_hours').select().eq('sight_id', sightId)
+  return data[0]
+}
+
+export const getLocation = async (addressId) => {
+  const {data, error} = await supabase.from('addresses').select('location').eq('address_id', addressId)
+  // console.log(data[0].location)
+  return data[0].location
 }
 
 
