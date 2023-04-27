@@ -111,8 +111,8 @@ const Image = ({ imgUrl }) => {
 const InfoBox = ({ name, info }) => {
   return (
     <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
-      <h1 className="italic text-2xl px-5 font-bold">{name}</h1>
-      <p className="text-base p-5">{info} </p>
+      <h1 className="italic text-2xl px-5 font-bold drop-shadow-4xl">{name}</h1>
+      <p className="text-base p-5 drop-shadow-4xl">{info} </p>
       <div className="flex justify-end">
         <Arrow />
       </div>
