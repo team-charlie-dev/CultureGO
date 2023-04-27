@@ -6,14 +6,45 @@ import CityButton from "../../Components/buttons/button";
 import City from "../../Components/icons/City";
 import Arrow from "../../Components/icons/Arrow";
 import serverUrl from '../../address'
+import Walleticon from "../../Components/icons/Walleticon"
+import LocationIcon from "../../Components/icons/LocationIcon"
+import Clockicon from "../../Components/icons/Clockicon"
 
 const userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a' //charlie
+
+const getOpenHoursToday = (openHours) => {
+  const day = new Date().getDay()
+  if(openHours) {
+  switch (day) {
+    case 0:
+      return openHours.sunday
+    case 1:
+      return openHours.monday
+    case 2:
+      return openHours.tuesday
+    case 3:
+      return openHours.wednesday
+    case 4:
+      return openHours.thursday
+    case 5:
+      return openHours.friday
+    case 6:
+      return openHours.saturday
+    default:
+      return '-'
+    }    
+  }
+  return '-'
+}
 
 const Home = () => {
   const [itemData, setItemData] = useState({
     name: "",
     shortInfo: "",
     images: [],
+    shortPrice: "",
+    openHoursToday: "",
+    location: "",
   });
   const [currentSight, setCurrentSight] = useState(23)
   const [currentImage, setCurrentImage] = useState(0)
@@ -28,6 +59,9 @@ const Home = () => {
         name: data[currentSight].name,
         shortInfo: data[currentSight].short_info,
         images: data[currentSight].images,
+        shortPrice: data[currentSight].short_price,
+        openHoursToday: getOpenHoursToday(data[currentSight].open_hours),
+        location: data[currentSight].location
       });
     };
     fetchData();
@@ -78,7 +112,7 @@ const Home = () => {
           ></div>
           <Image imgUrl={itemData.images[currentImage]} />
           <div className="absolute bottom-0 left-0 right-0 px-3">
-            <InfoBox name={itemData.name} info={itemData.shortInfo} />
+            <InfoBox name={itemData.name} info={itemData.shortInfo} shortPrice = {itemData.shortPrice} openHoursToday={itemData.openHoursToday} location={itemData.location}/>
           </div>
           <div className="absolute left-1/2 -translate-x-1/2 bottom-3 flex gap-x-5">
             {itemData.images.map((image, index) => {
@@ -107,12 +141,27 @@ const Image = ({ imgUrl }) => {
   );
 };
 
-const InfoBox = ({ name, info }) => {
+const InfoBox = ({ name, info , shortPrice, openHoursToday, location}) => {
   return (
     <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
-      <h1 className="italic text-2xl px-5 font-bold">{name}</h1>
-      <p className="text-base p-5">{info} </p>
-      <div className="flex justify-end">
+      <h1 className="italic text-2xl px-5 font-bold drop-shadow-4xl">{name}</h1>
+      <p className="text-base p-5 drop-shadow-4xl">{info} </p>
+      <div className="flex justify-between px-5 items-center">
+        <div className="grid grid-cols-2 w-2/3">
+          <div className="flex">
+          <Clockicon />
+          <p className="drop-shadow-4xl">{openHoursToday || '-'}</p>
+          </div>
+          <div className="flex">
+          <LocationIcon />
+          <p className="drop-shadow-4xl">{location || '-'}</p>
+          </div>
+          <div className="flex">
+          <Walleticon />
+          <p className="drop-shadow-4xl">{shortPrice == null ? '-' : shortPrice}</p>
+          </div>
+
+        </div>
         <Arrow />
       </div>
     </div>
@@ -130,6 +179,9 @@ const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItem
       name: sights[currentSight].name,
       shortInfo: sights[currentSight].short_info,
       images: sights[currentSight].images,
+      shortPrice: sights[currentSight].short_price,
+      openHoursToday: getOpenHoursToday(sights[currentSight].open_hours),
+      location: sights[currentSight].location
     });
     setCurrentImage(0)
   }
