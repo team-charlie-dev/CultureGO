@@ -47,16 +47,17 @@ const InfoBox = ( {data} ) => {
                 </div>
             </div>
             {/* Opening hours, price and location */}
-            <div className="mt-5 flex justify-evenly">
-                <div className=" flex flex-row ">
+            <div className="mt-5 flex justify-center">
+                {/* <div className=" flex flex-row ">
                     <ClockIcon />
                     <p className="ml-2">{moreInfo.openHours[today]}</p>
-                </div>
+                </div> */}
                 
                 <div className=" flex flex-row ">
                     <LocationIcon />
-                    <p className="ml-2">Stockholm</p>
+                    <p className="ml-0">Stockholm</p>
                 </div>
+
                 {/* <div className=" flex flex-row ">
                     <WalletIcon />
                     <p className="ml-2">{moreInfo.price}</p>
