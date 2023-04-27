@@ -44,6 +44,7 @@ const Home = () => {
     images: [],
     shortPrice: "",
     openHoursToday: "",
+    location: "",
   });
   const [currentSight, setCurrentSight] = useState(23)
   const [currentImage, setCurrentImage] = useState(0)
@@ -60,7 +61,8 @@ const Home = () => {
         shortInfo: data[currentSight].short_info,
         images: data[currentSight].images,
         shortPrice: data[currentSight].short_price,
-        openHoursToday: getOpenHoursToday(data[currentSight].open_hours)
+        openHoursToday: getOpenHoursToday(data[currentSight].open_hours),
+        location: data[currentSight].location
       });
     };
     fetchData();
@@ -111,7 +113,7 @@ const Home = () => {
           ></div>
           <Image imgUrl={itemData.images[currentImage]} />
           <div className="absolute bottom-0 left-0 right-0 px-3">
-            <InfoBox name={itemData.name} info={itemData.shortInfo} shortPrice = {itemData.shortPrice} openHoursToday={itemData.openHoursToday}/>
+            <InfoBox name={itemData.name} info={itemData.shortInfo} shortPrice = {itemData.shortPrice} openHoursToday={itemData.openHoursToday} location={itemData.location}/>
           </div>
           <div className="absolute left-1/2 -translate-x-1/2 bottom-3 flex gap-x-5">
             {itemData.images.map((image, index) => {
@@ -140,7 +142,7 @@ const Image = ({ imgUrl }) => {
   );
 };
 
-const InfoBox = ({ name, info , shortPrice, openHoursToday}) => {
+const InfoBox = ({ name, info , shortPrice, openHoursToday, location}) => {
   return (
     <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
       <h1 className="italic text-2xl px-5 font-bold drop-shadow-4xl">{name}</h1>
@@ -153,7 +155,7 @@ const InfoBox = ({ name, info , shortPrice, openHoursToday}) => {
           </div>
           <div className="flex">
           <LocationIcon />
-          <p className="drop-shadow-4xl">Stockholm</p>
+          <p className="drop-shadow-4xl">{location || '-'}</p>
           </div>
           <div className="flex">
           <Walleticon />
@@ -180,6 +182,7 @@ const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItem
       images: sights[currentSight].images,
       shortPrice: sights[currentSight].short_price,
       openHoursToday: getOpenHoursToday(sights[currentSight].open_hours),
+      location: sights[currentSight].location
     });
     setCurrentImage(0)
   }
