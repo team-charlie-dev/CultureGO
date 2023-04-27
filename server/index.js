@@ -83,7 +83,6 @@ app.get('/getuser', async(req,res) => {
   res.send(user)
 })
 
-
 app.get('/info', async(req, res) => {
   const sightId = req.query.sightId
   const onlyLong = req.query.onlyLong
@@ -93,4 +92,3 @@ app.get('/info', async(req, res) => {
 
 app.listen(port, () => {
   console.log(`Express server is listening on port: ${port}`)
-})
