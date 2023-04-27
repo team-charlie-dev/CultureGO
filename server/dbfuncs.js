@@ -12,13 +12,13 @@ export const getItems = async (amount, user) => {
   if (error) return error
 
   // TODO fixa så att den väljer annorlunda varje gång
-  return data.splice(0, amount).map(({sight_id, name, short_info, long_info, price, main_tag_id, address_id, number_of_img}) => {
+  return data.splice(0, amount).map(({sight_id, name, short_info, long_info, price, main_tag_id, address_id, number_of_img, short_price}) => {
     const images = []
 
     for (let i = 1; i <= number_of_img; i++)
       images.push(BASE_IMG_URL + 'sights/' + sight_id + '/' + i + '.jpg')
 
-    return {sight_id, name, short_info, long_info, price, main_tag_id, address_id, images}
+    return {sight_id, name, short_info, long_info, price, main_tag_id, address_id, images, short_price}
   })
 }
 

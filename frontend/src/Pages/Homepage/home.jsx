@@ -32,7 +32,6 @@ const Home = () => {
         name: data[currentSight].name,
         shortInfo: data[currentSight].short_info,
         images: data[currentSight].images,
-        price: data[currentSight].price,
       });
     };
     fetchData();
@@ -83,7 +82,7 @@ const Home = () => {
           ></div>
           <Image imgUrl={itemData.images[currentImage]} />
           <div className="absolute bottom-0 left-0 right-0 px-3">
-            <InfoBox name={itemData.name} info={itemData.shortInfo} price = {itemData.price}/>
+            <InfoBox name={itemData.name} info={itemData.shortInfo} shortPrice = {itemData.shortPrice}/>
           </div>
           <div className="absolute left-1/2 -translate-x-1/2 bottom-3 flex gap-x-5">
             {itemData.images.map((image, index) => {
@@ -112,7 +111,7 @@ const Image = ({ imgUrl }) => {
   );
 };
 
-const InfoBox = ({ name, info , price}) => {
+const InfoBox = ({ name, info , shortPrice}) => {
   return (
     <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
       <h1 className="italic text-2xl px-5 font-bold drop-shadow-4xl">{name}</h1>
@@ -129,7 +128,7 @@ const InfoBox = ({ name, info , price}) => {
           </div>
           <div className="flex">
           <Walleticon />
-          <p className="drop-shadow-4xl">{price}</p>
+          <p className="drop-shadow-4xl">{shortPrice == null ? '-' : shortPrice}</p>
           </div>
 
         </div>
@@ -150,7 +149,7 @@ const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItem
       name: sights[currentSight].name,
       shortInfo: sights[currentSight].short_info,
       images: sights[currentSight].images,
-      price: sights[currentSight].price,
+      shortPrice: sights[currentSight].short_price,
     });
     setCurrentImage(0)
   }
