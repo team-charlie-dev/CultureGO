@@ -26,8 +26,8 @@ const InfoBox = ( {data} ) => {
 
     return (
         <>
-            <h1 className="italic text-[24px] font-semibold m-3">{name}</h1>
-            <div className="text-[16px]">
+            <h1 className="italic text-[24px] font-semibold m-3" style={{textShadow:'1px 1px 5px rgba(0,0,0, 1)'}}>{name}</h1>
+            <div className="text-[16px]" style={{textShadow:'1px 1px 5px rgba(0,0,0, 1)'}}>
                 {moreInfo.longInfo}
                 <br/>
                 <br/>
