@@ -4,7 +4,7 @@ import express from 'express';
 const app = express()
 const port = 4000
 
-import {getItems, getLikes, getUser, addLikes, supabase} from './dbfuncs.js'
+import {getFullInfo, getItems, getLikes, getUser, addLikes, supabase} from './dbfuncs.js'
 
 app.use(cors())
 
@@ -81,6 +81,14 @@ app.get('/getuser', async(req,res) => {
   const userId = req.query.userid
   const user = await getUser(userId)
   res.send(user)
+})
+
+
+app.get('/info', async(req, res) => {
+  const sightId = req.query.sightId
+  const onlyLong = req.query.onlyLong
+  
+  res.send(await getFullInfo(sightId ,onlyLong))
 })
 
 app.listen(port, () => {
