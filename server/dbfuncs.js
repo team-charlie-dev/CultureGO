@@ -48,8 +48,8 @@ export const getUser = async (userId) => {
 export const getFullInfo = async (sightId, onlyLong) => {
   
   if (onlyLong === "true") {
-    const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
-
+    // const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
+    const {data, error} = await supabase.from('sights').select('long_info, price').eq('sight_id', sightId)
     if (error) return error
 
     return data

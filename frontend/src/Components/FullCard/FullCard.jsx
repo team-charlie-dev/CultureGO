@@ -3,7 +3,7 @@ import GoBack from "../icons/GoBack";
 import ClockIcon from "../icons/ClockIcon";
 import WalletIcon from "../icons/WalletIcon";
 import LocationIcon from "../icons/LocationIcon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Image = ( {data} ) => {
     const [id, pics] = data;
@@ -18,28 +18,19 @@ const Image = ( {data} ) => {
 };
 
 const InfoBox = ( {data} ) => {
-    console.log(data)
+    const [name, moreInfo] = data
 
     return (
         <>
-            <h1 className="italic text-[24px] font-semibold m-3">{data}</h1>
+            <h1 className="italic text-[24px] font-semibold m-3">{name}</h1>
             <p className="text-[16px]">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit eligendi
-                unde facilis officia ad temporibus. Molestias beatae expedita,
-                doloremque consequuntur, voluptatum nesciunt reprehenderit eius enim
-                labore, modi assumenda perspiciatis obcaecati?
-
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit eligendi
-                unde facilis officia ad temporibus. Molestias beatae expedita,
-                doloremque consequuntur, voluptatum nesciunt reprehenderit eius enim
-                labore, modi assumenda perspiciatis obcaecati?
-
+                {moreInfo.longInfo}
             </p>
             {/* Opening hours, price and location */}
             <div className="mt-5 flex justify-evenly">
                 <div className=" flex flex-row ">
                     <ClockIcon />
-                    <p className="ml-2">9-23</p>
+                    <p className="ml-2">{/*moreInfo.openHours[0]*/}13 - 37</p>
                 </div>
                 
                 <div className=" flex flex-row ">
@@ -48,7 +39,7 @@ const InfoBox = ( {data} ) => {
                 </div>
                 <div className=" flex flex-row ">
                     <WalletIcon />
-                    <p className="ml-2">Gratis</p>
+                    <p className="ml-2">{moreInfo.price}</p>
                 </div>
                 
             </div>
@@ -62,30 +53,65 @@ const InfoBox = ( {data} ) => {
 };
 
 // fetches the missing info for extended info page
-function getMoreInfo () {
-    // if true, get TimeInfo and PriceInfo as well
 
-    // call getInfo
-
-    // parse response json
-    // return string with longInfo
-}
 
 export default function FullCard({infoState}) {
 
     const [infoCard, setInfoCard] = infoState;
+    const [moreInfo, setMoreInfo] = useState ({
+        longInfo : '',
+        price : ''
+      //  openHours : []
+    })
+
+    useEffect(() => {
+        console.log('useEffect')
+        const getMoreInfo = async () => {
+            var sigtId = infoCard.id
+            // if true, get TimeInfo and PriceInfo as well
+        
+            // call getInfo
+            let info = await fetch (`http://localhost:4000/info?sightId=${sigtId}&onlyLong=true`)
+            .then(res => {
+                let json = res.json ();
+                return json
+            })
+           .then (json => {
+                return json
+            })
+        
+           // var openHours
+        
+            // parse response json
+           /* if (info[0]) {
+                openHours = [info[0].monday, info[0].tuesday, info[0].wednesday, info[0].thursday, info[0].friday, info[0].saturday, info[0].sunday]
+            }   */
+            // return string with longInfo
+            console.log (info)
+            setMoreInfo (
+                {
+                    longInfo: info[0].long_info,
+                    price: info[0].price
+                    // openHours: openHours
+                }
+            )
+        }
+
+        getMoreInfo ()
+    }, [])
 
     var id = infoCard.id
     var pics = infoCard.nmbrOfPics
     var name = infoCard.name
 
+    console.log (moreInfo)
     return (
         /* Card body */
         <div className=" z-30 w-full h-full bg-opacity-0 font-inriaSans ">
             <div className=" relative h-[calc(100vh-var(--navbar-height)-5rem)] ">
                 <Image data={[id, pics]} />
                 <div className="items-center mx-3 rounded-[30px] p-3 text-white bg-infoColor backdrop-blur-[2px] bg-opacity-30 absolute bottom-6 left-0 right-0 max-h-[40%] overflow-scroll overflow-x-hidden ">
-                    <InfoBox data={name}/>
+                    <InfoBox data={[name, moreInfo]}/>
                 </div>
             </div>           
             
