@@ -45,24 +45,18 @@ export const getUser = async (userId) => {
   return data[0]
 }
 
+export const getOpenHours = async (sightId) => {
+  const {data, error} = await supabase.from('open_hours').select().eq('sight_id', sightId)
+  return data[0]
+}
+
 export const getFullInfo = async (sightId, onlyLong) => {
   
-  if (onlyLong === "true") {
-    // commented version doesnt work on sights that are missing in the opening hours table
-    // const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
-    const {data, error} = await supabase.from('sights').select('long_info, price').eq('sight_id', sightId)
-    if (error) return error
+  // commented version doesnt work on sights that are missing in the opening hours table
+  // const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
+  const {data, error} = await supabase.from('sights').select('long_info, price').eq('sight_id', sightId)
+  const open_hours = await getOpenHours(sightId)
+  if (error) return error
 
-    return data
-
-  } else {
-    const {data, error} = await supabase
-    .from('open_hours')
-    .select('monday, tuesday, wednesday, thursday, friday, saturday, sunday, sights ( long_info, price )')
-    .eq('sight_id', sightId)
-
-    if (error) return error
-
-    return data
-  }
+  return [data, open_hours]
 }

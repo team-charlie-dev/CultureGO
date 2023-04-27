@@ -20,27 +20,46 @@ const Image = ( {data} ) => {
 const InfoBox = ( {data} ) => {
     const [name, moreInfo] = data
 
+    
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var today = days.indexOf(days [ new Date().getDay() ])
+
     return (
         <>
             <h1 className="italic text-[24px] font-semibold m-3">{name}</h1>
-            <p className="text-[16px]">
+            <div className="text-[16px]">
                 {moreInfo.longInfo}
-            </p>
+                <br/>
+                <br/>
+                <p>Pris: {moreInfo.price}</p>
+                <br/>
+
+                <p>Öppettider: </p>
+                <ul>
+                    <li>Måndag {moreInfo.openHours[1]}</li>
+                    <li>Tisdag {moreInfo.openHours[2]}</li>
+                    <li>Onsdag {moreInfo.openHours[3]}</li>
+                    <li>Torsdag {moreInfo.openHours[4]}</li>
+                    <li>Fredag {moreInfo.openHours[5]}</li>
+                    <li>Lördag {moreInfo.openHours[6]}</li>
+                    <li>Söndag {moreInfo.openHours[0]}</li>
+                </ul>
+            </div>
             {/* Opening hours, price and location */}
             <div className="mt-5 flex justify-evenly">
                 <div className=" flex flex-row ">
                     <ClockIcon />
-                    <p className="ml-2">{/*moreInfo.openHours[0]*/}13 - 37</p>
+                    <p className="ml-2">{moreInfo.openHours[today]}</p>
                 </div>
                 
                 <div className=" flex flex-row ">
                     <LocationIcon />
                     <p className="ml-2">Stockholm</p>
                 </div>
-                <div className=" flex flex-row ">
+                {/* <div className=" flex flex-row ">
                     <WalletIcon />
                     <p className="ml-2">{moreInfo.price}</p>
-                </div>
+                </div> */}
                 
             </div>
             {/*
@@ -57,8 +76,8 @@ export default function FullCard({infoState}) {
     const [infoCard, setInfoCard] = infoState;
     const [moreInfo, setMoreInfo] = useState ({
         longInfo : '',
-        price : ''
-      //  openHours : []
+        price : '',
+        openHours : []
     })
 
     useEffect(() => {
@@ -70,7 +89,7 @@ export default function FullCard({infoState}) {
             // if true, get TimeInfo and PriceInfo as well
         
             // call getInfo
-            let info = await fetch (`http://localhost:4000/info?sightId=${sigtId}&onlyLong=true`)
+            let data = await fetch (`http://localhost:4000/info?sightId=${sigtId}&onlyLong=true`)
             .then(res => {
                 let json = res.json ();
                 return json
@@ -80,16 +99,21 @@ export default function FullCard({infoState}) {
             })
         
             // parse response json
-            /* var openHours
-           if (info[0]) {
-                openHours = [info[0].monday, info[0].tuesday, info[0].wednesday, info[0].thursday, info[0].friday, info[0].saturday, info[0].sunday]
-            }   */
+            var openHours
+            
+           if (data[1]) {
+                openHours = [data[1].sunday || '-', data[1].monday || '-', data[1].tuesday || '-', data[1].wednesday || '-', data[1].thursday || '-', data[1].friday || '-', data[1].saturday || '-']
+            }  else {
+                openHours = ["-", "-", "-", "-", "-", "-", "-",]
+            }
+
+            let info = data[0];
             
             setMoreInfo (
                 {
                     longInfo: info[0].long_info,
-                    price: info[0].price
-                    // openHours: openHours
+                    price: info[0].price,
+                    openHours: openHours
                 }
             )
         }
