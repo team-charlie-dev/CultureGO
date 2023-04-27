@@ -125,7 +125,7 @@ const Liked = () => {
             map.delete(id)
         }
 
-        fetch('http://localhost:4000/likes', {
+        fetch(`http://localhost:4000/likes`, {
             method: "DELETE",
             headers: {
                 "Content-Type" : "application/json"

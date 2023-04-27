@@ -21,7 +21,7 @@ const InfoBox = ( {data} ) => {
     console.log(data)
 
     return (
-        <div className="items-center rounded-[30px] p-3 text-white bg-infoColor backdrop-blur-[2px] bg-opacity-30">
+        <>
             <h1 className="italic text-[24px] font-semibold m-3">{data}</h1>
             <p className="text-[16px]">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit eligendi
@@ -33,6 +33,7 @@ const InfoBox = ( {data} ) => {
                 unde facilis officia ad temporibus. Molestias beatae expedita,
                 doloremque consequuntur, voluptatum nesciunt reprehenderit eius enim
                 labore, modi assumenda perspiciatis obcaecati?
+
             </p>
             {/* Opening hours, price and location */}
             <div className="mt-5 flex justify-evenly">
@@ -56,12 +57,18 @@ const InfoBox = ( {data} ) => {
                 <Arrow />
             </div>
             */}
-        </div>
+        </>
     );
 };
 
-function getLongInfo () {
-    
+// fetches the missing info for extended info page
+function getMoreInfo () {
+    // if true, get TimeInfo and PriceInfo as well
+
+    // call getInfo
+
+    // parse response json
+    // return string with longInfo
 }
 
 export default function FullCard({infoState}) {
@@ -72,14 +79,12 @@ export default function FullCard({infoState}) {
     var pics = infoCard.nmbrOfPics
     var name = infoCard.name
 
-    
-
     return (
         /* Card body */
         <div className=" z-30 w-full h-full bg-opacity-0 font-inriaSans ">
             <div className=" relative h-[calc(100vh-var(--navbar-height)-5rem)] ">
                 <Image data={[id, pics]} />
-                <div className=" absolute bottom-6 left-0 right-0 p-3">
+                <div className="items-center mx-3 rounded-[30px] p-3 text-white bg-infoColor backdrop-blur-[2px] bg-opacity-30 absolute bottom-6 left-0 right-0 max-h-[40%] overflow-scroll overflow-x-hidden ">
                     <InfoBox data={name}/>
                 </div>
             </div>           

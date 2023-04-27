@@ -44,3 +44,24 @@ export const getUser = async (userId) => {
 
   return data[0]
 }
+
+export const getFullInfo = async (sightId, onlyLong) => {
+  
+  if (onlyLong === "true") {
+    const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
+
+    if (error) return error
+
+    return data
+
+  } else {
+    const {data, error} = await supabase
+    .from('open_hours')
+    .select('monday, tuesday, wednesday, thursday, friday, saturday, sunday, sights ( long_info, price )')
+    .eq('sight_id', sightId)
+
+    if (error) return error
+
+    return data
+  }
+}
