@@ -144,21 +144,21 @@ const Image = ({ imgUrl }) => {
 const InfoBox = ({ name, info , shortPrice, openHoursToday, location}) => {
   return (
     <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
-      <h1 className="italic text-2xl px-5 font-bold drop-shadow-4xl">{name}</h1>
-      <p className="text-base p-5 drop-shadow-4xl">{info} </p>
+      <h1 className="italic text-2xl px-5 font-bold text-sh" style={{textShadow:'1px 1px 5px rgba(0,0,0, 0.7)'}}>{name}</h1>
+      <p className="text-base p-5 text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{info} </p>
       <div className="flex justify-between px-5 items-center">
         <div className="grid grid-cols-2 w-2/3">
           <div className="flex">
           <Clockicon />
-          <p className="drop-shadow-4xl">{openHoursToday || '-'}</p>
+          <p className="text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{openHoursToday || '-'}</p>
           </div>
           <div className="flex">
           <LocationIcon />
-          <p className="drop-shadow-4xl">{location || '-'}</p>
+          <p className="text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{location || '-'}</p>
           </div>
           <div className="flex">
           <Walleticon />
-          <p className="drop-shadow-4xl">{shortPrice == null ? '-' : shortPrice}</p>
+          <p className="text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{shortPrice == null ? '-' : shortPrice}</p>
           </div>
 
         </div>
