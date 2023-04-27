@@ -52,9 +52,6 @@ const InfoBox = ( {data} ) => {
     );
 };
 
-// fetches the missing info for extended info page
-
-
 export default function FullCard({infoState}) {
 
     const [infoCard, setInfoCard] = infoState;
@@ -65,7 +62,9 @@ export default function FullCard({infoState}) {
     })
 
     useEffect(() => {
-        console.log('useEffect')
+
+        // fetches the missing info for extended info page
+
         const getMoreInfo = async () => {
             var sigtId = infoCard.id
             // if true, get TimeInfo and PriceInfo as well
@@ -80,14 +79,12 @@ export default function FullCard({infoState}) {
                 return json
             })
         
-           // var openHours
-        
             // parse response json
-           /* if (info[0]) {
+            /* var openHours
+           if (info[0]) {
                 openHours = [info[0].monday, info[0].tuesday, info[0].wednesday, info[0].thursday, info[0].friday, info[0].saturday, info[0].sunday]
             }   */
-            // return string with longInfo
-            console.log (info)
+            
             setMoreInfo (
                 {
                     longInfo: info[0].long_info,
@@ -104,7 +101,6 @@ export default function FullCard({infoState}) {
     var pics = infoCard.nmbrOfPics
     var name = infoCard.name
 
-    console.log (moreInfo)
     return (
         /* Card body */
         <div className=" z-30 w-full h-full bg-opacity-0 font-inriaSans ">
