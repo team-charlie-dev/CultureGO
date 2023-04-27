@@ -6,6 +6,9 @@ import CityButton from "../../Components/buttons/button";
 import City from "../../Components/icons/City";
 import Arrow from "../../Components/icons/Arrow";
 import serverUrl from '../../address'
+import Walleticon from "../../Components/icons/Walleticon"
+import LocationIcon from "../../Components/icons/LocationIcon"
+import Clockicon from "../../Components/icons/Clockicon"
 
 const userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a' //charlie
 
@@ -113,7 +116,22 @@ const InfoBox = ({ name, info }) => {
     <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
       <h1 className="italic text-2xl px-5 font-bold drop-shadow-4xl">{name}</h1>
       <p className="text-base p-5 drop-shadow-4xl">{info} </p>
-      <div className="flex justify-end">
+      <div className="flex justify-between px-5 items-center">
+        <div className="flex flex-wrap w-2/3 gap-x-[15%]">
+          <div className="flex">
+          <Clockicon />
+          <p>09-23</p>
+          </div>
+          <div className="flex">
+          <LocationIcon />
+          <p>Stockholm</p>
+          </div>
+          <div className="flex">
+          <Walleticon />
+          <p>300kr</p>
+          </div>
+
+        </div>
         <Arrow />
       </div>
     </div>
