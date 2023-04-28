@@ -9,7 +9,10 @@ import {useState, useEffect, useCallback, useRef} from 'react'
 
 import {deleteContext} from './DeleteContext'
 
+import FullCard from "../../Components/FullCard/FullCard.jsx";
+
 import Address from "../../address";
+
 
 const Liked = () => {
 
@@ -22,6 +25,16 @@ const Liked = () => {
     var [contentPage, setContentPage] = useState(0)
 
     var scrollRef = useRef()
+
+    /* state for info/full card */
+    const [infoCard, setInfoCard] = useState(
+        {
+            show: false, 
+            id: 'null',
+            name: 'null',
+            nmbrOfPics: 1
+        }
+    );
 
     const fn = (a, value) => {
 
@@ -65,9 +78,19 @@ const Liked = () => {
             }
             for (let sight of data)
             {
-                let card = <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
-                                img={`https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
-
+                let card = <div 
+                className=" cursor-pointer" 
+                onClick={() => setInfoCard(
+                    {
+                        show: true, 
+                        id: sight.sights.sight_id,
+                        name: sight.sights.name,
+                        nmbrOfPics: 1
+                    })}>
+                    <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
+                    img={`https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
+                </div>
+                                
                 setList(ls => {
                     ls = ls.slice()
                     ls.push(card)
@@ -148,14 +171,23 @@ const Liked = () => {
 
     return (
         <div className=" w-full h-screen bg-white overflow-hidden">
+
             <div className=" w-screen h-20">
                 {/* top of screen w/ logo */}
-
                 <div className="p-4">
                     <LogoText/>
                 </div>
             </div>
-            
+
+            {   
+                /* if show true show card else nothing */
+                infoCard.show === true ?
+                /* full info card */
+                <div className=" w-full h-full bg-opacity-0 ">
+                    <FullCard infoState={[infoCard, setInfoCard]} />
+                </div> : ""
+            }
+
             <div className="w-full pl-3 pr-3 relative flex justify-normal h-12">
                 {/* options bar */}
                 <p className="pt-3 text-xl text p-2 flex-grow">Your liked items: </p>
@@ -169,14 +201,13 @@ const Liked = () => {
 
             <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100vh-var(--navbar-height)-8rem)] overflow-x-hidden" ref={scrollRef}>
                 {/* container for list */}
-                
                 <deleteContext.Provider value={del}>
                 {
                     list
                 }
                 </deleteContext.Provider>
             </div>
-            
+
             <div className="absolute w-full bottom-0 flex justify-around">
                 <button onClick={performRemove} className="bg-secondaryDark p-2 rounded-md text-white" 
                     style={{transform: `translate(0, ${del ? -5 : 0}rem)`, transition: "transform 300ms ease-in-out"}}>
