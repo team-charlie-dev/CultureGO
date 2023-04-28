@@ -46,7 +46,7 @@ const Home = () => {
     openHoursToday: "",
     location: "",
   });
-  const [currentSight, setCurrentSight] = useState(23)
+  const [currentSight, setCurrentSight] = useState(15)
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
 
