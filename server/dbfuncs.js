@@ -61,9 +61,21 @@ export const getUser = async (userId) => {
   return data[0]
 }
 
+export const getFullInfo = async (sightId, onlyLong) => {
+  
+  // commented version doesnt work on sights that are missing in the opening hours table
+  // const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
+  const {data, error} = await supabase.from('sights').select('long_info, price').eq('sight_id', sightId)
+  const open_hours = await getOpenHours(sightId)
+  if (error) return error
+
+  return [data, open_hours]
+}
+
 export const addLikes = async (userId, sightId) => {
   const { data, error } = await supabase.from('liked_sights').insert([{user_id: userId, sight_id: sightId}])
   if (error) return error
 
   return {sightId}
+
 }

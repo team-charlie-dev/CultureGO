@@ -6,9 +6,9 @@ import CityButton from "../../Components/buttons/button";
 import City from "../../Components/icons/City";
 import Arrow from "../../Components/icons/Arrow";
 import serverUrl from '../../address'
-import Walleticon from "../../Components/icons/Walleticon"
+import Walleticon from "../../Components/icons/WalletIcon"
 import LocationIcon from "../../Components/icons/LocationIcon"
-import Clockicon from "../../Components/icons/Clockicon"
+import Clockicon from "../../Components/icons/ClockIcon"
 
 const userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a' //charlie
 
@@ -46,7 +46,7 @@ const Home = () => {
     openHoursToday: "",
     location: "",
   });
-  const [currentSight, setCurrentSight] = useState(23)
+  const [currentSight, setCurrentSight] = useState(15)
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
 
