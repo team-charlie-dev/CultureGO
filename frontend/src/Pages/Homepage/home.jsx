@@ -132,7 +132,7 @@ const lift = (e) => {
   document.getElementById("cardTest").style.backgroundColor = "none";
   document.getElementById("disable").style.opacity = 0;
   document.getElementById("disable2").style.opacity = 0;
-  document.getElementById("disable22").style.display = "none";
+  document.getElementById("disable22").style.opacity = 0;
   
 }
 
