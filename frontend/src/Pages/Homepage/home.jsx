@@ -294,8 +294,8 @@ const Home = () => {
         
     
         if(yPos <= -window.innerHeight || yPos >= window.innerHeight){
-         document.getElementById("cardTest").style.top = (0) + "px";
-         document.getElementById("cardTest").style.left = (0) + "px";
+        // document.getElementById("cardTest").style.top = (0) + "px";
+         //document.getElementById("cardTest").style.left = (0) + "px";
          
    
         document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
@@ -304,8 +304,8 @@ const Home = () => {
         }
         if(xPos <= -window.innerWidth || xPos >= window.innerWidth){
           
-         document.getElementById("cardTest").style.top = (0) + "px";
-         document.getElementById("cardTest").style.left = (0) + "px";
+         //document.getElementById("cardTest").style.top = (0) + "px";
+       //  document.getElementById("cardTest").style.left = (0) + "px";
          
    
      document.getElementById("cardTest").style.transform = "rotate(" + 0 + "deg)";
@@ -326,6 +326,9 @@ const Home = () => {
       handleDislikeClick()
     }
     updateSight();
+
+      document.getElementById("cardTest").style.top = (0) + "px";
+       document.getElementById("cardTest").style.left = (0) + "px";
 
   }
 
