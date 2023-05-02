@@ -73,11 +73,11 @@ const Home = () => {
         location: data[currentSight].location
       });
       setNextItemData({
-        name: data[currentSight + 1].name || data[0].name,
-        shortInfo: data[currentSight + 1].short_info || data[0].short_info,
-        images: data[currentSight + 1].images || data[0].images,
-        shortPrice: data[currentSight + 1].short_price || data[0].short_price,
-        openHoursToday: getOpenHoursToday(data[currentSight + 1].open_hours || data[0].open_hours),
+        name: data[currentSight + 1].name,
+        shortInfo: data[currentSight + 1].short_info,
+        images: data[currentSight + 1].images,
+        shortPrice: data[currentSight + 1].short_price,
+        openHoursToday: getOpenHoursToday(data[currentSight + 1].open_hours),
         location: data[currentSight + 1].location
       });
     };
@@ -104,11 +104,11 @@ const Home = () => {
       location: sights[currentSight].location
     });
     setNextItemData({
-      name: sights[currentSight + 1].name || sights[0].name,
-      shortInfo: sights[currentSight + 1].short_info || sights[0].short_info,
-      images: sights[currentSight + 1].images || sights[0].images,
-      shortPrice: sights[currentSight + 1].short_price || sights[0].short_price,
-      openHoursToday: getOpenHoursToday(sights[currentSight + 1].open_hours || sights[0].open_hours),
+      name: sights[currentSight + 1].name,
+      shortInfo: sights[currentSight + 1].short_info,
+      images: sights[currentSight + 1].images,
+      shortPrice: sights[currentSight + 1].short_price,
+      openHoursToday: getOpenHoursToday(sights[currentSight + 1].open_hours),
       location: sights[currentSight + 1].location
     });
     setCurrentImage(0)
@@ -272,8 +272,8 @@ const Home = () => {
          document.getElementById("cardTest").style.left = (0) + "px";
          
    
-     document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
-         isOut();
+        document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
+        isOut();
          clearInterval(myInterval);
         }
         if(xPos <= -window.innerWidth || xPos >= window.innerWidth){
@@ -282,35 +282,22 @@ const Home = () => {
          document.getElementById("cardTest").style.left = (0) + "px";
          
    
-     document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
-         isOut();
+     document.getElementById("cardTest").style.transform = "rotate(" + 0 + "deg)";
+     isOut();
+
          clearInterval(myInterval);
         }
    
       }, 5);
    
     }
-    var cardIndex = 0;
-    var lastColor = "#" + Math.floor(Math.random()*16777215).toString(16);
-    
-    const cards = ["Kunsträdgåprden", "hemköp", "gröna lund", "globen", "reimersholme", "fotboll", "hammarby sjöstad",
-   "naturhistoriska museet", "test1", "riksdagen", "kulturhuset"];
-   
-    const isOut = () => {
-     //handleLikeClick()
-    
-   /*
-       
-   
-     document.getElementById("cardTest").style.backgroundColor = lastColor;
-     document.getElementById("cardTest").innerHTML = "<h1>" + cards[cardIndex] + "</h1>";
-       document.getElementById("cardTestBakom").innerHTML = "<h1>" +cards[cardIndex + 1] + "</h1>";
-       lastColor = "#" + Math.floor(Math.random()*16777215).toString(16);
-       document.getElementById("cardTestBakom").style.backgroundColor = lastColor;
-   */
-       cardIndex++;
-    }
-  
+
+  const isOut = () => {
+
+    updateSight();
+
+  }
+
   return (
     <>
     <div id="cardTest"  className=" rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
