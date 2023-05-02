@@ -4,35 +4,34 @@ import Dislike from "../../Components/icons/Dislike.svg";
 import Logo from "../../Components/icons/Logo.svg";
 import CityButton from "../../Components/buttons/button";
 import City from "../../Components/icons/City";
-import Arrow from "../../Components/icons/Arrow";
 import serverUrl from '../../address'
-import Walleticon from "../../Components/icons/WalletIcon"
-import LocationIcon from "../../Components/icons/LocationIcon"
-import Clockicon from "../../Components/icons/ClockIcon"
+
+
+import Card from "./Card";
 
 const userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a' //charlie
 
 const getOpenHoursToday = (openHours) => {
   const day = new Date().getDay()
-  if(openHours) {
-  switch (day) {
-    case 0:
-      return openHours.sunday
-    case 1:
-      return openHours.monday
-    case 2:
-      return openHours.tuesday
-    case 3:
-      return openHours.wednesday
-    case 4:
-      return openHours.thursday
-    case 5:
-      return openHours.friday
-    case 6:
-      return openHours.saturday
-    default:
-      return '-'
-    }    
+  if (openHours) {
+    switch (day) {
+      case 0:
+        return openHours.sunday
+      case 1:
+        return openHours.monday
+      case 2:
+        return openHours.tuesday
+      case 3:
+        return openHours.wednesday
+      case 4:
+        return openHours.thursday
+      case 5:
+        return openHours.friday
+      case 6:
+        return openHours.saturday
+      default:
+        return '-'
+    }
   }
   return '-'
 }
@@ -46,6 +45,16 @@ const Home = () => {
     openHoursToday: "",
     location: "",
   });
+
+  const [nextItemData, setNextItemData] = useState({
+    name: "",
+    shortInfo: "",
+    images: [],
+    shortPrice: "",
+    openHoursToday: "",
+    location: "",
+  });
+
   const [currentSight, setCurrentSight] = useState(15)
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
@@ -63,69 +72,32 @@ const Home = () => {
         openHoursToday: getOpenHoursToday(data[currentSight].open_hours),
         location: data[currentSight].location
       });
+      setNextItemData({
+        name: data[currentSight + 1].name || data[0].name,
+        shortInfo: data[currentSight + 1].short_info || data[0].short_info,
+        images: data[currentSight + 1].images || data[0].images,
+        shortPrice: data[currentSight + 1].short_price || data[0].short_price,
+        openHoursToday: getOpenHoursToday(data[currentSight + 1].open_hours || data[0].open_hours),
+        location: data[currentSight + 1].location
+      });
     };
     fetchData();
-    if(currentSight === 23) {
+    if (currentSight === 23) {
       setCurrentSight(0)
     } else {
       setCurrentSight(currentSight + 1)
     }
   }, []);
 
-  const handleImageChange = (side) => {
-    if(side === "left") {
-      if(currentImage === 0) {
-        setCurrentImage(itemData.images.length - 1)
-      } else {
-        setCurrentImage(currentImage - 1)
-      }
-    } else if(side === "right"){
-      if(currentImage === itemData.images.length - 1) {
-        setCurrentImage(0)
-      } else {
-        setCurrentImage(currentImage + 1)
-      }
-    }
-  }
-
   return (
-    <div className="bg-white w-full relative overflow-hidden h-[calc(100%-var(--navbar-height))]">
+    <div className="bg-white z-10 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
       <Header />
       <div className="flex justify-end px-7">
         <CitySelector />
       </div>
-
       <div className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-        <div className="relative h-[85%] w-auto font-inriaSans px-3">
-          <div className="w-full h-full absolute flex">
-            <div className="w-1/2 h-full relative" onClick={()=>handleImageChange('left')}></div>
-            <div className="w-1/2 h-full relative" onClick={()=>handleImageChange('right')}></div>
-          </div>
-          <div
-            style={{
-              backgroundImage:
-                "linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,1))",
-              position: "absolute",
-              width: "100%",
-              height: "10%",
-            }}
-          ></div>
-          <Image imgUrl={itemData.images[currentImage]} />
-          <div className="absolute bottom-0 left-0 right-0 px-3">
-            <InfoBox name={itemData.name} info={itemData.shortInfo} shortPrice = {itemData.shortPrice} openHoursToday={itemData.openHoursToday} location={itemData.location}/>
-          </div>
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-3 flex gap-x-5">
-            {itemData.images.map((image, index) => {
-              return <div 
-                className={`${index===currentImage?'bg-primaryDark':'bg-white'} rounded-full w-3 h-3`} 
-                key={image}
-                onClick={()=>setCurrentImage(index)}
-                />
-            })}
-            
-          </div>
-        </div>
-        <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights}/>
+        <Card currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={itemData} />
+        <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} />
       </div>
     </div>
   );
@@ -133,44 +105,9 @@ const Home = () => {
 
 export default Home;
 
-const Image = ({ imgUrl }) => {
-  return (
-    <div className="h-full">
-      <img alt={imgUrl} src={imgUrl} className="rounded-b-[30px] object-cover h-full"></img>
-    </div>
-  );
-};
-
-const InfoBox = ({ name, info , shortPrice, openHoursToday, location}) => {
-  return (
-    <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
-      <h1 className="italic text-2xl px-5 font-bold text-sh" style={{textShadow:'1px 1px 5px rgba(0,0,0, 0.7)'}}>{name}</h1>
-      <p className="text-base p-5 text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{info} </p>
-      <div className="flex justify-between px-5 items-center">
-        <div className="grid grid-cols-2 w-2/3">
-          <div className="flex">
-          <Clockicon />
-          <p className="text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{openHoursToday || '-'}</p>
-          </div>
-          <div className="flex">
-          <LocationIcon />
-          <p className="text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{location || '-'}</p>
-          </div>
-          <div className="flex">
-          <Walleticon />
-          <p className="text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{shortPrice == null ? '-' : shortPrice}</p>
-          </div>
-
-        </div>
-        <Arrow />
-      </div>
-    </div>
-  );
-};
-
-const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItemData: [itemData, setItemData], sights, currentImageData:[currentImage, setCurrentImage]}) => {
+const Buttons = ({ currentSightData: [currentSight, setCurrentSight], currentItemData: [itemData, setItemData], sights, currentImageData: [currentImage, setCurrentImage] }) => {
   function updateSight() {
-    if(currentSight === 23) {
+    if (currentSight === 23) {
       setCurrentSight(0)
     } else {
       setCurrentSight(currentSight + 1)
@@ -185,13 +122,13 @@ const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItem
     });
     setCurrentImage(0)
   }
-  async function handleLikeClick(){
+  async function handleLikeClick() {
     let likedSightId = ''
-    if(currentSight === 0) {
-      likedSightId = sights[sights.length-1].sight_id
+    if (currentSight === 0) {
+      likedSightId = sights[sights.length - 1].sight_id
     }
     else {
-      likedSightId = sights[currentSight-1].sight_id
+      likedSightId = sights[currentSight - 1].sight_id
     }
     await fetch(`http://${serverUrl}:4000/addlikes`, {
       method: "POST",
@@ -206,7 +143,7 @@ const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItem
     updateSight()
   }
 
-  async function handleDislikeClick(){
+  async function handleDislikeClick() {
     //TODO: handle dislike
     updateSight()
   }
@@ -248,4 +185,4 @@ const CitySelector = () => {
   );
 };
 
-const ArrowButton = () => {};
+const ArrowButton = () => { };
