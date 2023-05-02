@@ -25,6 +25,9 @@ const Liked = () => {
     var [contentPage, setContentPage] = useState(0)
 
     var scrollRef = useRef()
+    const delRef = useRef()
+
+    delRef.current = del
 
     /* state for info/full card */
     const [infoCard, setInfoCard] = useState(
@@ -35,6 +38,30 @@ const Liked = () => {
             nmbrOfPics: 1
         }
     );
+
+    const handleInfoCard = (sight) => {
+        // console.log(delRef.current)
+        if (delRef.current === false){
+            setInfoCard({
+                show: true, 
+                id: sight.sights.sight_id,
+                name: sight.sights.name,
+                nmbrOfPics: 1
+            })
+            
+        }
+        else
+        {
+            
+            setInfoCard({
+                show: false, 
+                id: 'null',
+                name: 'null',
+                nmbrOfPics: 1
+            })
+            
+        }
+    }
 
     const fn = (a, value) => {
 
@@ -80,13 +107,7 @@ const Liked = () => {
             {
                 let card = <div 
                 className=" cursor-pointer" 
-                onClick={() => setInfoCard(
-                    {
-                        show: true, 
-                        id: sight.sights.sight_id,
-                        name: sight.sights.name,
-                        nmbrOfPics: 1
-                    })}>
+                onClick={() => handleInfoCard (sight)}>
                     <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
                     img={`https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
                 </div>
