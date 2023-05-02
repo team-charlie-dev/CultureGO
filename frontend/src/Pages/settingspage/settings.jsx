@@ -17,6 +17,8 @@ export default function Settings() {
     type: ''
   })
 
+  const [session, setSession] = useState({})
+
   const fetchUserData = async (userId)=>{
     const featchedData = await fetch(`http://${serverUrl}:4000/getuser?userid=${userId}`)
     
@@ -35,6 +37,24 @@ export default function Settings() {
       setData({showMoreInfo: true, info: 'user terms info', type: type})
     }
   }
+  const handleLogin = async ()=>{
+    const ses = await fetch(`http://${serverUrl}:4000/signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: 'reza.avoor@gmail.com',
+        password: '123456',
+      }),
+    });
+    const sesJson = await ses.json()
+    setSession(sesJson)
+    console.log(sesJson)
+  }
+  const handleGetEmail = async ()=>{
+
+  }
     return   (
         <div className="bg-white h-full w-full relative overflow-hidden">
         
@@ -48,12 +68,11 @@ export default function Settings() {
           </div>
           <Moreinfo dataState={[data, setData]} />
           <div className='items-center flex flex-col h-1/2 justify-between relative' style={{opacity: data.showMoreInfo? 0:1 ,transition: 'all 0.2s ease-in-out'}}>
-            <Button clickHandler={async()=>handleClick('about')} text="About Me" icon={ProfileIcon} size="large"></Button>
-            <Button clickHandler={()=>setData({showMoreInfo: true, info: 'achievements info', type:'achievements'})} text="Achievements" icon={AchievementsIcon} size="large"></Button>
-            <Button clickHandler={()=>setData({showMoreInfo: true, info: 'user terms info', type:'terms'})} text="User Terms" icon={UserTermsIcon} size="large"></Button>
-            <Button text="Logout" icon={LogoutIcon} size="large"></Button>
-            
-
+            <Button text="Login" icon={LogoutIcon} size="large" clickHandler={()=>handleLogin()}></Button>
+            <Button text="Get Email" icon={LogoutIcon} size="large" clickHandler={()=>handleGetEmail()}></Button>
+            <Button text="Logout" icon={LogoutIcon} size="large" clickHandler={()=>console.log(session.access_token)}></Button>
+            {console.log(session)}
+            <p>{session.access_token}</p>
           </div>
         </div>
     )

@@ -1,6 +1,8 @@
 import cors from "cors";
 import express from "express";
-
+import bodyParser from "body-parser";
+import bcryptjs from "bcryptjs";
+import jsonwebtoken from "jsonwebtoken";
 const app = express();
 const port = 4000;
 
@@ -11,11 +13,28 @@ import {
   getUser,
   addLikes,
   supabase,
+  createUser,
 } from "./dbfuncs.js";
 
+// vet inte vad de gör men bra att de finns! låt va kvar
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.json());
+
+// TODO: make /signup and /signin routes bypass this middleware
+app.use((req, res, next) => {
+  const token = req.headers["x-access-token"];
+  if (!token) {
+    return res.status(403).send({
+      message: "No token provided!",
+    });
+  }
+  const decoded = jsonwebtoken.verify(token, process.env.SECRET_KEY);
+  req.userId = decoded.id;
+  next();
+});
 
 app.get("/charlie", (req, res) => {
   res.send(
@@ -94,6 +113,60 @@ app.get("/info", async (req, res) => {
   const onlyLong = req.query.onlyLong;
 
   res.send(await getFullInfo(sightId, onlyLong));
+});
+
+// tar emot username och password från frontend
+// krypterar lösenordet
+// skapar användare i databasen med username och krypterat lösenord
+// om användaren redan finns skickas ett meddelande som säger "user already exists", annars får man tillbaka user_id och username
+app.post("/signup", async (req, res) => {
+  const { username, password } = req.body;
+  const hashedPass = bcryptjs.hashSync(password, 8);
+  const userData = await createUser(username, hashedPass);
+
+  if (userData[0].message || userData[0].message === "user already exists") {
+    return res.send({ userData });
+  }
+  const token = jsonwebtoken.sign(
+    { id: userData.username },
+    process.env.SECRET_KEY,
+    {
+      expiresIn: 86400, // 24 hours
+    }
+  );
+  return res.send({ ...userData[0], token });
+});
+
+// tar emot username och password från frontend
+// hämtar användare från databasen med username, användare innehåller user_id, username och krypterat lösenord
+// jämför krypterat lösenord med det som skickades från frontend
+// om lösenorden matchar skickas ett meddelande som säger "Login successful" och användarens user_id och username
+// om lösenorden inte matchar skickas ett meddelande som säger "Login unsuccessful" och ett felmeddelande
+app.post("/signin", async (req, res) => {
+  const { username, password } = req.body;
+  const user = await getUser(username);
+  if (user.error) {
+    return res.send({
+      message: "Login unsuccessful",
+      error: user.error,
+    });
+  }
+  const isPasswordValid = bcryptjs.compareSync(password, user.password);
+  const data = {
+    message: "Login unsuccessful",
+  };
+  if (isPasswordValid) {
+    const token = jsonwebtoken.sign(
+      { id: user.username },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: 86400, // 24 hours
+      }
+    );
+    data.message = "Login successful";
+    data.userData = { user_id: user.user_id, username: user.username, token };
+  }
+  res.send({ data });
 });
 
 app.listen(port, () => {
