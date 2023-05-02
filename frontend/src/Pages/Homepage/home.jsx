@@ -90,22 +90,233 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="bg-white z-10 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
+
+    <>
+    
+    <div id="cardTest"  className=" rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
       <Header />
-      <div className="flex justify-end px-7">
+      <div id="disable" className="flex justify-end px-7">
         <CitySelector />
       </div>
-      <div className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
+      <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
         <Card currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={itemData} />
-        <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} />
+        <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} nextItemData={[nextItemData, setNextItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} />
       </div>
     </div>
+
+    <div className="bg-white z-10 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
+    <Header />
+    <div className="flex justify-end px-7">
+      <CitySelector />
+    </div>
+    <div id="testtestss"className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
+      <Card currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={nextItemData} />
+      <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} nextItemData={[nextItemData, setNextItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} />
+    </div>
+    </div></>
   );
 };
 
-export default Home;
+const lift = (e) => {
+ // document.getElementById("cardTestBakom").style.backgroundColor = lastColor;
+  if(e.clientX == NaN || e.clientX == null){
+    var clientX = e.touches[0].clientX;
+  }if(e.clientY == NaN || e.clientY == null){
+    var clientY = e.touches[0].clientY;
+  }
 
-const Buttons = ({ currentSightData: [currentSight, setCurrentSight], currentItemData: [itemData, setItemData], sights, currentImageData: [currentImage, setCurrentImage] }) => {
+  holding = true;
+  startX = clientX;
+  startY = clientY;
+
+  document.getElementById("cardTest").style.backgroundColor = "none";
+  document.getElementById("disable").style.opacity = 0;
+  document.getElementById("disable2").style.opacity = 0;
+  document.getElementById("disable22").style.display = "none";
+  
+}
+
+var holding = false;
+var startX;
+var startY;
+
+var StartPosX =0;
+var StartPosY = 0;
+
+const move = (e) => {
+    
+  if(e.clientX == NaN || e.clientX == null){
+    var clientX = e.touches[0].clientX;
+  }if(e.clientY == NaN || e.clientY == null){
+    var clientY = e.touches[0].clientY;
+  }
+  var procent = (-startX + clientX ) / window.innerWidth;
+
+
+  if(holding){
+    document.getElementById("cardTest").style.left = -startX + clientX + "px";
+    document.getElementById("cardTest").style.top = -startY  + clientY + "px";
+
+    document.getElementById("cardTest").style.transform = "rotate(" + 25*(procent) + "deg)";
+    
+
+  
+  //  console.log(document.getElementById("cardTest").style.top);
+  }
+}
+
+const getDistance = (x1, y1, x2, y2) => {
+  let y = x2 - x1;
+  let x = y2 - y1;
+  
+  return Math.sqrt(x * x + y * y);
+}
+var i = 0;
+
+
+//var cards = [createNewCard(), createNewCard(), createNewCard()];
+const release = (e) => {
+  
+  
+
+  if(e.clientX == NaN || e.clientX == null){
+    var clientX = e.changedTouches[0].clientX;
+  }if(e.clientY == NaN || e.clientY == null){
+    var clientY = e.changedTouches[0].clientY;
+  }
+
+  holding = false;
+  StartPosX =  -startX + clientX;
+  StartPosY = -startY + clientY;
+
+  var middlePosX = StartPosX + window.innerWidth / 2;
+  var middlePosY = StartPosY + window.innerHeight / 2;
+  var r = 150;
+
+
+  if(getDistance(middlePosX,middlePosY, window.innerWidth/2, window.innerHeight/2 ) > r){
+  
+    moveAway(StartPosX, StartPosY);
+  }else{
+    moveHome(StartPosX, StartPosY);
+   
+  }
+
+
+
+}
+
+const moveHome = (xs, ys) => {
+  
+
+
+ var nrofFrames = 10;  
+
+ var xPos = xs;
+ var yPos = ys;
+
+ var movespeedX = xPos / nrofFrames;
+ var movespeedY = yPos / nrofFrames;
+
+ var myInterval = setInterval(function() {
+
+
+   if(xPos <= 0){
+    document.getElementById("cardTest").style.left = (0) + "px";
+    
+  }else{
+    xPos = (xPos - movespeedX);
+    document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
+  }
+
+
+  if(yPos <= 0){
+    document.getElementById("cardTest").style.top = (0) + "px";
+  }else{
+    yPos = (yPos - movespeedY);
+    document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
+  }
+
+  if(parseInt(yPos) <= 0 && parseInt(xPos) <= 0){
+    document.getElementById("cardTest").style.top = (0) + "px";
+    document.getElementById("cardTest").style.left = (0) + "px";
+    document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
+    clearInterval(myInterval);
+  }
+}, 5);
+
+}
+
+const moveAway= (xs, ys) => {
+
+
+    var nrofFrames = 10;  
+ 
+    var xPos = xs;
+    var yPos = ys;
+ 
+
+
+    var movespeedX = 0.4*xPos / nrofFrames;
+    var movespeedY = 0.4*yPos / nrofFrames;
+ 
+    var myInterval = setInterval(function() {
+ 
+ 
+       xPos = (xPos + movespeedX);
+       document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
+
+       yPos = (yPos + movespeedY);
+       document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
+     
+ 
+     if(yPos <= -window.innerHeight || yPos >= window.innerHeight){
+      document.getElementById("cardTest").style.top = (0) + "px";
+      document.getElementById("cardTest").style.left = (0) + "px";
+      
+
+  document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
+      isOut();
+      clearInterval(myInterval);
+     }
+     if(xPos <= -window.innerWidth || xPos >= window.innerWidth){
+       
+      document.getElementById("cardTest").style.top = (0) + "px";
+      document.getElementById("cardTest").style.left = (0) + "px";
+      
+
+  document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
+      isOut();
+      clearInterval(myInterval);
+     }
+
+   }, 5);
+
+ }
+ var cardIndex = 0;
+ var lastColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+ 
+ const cards = ["Kunsträdgåprden", "hemköp", "gröna lund", "globen", "reimersholme", "fotboll", "hammarby sjöstad",
+"naturhistoriska museet", "test1", "riksdagen", "kulturhuset"];
+
+ const isOut = () => {
+  //handleLikeClick()
+ 
+/*
+    
+
+  document.getElementById("cardTest").style.backgroundColor = lastColor;
+  document.getElementById("cardTest").innerHTML = "<h1>" + cards[cardIndex] + "</h1>";
+    document.getElementById("cardTestBakom").innerHTML = "<h1>" +cards[cardIndex + 1] + "</h1>";
+    lastColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+    document.getElementById("cardTestBakom").style.backgroundColor = lastColor;
+*/
+    cardIndex++;
+ }
+
+
+
+const Buttons = ({ currentSightData: [currentSight, setCurrentSight], nextItemData: [nextItemData, setNextItemData] ,  currentItemData: [itemData, setItemData], sights, currentImageData: [currentImage, setCurrentImage] }) => {
   function updateSight() {
     if (currentSight === 23) {
       setCurrentSight(0)
@@ -119,6 +330,14 @@ const Buttons = ({ currentSightData: [currentSight, setCurrentSight], currentIte
       shortPrice: sights[currentSight].short_price,
       openHoursToday: getOpenHoursToday(sights[currentSight].open_hours),
       location: sights[currentSight].location
+    });
+    setNextItemData({
+      name: sights[currentSight + 1].name || sights[0].name,
+      shortInfo: sights[currentSight + 1].short_info || sights[0].short_info,
+      images: sights[currentSight + 1].images || sights[0].images,
+      shortPrice: sights[currentSight + 1].short_price || sights[0].short_price,
+      openHoursToday: getOpenHoursToday(sights[currentSight + 1].open_hours || sights[0].open_hours),
+      location: sights[currentSight + 1].location
     });
     setCurrentImage(0)
   }
@@ -149,7 +368,7 @@ const Buttons = ({ currentSightData: [currentSight, setCurrentSight], currentIte
   }
 
   return (
-    <div className="h-[15%] flex-col justify-center flex p-5">
+    <div  id="disable22"  className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
         <div onClick={() => handleDislikeClick()}>
           <img src={Dislike}></img>
@@ -164,7 +383,7 @@ const Buttons = ({ currentSightData: [currentSight, setCurrentSight], currentIte
 
 const Header = () => {
   return (
-    <header className="p-3 pt-5 h-[10%]">
+    <header id="disable2" className="p-3 pt-5 h-[10%]">
       <img src={Logo}></img>
     </header>
   );
@@ -186,3 +405,6 @@ const CitySelector = () => {
 };
 
 const ArrowButton = () => { };
+
+
+export default Home;
