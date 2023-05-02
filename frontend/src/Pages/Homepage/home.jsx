@@ -114,6 +114,32 @@ const Home = () => {
     setCurrentImage(0)
   }
 
+  async function handleLikeClick() {
+    let likedSightId = ''
+    if (currentSight === 0) {
+      likedSightId = sights[sights.length - 1].sight_id
+    }
+    else {
+      likedSightId = sights[currentSight - 1].sight_id
+    }
+    await fetch(`http://${serverUrl}:4000/addlikes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: userId,
+        sightId: likedSightId,
+      }),
+    });
+    updateSight()
+  }
+
+  async function handleDislikeClick() {
+    //TODO: handle dislike
+    updateSight()
+  }
+
   const lift = (e) => {
     // document.getElementById("cardTestBakom").style.backgroundColor = lastColor;
      if(e.clientX == NaN || e.clientX == null){
@@ -273,7 +299,7 @@ const Home = () => {
          
    
         document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
-        isOut();
+        isOut(movespeedX);
          clearInterval(myInterval);
         }
         if(xPos <= -window.innerWidth || xPos >= window.innerWidth){
@@ -283,7 +309,7 @@ const Home = () => {
          
    
      document.getElementById("cardTest").style.transform = "rotate(" + 0 + "deg)";
-     isOut();
+     isOut(movespeedX);
 
          clearInterval(myInterval);
         }
@@ -292,8 +318,13 @@ const Home = () => {
    
     }
 
-  const isOut = () => {
+  const isOut = (movespeedX) => {
 
+    if(movespeedX > 0) {
+      handleLikeClick()
+    } else {
+      handleDislikeClick()
+    }
     updateSight();
 
   }
@@ -307,7 +338,7 @@ const Home = () => {
       </div>
       <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
         <Card currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={itemData} />
-        <Buttons currentSight={currentSight} sights={sights} updateSight={updateSight}/>
+        <Buttons currentSight={currentSight} sights={sights} updateSight={updateSight} handleLikeClick={handleLikeClick} handleDislikeClick={handleDislikeClick}/>
       </div>
     </div>
 
@@ -324,33 +355,7 @@ const Home = () => {
   );
 };
 
-const Buttons = ({currentSight, sights, updateSight}) => {
-  async function handleLikeClick() {
-    let likedSightId = ''
-    if (currentSight === 0) {
-      likedSightId = sights[sights.length - 1].sight_id
-    }
-    else {
-      likedSightId = sights[currentSight - 1].sight_id
-    }
-    await fetch(`http://${serverUrl}:4000/addlikes`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: userId,
-        sightId: likedSightId,
-      }),
-    });
-    updateSight()
-  }
-
-  async function handleDislikeClick() {
-    //TODO: handle dislike
-    updateSight()
-  }
-
+const Buttons = ({handleLikeClick, handleDislikeClick}) => {
   return (
     <div  id="disable22"  className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
@@ -387,8 +392,5 @@ const CitySelector = () => {
     />
   );
 };
-
-const ArrowButton = () => { };
-
 
 export default Home;
