@@ -16,7 +16,7 @@ import {
   createUser,
   getSubTags,
   getTagValue,
-  getRandomSights
+  getRandomSights,
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -58,7 +58,7 @@ app.post("/signup", async (req, res) => {
   const hashedPass = bcryptjs.hashSync(password, 8);
   const userData = await createUser(username, hashedPass);
 
-  if (userData[0].message || userData[0].message === "user already exists") {
+  if (userData.message && userData.message === "user already exists") {
     return res.send({ userData });
   }
   const token = jsonwebtoken.sign(
@@ -193,21 +193,20 @@ app.get("/subtag", async (req, res) => {
 
 app.get("/tagvalues", async (req, res) => {
   //const userID = req.query.userID;
-  const tagId = req.query.tagId
+  const tagId = req.query.tagId;
 
-  res.send(await getTagValue('cfb5b9bd-ece8-470e-89c0-8ac52122652a', tagId))
-})
+  res.send(await getTagValue("cfb5b9bd-ece8-470e-89c0-8ac52122652a", tagId));
+});
 
 app.get("/algorithm", async (req, res) => {
-  const sights = await getRandomSights(10)
+  const sights = await getRandomSights(10);
   const userID = req.query.userID;
-  res.send(await algorithm(userID, sights))
-  
-})
+  res.send(await algorithm(userID, sights));
+});
 
 app.get("/random", async (req, res) => {
-  res.send(await getRandomSights())
-})
+  res.send(await getRandomSights());
+});
 
 app.listen(port, () => {
   console.log(`Express server is listening on port: ${port}`);
