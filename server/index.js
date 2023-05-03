@@ -34,8 +34,14 @@ app.use((req, res, next) => {
       message: "No token provided!",
     });
   }
-  const decoded = jsonwebtoken.verify(token, process.env.SECRET_KEY);
-  req.userId = decoded.id;
+  let decoded;
+  try {
+    decoded = jsonwebtoken.verify(token, process.env.SECRET_KEY);
+  } catch (error) {
+    return res.status(403).send({
+      message: "Token not valid!",
+    });
+  }
   next();
 });
 
@@ -93,6 +99,10 @@ app.post("/signin", async (req, res) => {
   res.send({ data });
 });
 
+app.get("/validatetoken", async (req, res) => {
+  return res.send({ message: "Token valid" });
+});
+
 app.get("/charlie", (req, res) => {
   res.send(
     '<img src="https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg" style="width:100%"/>'
@@ -126,7 +136,6 @@ app.get("/helloworld", (req, res) => {
 
 app.get("/getitem", async (req, res) => {
   const amount = parseInt(req.query.amount) || 1;
-  console.log("hiiiiiiiiiiii");
   res.send(await getItems(amount, null));
 });
 

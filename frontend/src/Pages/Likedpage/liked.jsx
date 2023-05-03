@@ -14,7 +14,7 @@ import FullCard from "../../Components/FullCard/FullCard.jsx";
 import Address from "../../address";
 
 
-const Liked = () => {
+const Liked = ({setIsLoggedin}) => {
 
     var [list, setList] = useState([])
     var [remove, setRemove] = useState([])
@@ -63,8 +63,15 @@ const Liked = () => {
         let ignore = false
 
         const getData = async () => {
-            let data = await fetch(`http://${Address}:4000/likes?page=${contentPage}&sort=${sortNew?"new":"old"}`)
-                .then(res => {
+            let data = await fetch(`http://${Address}:4000/likes?page=${contentPage}&sort=${sortNew?"new":"old"}&userId=${localStorage.getItem('user_id')}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": localStorage.getItem('token')
+      }}).then(res => {
+                if(res.status == 403){
+                    setIsLoggedin(false)
+                }
                     let json = res.json();
                     return json
                 })
@@ -125,13 +132,17 @@ const Liked = () => {
             map.delete(id)
         }
 
-        fetch(`http://${Address}:4000/likes`, {
+        const response = fetch(`http://${Address}:4000/likes`, {
             method: "DELETE",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                "x-access-token": localStorage.getItem('token')
             },
             body: JSON.stringify(remove)
         })
+        if(response.status == 403){
+            setIsLoggedin(false)
+        }
 
         setList(list);
         setRemove([]);
@@ -184,7 +195,7 @@ const Liked = () => {
                 infoCard.show === true ?
                 /* full info card */
                 <div className=" w-full h-full bg-opacity-0 ">
-                    <FullCard infoState={[infoCard, setInfoCard]} />
+                    <FullCard infoState={[infoCard, setInfoCard]} setIsLoggedin={setIsLoggedin} />
                 </div> : ""
             }
 

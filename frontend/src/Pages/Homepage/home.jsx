@@ -10,8 +10,6 @@ import Walleticon from "../../Components/icons/WalletIcon"
 import LocationIcon from "../../Components/icons/LocationIcon"
 import Clockicon from "../../Components/icons/ClockIcon"
 
-const userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a' //charlie
-
 const getOpenHoursToday = (openHours) => {
   const day = new Date().getDay()
   if(openHours) {
@@ -37,7 +35,7 @@ const getOpenHoursToday = (openHours) => {
   return '-'
 }
 
-const Home = () => {
+const Home = ({setIsLoggedin}) => {
   const [itemData, setItemData] = useState({
     name: "",
     shortInfo: "",
@@ -52,8 +50,16 @@ const Home = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`);
+      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": localStorage.getItem('token')
+      }})
       const data = await response.json();
+      if(response.status == 403){
+        setIsLoggedin(false)
+      }
       setSights(data)
       setItemData({
         name: data[currentSight].name,
@@ -125,7 +131,7 @@ const Home = () => {
             
           </div>
         </div>
-        <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights}/>
+        <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} setIsLoggedin={setIsLoggedin}/>
       </div>
     </div>
   );
@@ -168,7 +174,7 @@ const InfoBox = ({ name, info , shortPrice, openHoursToday, location}) => {
   );
 };
 
-const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItemData: [itemData, setItemData], sights, currentImageData:[currentImage, setCurrentImage]}) => {
+const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItemData: [itemData, setItemData], sights, currentImageData:[currentImage, setCurrentImage], setIsLoggedin: setIsLoggedin}) => {
   function updateSight() {
     if(currentSight === 23) {
       setCurrentSight(0)
@@ -193,16 +199,20 @@ const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItem
     else {
       likedSightId = sights[currentSight-1].sight_id
     }
-    await fetch(`http://${serverUrl}:4000/addlikes`, {
+    const response = await fetch(`http://${serverUrl}:4000/addlikes`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        'x-access-token': localStorage.getItem('token')
       },
       body: JSON.stringify({
-        userId: userId,
+        userId: localStorage.getItem('user_id'),
         sightId: likedSightId,
       }),
     });
+    if(response.status == 403){
+      setIsLoggedin(false)
+    }
     updateSight()
   }
 

@@ -98,7 +98,7 @@ export const getLikes = async (userId, page, filter, sort) => {
     .from("liked_sights")
     .select("user_id, liked_at, sights (sight_id, name)")
     .order("liked_at", { ascending: sort === "old" })
-    .eq("user_id", "cfb5b9bd-ece8-470e-89c0-8ac52122652a")
+    .eq("user_id", userId)
     .range(page * 10, page * 10 + 9);
 
   if (error) return error;
