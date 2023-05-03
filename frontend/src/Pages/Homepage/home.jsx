@@ -39,6 +39,7 @@ const getOpenHoursToday = (openHours) => {
 
 const Home = () => {
   const [itemData, setItemData] = useState({
+    sightId: "",
     name: "",
     shortInfo: "",
     images: [],
@@ -66,6 +67,7 @@ const Home = () => {
       const data = await response.json();
       setSights(data)
       setItemData({
+        sightId: data[currentSight].sight_id,
         name: data[currentSight].name,
         shortInfo: data[currentSight].short_info,
         images: data[currentSight].images,
@@ -105,6 +107,7 @@ const Home = () => {
       location: sights[currentSight + 1].location
     });
     setItemData({
+      sightId: sights[currentSight].sight_id,
       name: sights[currentSight].name,
       shortInfo: sights[currentSight].short_info,
       images: sights[currentSight].images,
