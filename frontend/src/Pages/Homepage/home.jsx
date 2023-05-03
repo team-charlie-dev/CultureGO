@@ -62,7 +62,7 @@ const Home = () => {
   const [upperCardTop, setUpperCardTop] = useState("0px")
   const [upperCardLeft, setUpperCardLeft] = useState("0x")
   const [upperCardTransform, setUpperCardTransform] = useState("none")
-  
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -137,183 +137,180 @@ const Home = () => {
         sightId: likedSightId,
       }),
     });
-    if(!swipe)
+    if (!swipe)
       updateSight()
   }
 
   async function handleDislikeClick(swipe) {
     //TODO: handle dislike
-    if(!swipe)
+    if (!swipe)
       updateSight()
   }
 
   const lift = (e) => {
-     if(e.clientX == NaN || e.clientX == null){
-       var clientX = e.touches[0].clientX;
-     }if(e.clientY == NaN || e.clientY == null){
-       var clientY = e.touches[0].clientY;
-     }
-   
-     holding = true;
-     startX = clientX;
-     startY = clientY;
-   
-     document.getElementById("disable").style.opacity = 0;
-     document.getElementById("disable2").style.opacity = 0;
-     document.getElementById("disable22").style.opacity = 0;
-     
-   }
-   
-   var holding = false;
-   var startX;
-   var startY;
-   
-   var StartPosX =0;
-   var StartPosY = 0;
-   
-   const move = (e) => {
-       
-     if(e.clientX == NaN || e.clientX == null){
-       var clientX = e.touches[0].clientX;
-     }if(e.clientY == NaN || e.clientY == null){
-       var clientY = e.touches[0].clientY;
-     }
-     var procent = (-startX + clientX ) / window.innerWidth;
-   
-   
-     if(holding){
-       document.getElementById("cardTest").style.left = -startX + clientX + "px";
-       document.getElementById("cardTest").style.top = 0  ;
-       document.getElementById("cardTest").style.transform = "rotate(" + 0*(procent) + "deg)";
-     }
-   }
-   
-   const getDistance = (x1, y1, x2, y2) => {
-     let y = x2 - x1;
-     let x = y2 - y1;
-     
-     return Math.sqrt(x * x + y * y);
-   }
+    if (e.clientX == NaN || e.clientX == null) {
+      var clientX = e.touches[0].clientX;
+    } if (e.clientY == NaN || e.clientY == null) {
+      var clientY = e.touches[0].clientY;
+    }
 
-   var i = 0;
-   
-   const release = (e) => {
-     if(e.clientX == NaN || e.clientX == null){
-       var clientX = e.changedTouches[0].clientX;
-     }if(e.clientY == NaN || e.clientY == null){
-       var clientY = e.changedTouches[0].clientY;
-     }
-   
-     holding = false;
-     StartPosX =  -startX + clientX;
-     StartPosY = -startY + clientY;
-   
-     var middlePosX = StartPosX + window.innerWidth / 2;
-     var middlePosY = StartPosY + window.innerHeight / 2;
-     var r = 150;
-   
-   
-     setTimeout(() => {}, 5000)
-     if(getDistance(middlePosX,middlePosY, window.innerWidth/2, window.innerHeight/2 ) > r){
-     
-       moveAway(StartPosX, StartPosY);
-     }else{
-       moveHome(StartPosX, StartPosY);
-     }
-   
-   
-   
-   }
-   
-   const moveHome = (xs, ys) => {
+    holding = true;
+    startX = clientX;
+    startY = clientY;
+
+    document.getElementById("disable").style.opacity = 0;
+    document.getElementById("disable2").style.opacity = 0;
+    document.getElementById("disable22").style.opacity = 0;
+
+  }
+
+  var holding = false;
+  var startX;
+  var startY;
+
+  var StartPosX = 0;
+  var StartPosY = 0;
+
+  const move = (e) => {
+
+    if (e.clientX == NaN || e.clientX == null) {
+      var clientX = e.touches[0].clientX;
+    } if (e.clientY == NaN || e.clientY == null) {
+      var clientY = e.touches[0].clientY;
+    }
+    var procent = (-startX + clientX) / window.innerWidth;
+
+
+    if (holding) {
+      document.getElementById("cardTest").style.left = -startX + clientX + "px";
+      document.getElementById("cardTest").style.top = 0;
+      document.getElementById("cardTest").style.transform = "rotate(" + 25 * (procent) + "deg)";
+    }
+  }
+
+  const getDistance = (x1, y1, x2, y2) => {
+    let y = x2 - x1;
+    let x = y2 - y1;
+
+    return Math.sqrt(x * x + y * y);
+  }
+
+  var i = 0;
+
+  const release = (e) => {
+    if (e.clientX == NaN || e.clientX == null) {
+      var clientX = e.changedTouches[0].clientX;
+    } if (e.clientY == NaN || e.clientY == null) {
+      var clientY = e.changedTouches[0].clientY;
+    }
+
+    holding = false;
+    StartPosX = -startX + clientX;
+    StartPosY = -startY + clientY;
+
+    var middlePosX = StartPosX + window.innerWidth / 2;
+    var middlePosY = StartPosY + window.innerHeight / 2;
+    var r = 150;
+
+
+    if (getDistance(middlePosX, middlePosY, window.innerWidth / 2, window.innerHeight / 2) > r) {
+      moveAway(StartPosX, 0);
+    } else {
+      moveHome(StartPosX, 0);
+    }
+
+
+
+  }
+
+  const moveHome = (xs, ys) => {
     console.log("move home")
-     
-   
-   
-    var nrofFrames = 10;  
-   
+
+
+
+    var nrofFrames = 10;
+
     var xPos = xs;
     var yPos = ys;
-   
+
     var movespeedX = xPos / nrofFrames;
     var movespeedY = yPos / nrofFrames;
-   
-    var myInterval = setInterval(function() {
-   
-   
-      if(xPos <= 0){
-        document.getElementById("cardTest").style.left = 0;
-     }else{
-       xPos = (xPos - movespeedX);
-       document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
-     }
-   
-   
-     if(yPos <= 0){
-       document.getElementById("cardTest").style.top = 0;
-     }else{
-       yPos = (yPos - movespeedY);
-       document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
-     }
-   
-     if(parseInt(yPos) <= 0 && parseInt(xPos) <= 0){
-       document.getElementById("cardTest").style.top = 0;
-       document.getElementById("cardTest").style.left = 0;
-       document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
-       clearInterval(myInterval);
-     }
-   }, 5);
-   
-   }
-   
-   const moveAway= (xs, ys) => {
-      console.log("moveAway")
-       var nrofFrames = 10;  
-    
-       var xPos = xs;
-       var yPos = ys;
-    
-   
-   
-       var movespeedX = 0.4*xPos / nrofFrames;
-       var movespeedY = 0.4*yPos / nrofFrames;
-    
-       var myInterval = setInterval(function() {
-    
-    
-          xPos = (xPos + movespeedX);
-          document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
-   
-          yPos = (yPos + movespeedY);
-          document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
-        
-    
-        if(yPos <= -window.innerHeight || yPos >= window.innerHeight){
-         document.getElementById("cardTest").style.top = 0;
-         document.getElementById("cardTest").style.left = 0;
-         
-        document.getElementById("cardTest").style.transform = "rotate(0 deg)";
-        isOut(movespeedX);
-         clearInterval(myInterval);
-        }
-        if(xPos <= -window.innerWidth || xPos >= window.innerWidth){
-          
-    
-         document.getElementById("cardTest").style.top = 0;
-         document.getElementById("cardTest").style.left = 0;
-         
-     document.getElementById("cardTest").style.transform = "rotate(" + 0 + "deg)";
-     isOut(movespeedX);
 
-         clearInterval(myInterval);
-        }
-   
-      }, 5);
-    }
+    var myInterval = setInterval(function () {
+
+
+      if (xPos <= 0) {
+        document.getElementById("cardTest").style.left = 0;
+      } else {
+        xPos = (xPos - movespeedX);
+        document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
+      }
+
+
+      if (yPos <= 0) {
+        document.getElementById("cardTest").style.top = 0;
+      } else {
+        yPos = (yPos - movespeedY);
+        document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
+      }
+
+      if (parseInt(yPos) <= 0 && parseInt(xPos) <= 0) {
+        document.getElementById("cardTest").style.top = 0;
+        document.getElementById("cardTest").style.left = 0;
+        document.getElementById("cardTest").style.transform = "rotate(" + 0 * (0) + "deg)";
+        clearInterval(myInterval);
+      }
+    }, 5);
+
+  }
+
+  const moveAway = (xs, ys) => {
+    console.log("moveAway")
+    var nrofFrames = 10;
+
+    var xPos = xs;
+    var yPos = ys;
+
+
+
+    var movespeedX = 0.4 * xPos / nrofFrames;
+    var movespeedY = 0.4 * yPos / nrofFrames;
+
+    var myInterval = setInterval(function () {
+
+
+      xPos = (xPos + movespeedX);
+      document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
+
+      yPos = (yPos + movespeedY);
+      document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
+
+
+      if (yPos <= -window.innerHeight || yPos >= window.innerHeight) {
+        document.getElementById("cardTest").style.top = 0;
+        document.getElementById("cardTest").style.left = 0;
+
+
+        document.getElementById("cardTest").style.transform = "rotate(0deg)";
+        isOut(movespeedX);
+        clearInterval(myInterval);
+      }
+      if (xPos <= -window.innerWidth || xPos >= window.innerWidth) {
+        document.getElementById("cardTest").style.top = 0;
+        document.getElementById("cardTest").style.left = 0;
+
+
+        document.getElementById("cardTest").style.transform = "rotate(" + 0 + "deg)";
+        isOut(movespeedX);
+        clearInterval(myInterval);
+      }
+
+    }, 5);
+  }
 
   const isOut = (movespeedX) => {
 
-    if(movespeedX > 0) {
+    if (movespeedX > 0) {
       handleLikeClick(true)
     } else {
       handleDislikeClick(true)
@@ -323,33 +320,33 @@ const Home = () => {
 
   return (
     <>
-    <div id="cardTest"  className={`rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))] top-[` + `${upperCardTop}` + `] left-[` + `${upperCardLeft}` + `] transform-[` + `${upperCardTransform}` + `]`}>
-      <Header />
-      <div id="disable" className="flex justify-end px-7">
-        <CitySelector />
+      <div id="cardTest" className={`rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))] top-[` + `${upperCardTop}` + `] left-[` + `${upperCardLeft}` + `] transform-[` + `${upperCardTransform}` + `]`}>
+        <Header />
+        <div id="disable" className="flex justify-end px-7">
+          <CitySelector />
+        </div>
+        <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
+          <Card currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={itemData} />
+          <Buttons currentSight={currentSight} sights={sights} updateSight={updateSight} handleLikeClick={handleLikeClick} handleDislikeClick={handleDislikeClick} />
+        </div>
       </div>
-      <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
-        <Card currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={itemData} />
-        <Buttons currentSight={currentSight} sights={sights} updateSight={updateSight} handleLikeClick={handleLikeClick} handleDislikeClick={handleDislikeClick}/>
-      </div>
-    </div>
 
-    <div className="bg-white z-10 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
-    <Header />
-    <div className="flex justify-end px-7">
-      <CitySelector />
-    </div>
-    <div id="testtestss"className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-      <Card currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={nextItemData} />
-      <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} nextItemData={[nextItemData, setNextItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} />
-    </div>
-    </div></>
+      <div className="bg-white z-10 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
+        <Header />
+        <div className="flex justify-end px-7">
+          <CitySelector />
+        </div>
+        <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
+          <Card currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={nextItemData} />
+          <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} nextItemData={[nextItemData, setNextItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} />
+        </div>
+      </div></>
   );
 };
 
-const Buttons = ({handleLikeClick, handleDislikeClick}) => {
+const Buttons = ({ handleLikeClick, handleDislikeClick }) => {
   return (
-    <div  id="disable22"  className="h-[15%] flex-col justify-center flex p-5">
+    <div id="disable22" className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
         <div onClick={() => handleDislikeClick(false)}>
           <img src={Dislike}></img>
