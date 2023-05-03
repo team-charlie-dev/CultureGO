@@ -141,7 +141,6 @@ const Home = () => {
   }
 
   const lift = (e) => {
-    // document.getElementById("cardTestBakom").style.backgroundColor = lastColor;
      if(e.clientX == NaN || e.clientX == null){
        var clientX = e.touches[0].clientX;
      }if(e.clientY == NaN || e.clientY == null){
@@ -178,13 +177,9 @@ const Home = () => {
    
      if(holding){
        document.getElementById("cardTest").style.left = -startX + clientX + "px";
-       document.getElementById("cardTest").style.top = -startY  + clientY + "px";
+       document.getElementById("cardTest").style.top = 0  + 0 + "px";
    
        document.getElementById("cardTest").style.transform = "rotate(" + 25*(procent) + "deg)";
-       
-   
-     
-     //  console.log(document.getElementById("cardTest").style.top);
      }
    }
    
@@ -194,14 +189,10 @@ const Home = () => {
      
      return Math.sqrt(x * x + y * y);
    }
+
    var i = 0;
    
-   
-   //var cards = [createNewCard(), createNewCard(), createNewCard()];
    const release = (e) => {
-     
-     
-   
      if(e.clientX == NaN || e.clientX == null){
        var clientX = e.changedTouches[0].clientX;
      }if(e.clientY == NaN || e.clientY == null){
