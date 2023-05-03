@@ -11,6 +11,7 @@ import {
   getUser,
   addLikes,
   supabase,
+  removeLikes,
 } from "./dbfuncs.js";
 
 app.use(cors());
@@ -55,17 +56,14 @@ app.get("/getitem", async (req, res) => {
 });
 
 app.post("/tags", async (req, res) => {
-  console.log(req.body);
   res.status(200).send();
 });
 
 app.get("/likes", async (req, res) => {
-  let userId = req.query.userId;
+  let userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a';
   let page = req.query.page || 0;
   let filter = req.query.filter || "none";
   let sort = req.query.sort || "new";
-
-  console.log("yes");
 
   res.send(await getLikes(userId, page, filter, sort));
 });
@@ -78,7 +76,9 @@ app.post("/addlikes", async (req, res) => {
 });
 
 app.delete("/likes", (req, res) => {
-  console.log(req.body);
+  let userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a'
+
+  removeLikes(userId, req.body)
 
   res.status(204).send();
 });
