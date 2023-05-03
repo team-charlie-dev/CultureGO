@@ -32,7 +32,6 @@ export const getOpenHours = async (sightId) => {
 
 export const getLocation = async (addressId) => {
   const {data, error} = await supabase.from('addresses').select('location').eq('address_id', addressId)
-  // console.log(data[0].location)
   return data[0].location
 }
 
@@ -42,14 +41,10 @@ export const getLikes = async (userId, page, filter, sort) => {
     .from('liked_sights')
     .select('user_id, liked_at, sights (sight_id, name)')
     .order('liked_at', { ascending: sort === "old" })
-    .eq('user_id', 'cfb5b9bd-ece8-470e-89c0-8ac52122652a')
+    .eq('user_id', userId)
     .range(page * 10, page * 10 + 9)
     
   if (error) return error
-
-  console.log("working")
-
-  console.log(data)
 
   return data
 }
@@ -78,4 +73,8 @@ export const addLikes = async (userId, sightId) => {
 
   return {sightId}
 
+}
+
+export const removeLikes = async (userId, sightIds) => {
+  await supabase.from('liked_sights').delete().eq('user_id', userId).in('sight_id', sightIds)
 }
