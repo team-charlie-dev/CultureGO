@@ -13,8 +13,9 @@ import {
   supabase,
   getSubTags,
   getTagValue,
-  algorithm,
+  getRandomSights
 } from "./dbfuncs.js";
+import { algorithm } from "./algorithm.js";
 
 app.use(cors());
 
@@ -113,11 +114,14 @@ app.get("/tagvalue", async (req, res) => {
 })
 
 app.get("/algorithm", async (req, res) => {
-  const sights = await getItems(10, null)
+  const sights = await getRandomSights(10)
   const userID = req.query.userID;
-  console.log(sights)
   res.send(await algorithm(userID, sights))
   
+})
+
+app.get("/random", async (req, res) => {
+  res.send(await getRandomSights())
 })
 
 app.listen(port, () => {
