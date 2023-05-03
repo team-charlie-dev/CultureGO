@@ -13,7 +13,7 @@ const Image = ({ imgUrl, mode}) => {
     );
 };
 
-const InfoBox = ({ name, info, shortPrice, openHoursToday, location }) => {
+const InfoBox = ({ name, info, shortPrice, openHoursToday, location, arrowClickHandler }) => {
     return (
         <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
             <h1 className="italic text-2xl px-5 font-bold text-sh" style={{ textShadow: '1px 1px 5px rgba(0,0,0, 0.7)' }}>{name}</h1>
@@ -34,13 +34,15 @@ const InfoBox = ({ name, info, shortPrice, openHoursToday, location }) => {
                     </div>
 
                 </div>
-                <Arrow />
+                <div onClick={arrowClickHandler}>
+                    <Arrow />
+                </div>
             </div>
         </div>
     );
 };
 
-export default function Card({currentImage, setCurrentImage, itemData, mode}) {
+export default function Card({currentImage, setCurrentImage, itemData, mode, arrowClickHandler}) {
     const handleImageChange = (side) => {
         if (side === "left") {
             if (currentImage === 0) {
@@ -74,7 +76,7 @@ export default function Card({currentImage, setCurrentImage, itemData, mode}) {
             ></div>
             <Image mode = {mode} imgUrl={itemData.images[currentImage]} />
             <div className="absolute bottom-0 left-0 right-0 px-3">
-                <InfoBox name={itemData.name} info={itemData.shortInfo} shortPrice={itemData.shortPrice} openHoursToday={itemData.openHoursToday} location={itemData.location} />
+                <InfoBox name={itemData.name} info={itemData.shortInfo} shortPrice={itemData.shortPrice} openHoursToday={itemData.openHoursToday} location={itemData.location} arrowClickHandler={arrowClickHandler}/>
             </div>
             <div className="absolute left-1/2 -translate-x-1/2 bottom-3 flex gap-x-5">
                 {itemData.images.map((image, index) => {

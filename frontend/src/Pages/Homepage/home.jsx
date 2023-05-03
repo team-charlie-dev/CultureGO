@@ -6,6 +6,7 @@ import CityButton from "../../Components/buttons/button";
 import City from "../../Components/icons/City";
 import serverUrl from '../../address'
 
+import FullCard from "../../Components/FullCard/FullCard";
 
 import Card from "./Card";
 
@@ -314,6 +315,28 @@ const Home = () => {
     }
     updateSight()
   }
+  
+  const [infoCard, setInfoCard] = useState(
+    {
+        show: false, 
+        id: '5949257c-2cfa-4380-a609-6075a503e5fa',
+        name: 'Kiungsträdgården',
+        nmbrOfPics: 1
+    }
+  );
+
+  const cardClickHandler = () => {
+    // console.log("FUCK YEHAHHH", infoCard.show)
+    // console.log(sights)
+    // console.log(currentSight)
+    console.log(sights[currentSight])
+    setInfoCard({
+      show: !infoCard.show,
+      id: sights[(currentSight + sights.length - 1) % sights.length].sight_id,
+      name: itemData.name,
+      nmbrOfPics: 1
+    })
+  }
 
   return (
     <>
@@ -323,7 +346,7 @@ const Home = () => {
           <CitySelector />
         </div>
         <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={itemData} />
+          <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={itemData} arrowClickHandler={cardClickHandler}/>
           <Buttons currentSight={currentSight} sights={sights} updateSight={updateSight} handleLikeClick={handleLikeClick} handleDislikeClick={handleDislikeClick} />
         </div>
       </div>
@@ -334,10 +357,20 @@ const Home = () => {
           <CitySelector />
         </div>
         <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"lowerCard"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={nextItemData} />
+          <Card mode={"lowerCard"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={nextItemData} arrowClickHandler={cardClickHandler}/>
           <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} nextItemData={[nextItemData, setNextItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} />
         </div>
-      </div></>
+      </div>
+      
+      { infoCard.show ?
+      <div className="absolute h-full w-full pt-20 z-50">
+        {infoCard.show ?  <FullCard infoState={[infoCard, setInfoCard]}/> : <></>}
+      </div>
+      :
+      <></>
+
+      }
+      </>
   );
 };
 
