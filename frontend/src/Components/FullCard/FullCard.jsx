@@ -73,7 +73,7 @@ const InfoBox = ( {data} ) => {
     );
 };
 
-export default function FullCard({infoState}) {
+export default function FullCard({infoState, setIsLoggedin}) {
 
     const [infoCard, setInfoCard] = infoState;
     const [moreInfo, setMoreInfo] = useState ({
@@ -91,8 +91,16 @@ export default function FullCard({infoState}) {
             // if true, get TimeInfo and PriceInfo as well
         
             // call getInfo
-            let data = await fetch (`http://localhost:4000/info?sightId=${sigtId}&onlyLong=true`)
+            let data = await fetch (`http://localhost:4000/info?sightId=${sigtId}&onlyLong=true`, {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  "x-access-token": localStorage.getItem('token')
+                }})
             .then(res => {
+                if(res.status == 403){
+                    setIsLoggedin(false)
+                }
                 let json = res.json ();
                 return json
             })
