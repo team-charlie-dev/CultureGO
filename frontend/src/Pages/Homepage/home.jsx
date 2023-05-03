@@ -61,7 +61,7 @@ const Home = () => {
         images: data[currentSight].images,
         shortPrice: data[currentSight].short_price,
         openHoursToday: getOpenHoursToday(data[currentSight].open_hours),
-        location: data[currentSight].location
+        location: data[currentSight].location,
       });
     };
     fetchData();
