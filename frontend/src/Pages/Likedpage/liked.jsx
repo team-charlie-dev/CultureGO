@@ -153,7 +153,7 @@ const Liked = ({setIsLoggedin}) => {
             map.delete(id)
         }
 
-        const response = fetch(`http://${Address}:4000/likes`, {
+        const response = fetch(`http://${Address}:4000/likes?userId=${localStorage.getItem('user_id')}`, {
             method: "DELETE",
             headers: {
                 "Content-Type" : "application/json",

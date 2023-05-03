@@ -1,2 +1,2 @@
-const serverURL = process.env.REACT_APP_SERVER_URL || 'localhost'
-export default serverURL
+const serverURL = "130.229.152.229";
+export default serverURL;
