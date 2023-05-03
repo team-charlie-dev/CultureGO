@@ -5,10 +5,10 @@ import LocationIcon from "../../Components/icons/LocationIcon"
 import Clockicon from "../../Components/icons/ClockIcon"
 import Arrow from "../../Components/icons/Arrow";
 
-const Image = ({ imgUrl }) => {
+const Image = ({ imgUrl, mode}) => {
     return (
         <div className="h-full">
-            <img alt={imgUrl} src={imgUrl} className="rounded-b-[30px] object-cover h-full"></img>
+            <img id={mode} alt={imgUrl} src={imgUrl} className="rounded-b-[30px] object-cover h-full"></img>
         </div>
     );
 };
@@ -40,7 +40,7 @@ const InfoBox = ({ name, info, shortPrice, openHoursToday, location }) => {
     );
 };
 
-export default function Card({ currentImage, setCurrentImage, itemData }) {
+export default function Card({currentImage, setCurrentImage, itemData, mode}) {
     const handleImageChange = (side) => {
         if (side === "left") {
             if (currentImage === 0) {
@@ -72,7 +72,7 @@ export default function Card({ currentImage, setCurrentImage, itemData }) {
                     height: "10%",
                 }}
             ></div>
-            <Image imgUrl={itemData.images[currentImage]} />
+            <Image mode = {mode} imgUrl={itemData.images[currentImage]} />
             <div className="absolute bottom-0 left-0 right-0 px-3">
                 <InfoBox name={itemData.name} info={itemData.shortInfo} shortPrice={itemData.shortPrice} openHoursToday={itemData.openHoursToday} location={itemData.location} />
             </div>

@@ -59,11 +59,6 @@ const Home = () => {
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
 
-  const [upperCardTop, setUpperCardTop] = useState("0px")
-  const [upperCardLeft, setUpperCardLeft] = useState("0x")
-  const [upperCardTransform, setUpperCardTransform] = useState("none")
-
-
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`);
@@ -158,9 +153,9 @@ const Home = () => {
     startX = clientX;
     startY = clientY;
 
-    document.getElementById("disable").style.opacity = 0;
+    document.getElementById("disable1").style.opacity = 0;
     document.getElementById("disable2").style.opacity = 0;
-    document.getElementById("disable22").style.opacity = 0;
+    document.getElementById("disable3").style.opacity = 0;
 
   }
 
@@ -182,9 +177,9 @@ const Home = () => {
 
 
     if (holding) {
-      document.getElementById("cardTest").style.left = -startX + clientX + "px";
-      document.getElementById("cardTest").style.top = 0;
-      document.getElementById("cardTest").style.transform = "rotate(" + 25 * (procent) + "deg)";
+      document.getElementById("upperCard").style.left = -startX + clientX + "px";
+      document.getElementById("upperCard").style.top = 0;
+      document.getElementById("upperCard").style.transform = "rotate(" + 25 * (procent) + "deg)";
     }
   }
 
@@ -240,24 +235,24 @@ const Home = () => {
 
 
       if (xPos <= 0) {
-        document.getElementById("cardTest").style.left = 0;
+        document.getElementById("upperCard").style.left = 0;
       } else {
         xPos = (xPos - movespeedX);
-        document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
+        document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
       }
 
 
       if (yPos <= 0) {
-        document.getElementById("cardTest").style.top = 0;
+        document.getElementById("upperCard").style.top = 0;
       } else {
         yPos = (yPos - movespeedY);
-        document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
+        document.getElementById("upperCard").style.top = parseInt(yPos) + "px";
       }
 
       if (parseInt(yPos) <= 0 && parseInt(xPos) <= 0) {
-        document.getElementById("cardTest").style.top = 0;
-        document.getElementById("cardTest").style.left = 0;
-        document.getElementById("cardTest").style.transform = "rotate(" + 0 * (0) + "deg)";
+        document.getElementById("upperCard").style.top = 0;
+        document.getElementById("upperCard").style.left = 0;
+        document.getElementById("upperCard").style.transform = "rotate(" + 0 * (0) + "deg)";
         clearInterval(myInterval);
       }
     }, 5);
@@ -280,27 +275,29 @@ const Home = () => {
 
 
       xPos = (xPos + movespeedX);
-      document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
+      document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
 
       yPos = (yPos + movespeedY);
-      document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
+      document.getElementById("upperCard").style.top = parseInt(yPos) + "px";
 
 
       if (yPos <= -window.innerHeight || yPos >= window.innerHeight) {
-        document.getElementById("cardTest").style.top = 0;
-        document.getElementById("cardTest").style.left = 0;
+        document.getElementById("upperCard").src = document.getElementById("lowerCard").src
+        document.getElementById("upperCard").style.top = 0;
+        document.getElementById("upperCard").style.left = 0;
 
 
-        document.getElementById("cardTest").style.transform = "rotate(0deg)";
+        document.getElementById("upperCard").style.transform = "rotate(0deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
       }
       if (xPos <= -window.innerWidth || xPos >= window.innerWidth) {
-        document.getElementById("cardTest").style.top = 0;
-        document.getElementById("cardTest").style.left = 0;
+        document.getElementById("upperCard").src = document.getElementById("lowerCard").src
+        document.getElementById("upperCard").style.top = 0;
+        document.getElementById("upperCard").style.left = 0;
 
 
-        document.getElementById("cardTest").style.transform = "rotate(" + 0 + "deg)";
+        document.getElementById("upperCard").style.transform = "rotate(" + 0 + "deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
       }
@@ -320,13 +317,13 @@ const Home = () => {
 
   return (
     <>
-      <div id="cardTest" className={`rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))] top-[` + `${upperCardTop}` + `] left-[` + `${upperCardLeft}` + `] transform-[` + `${upperCardTransform}` + `]`}>
+      <div id="upperCard" className={`rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]`}>
         <Header />
-        <div id="disable" className="flex justify-end px-7">
+        <div id="disable1" className="flex justify-end px-7">
           <CitySelector />
         </div>
         <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={itemData} />
+          <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={itemData} />
           <Buttons currentSight={currentSight} sights={sights} updateSight={updateSight} handleLikeClick={handleLikeClick} handleDislikeClick={handleDislikeClick} />
         </div>
       </div>
@@ -337,7 +334,7 @@ const Home = () => {
           <CitySelector />
         </div>
         <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={nextItemData} />
+          <Card mode={"lowerCard"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={nextItemData} />
           <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} nextItemData={[nextItemData, setNextItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} />
         </div>
       </div></>
@@ -346,7 +343,7 @@ const Home = () => {
 
 const Buttons = ({ handleLikeClick, handleDislikeClick }) => {
   return (
-    <div id="disable22" className="h-[15%] flex-col justify-center flex p-5">
+    <div id="disable2" className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
         <div onClick={() => handleDislikeClick(false)}>
           <img src={Dislike}></img>
@@ -361,7 +358,7 @@ const Buttons = ({ handleLikeClick, handleDislikeClick }) => {
 
 const Header = () => {
   return (
-    <header id="disable2" className="p-3 pt-5 h-[10%]">
+    <header id="disable3" className="p-3 pt-5 h-[10%]">
       <img src={Logo}></img>
     </header>
   );
