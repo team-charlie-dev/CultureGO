@@ -59,9 +59,9 @@ const Home = () => {
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
 
-  const [upperCardTop, setUpperCardTop] = useState(0)
-  const [upperCardLeft, setUpperCardLeft] = useState(0)
-  const [upperCardTransform, setUpperCardTransform] = useState(0)
+  const [upperCardTop, setUpperCardTop] = useState("0px")
+  const [upperCardLeft, setUpperCardLeft] = useState("0x")
+  const [upperCardTransform, setUpperCardTransform] = useState("none")
   
 
   useEffect(() => {
@@ -291,7 +291,7 @@ const Home = () => {
          setUpperCardLeft(0);
          
    
-        setUpperCardTransform( "rotate(" + 0*(0) + "deg)");
+        setUpperCardTransform( "rotate(0 deg)");
         isOut(movespeedX);
          clearInterval(myInterval);
         }
@@ -323,7 +323,7 @@ const Home = () => {
 
   return (
     <>
-    <div id="cardTest"  className=" rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
+    <div id="cardTest"  className={`rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))] top-[` + `${upperCardTop}` + `] left-[` + `${upperCardLeft}` + `] transform-[` + `${upperCardTransform}` + `]`}>
       <Header />
       <div id="disable" className="flex justify-end px-7">
         <CitySelector />
