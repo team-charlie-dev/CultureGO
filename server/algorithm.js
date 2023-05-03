@@ -1,5 +1,6 @@
 import { getTagValue } from "./dbfuncs.js"
 
+//Hashtable, used for retrieving values for tags
 class HashTable {
     constructor() {
         this.table = new Array(127)
@@ -44,6 +45,7 @@ class HashTable {
     }
 }
 
+//Algorithm, finds three highest scores
 export const algorithm = async(userId, sights) => {
 
     const ht = new HashTable()

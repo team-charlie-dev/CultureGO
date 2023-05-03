@@ -106,7 +106,7 @@ app.get("/subtag", async (req, res) => {
   res.send(await getSubTags(sightId));
 });
 
-app.get("/tagvalue", async (req, res) => {
+app.get("/tagvalues", async (req, res) => {
   //const userID = req.query.userID;
   const tagId = req.query.tagId
 
