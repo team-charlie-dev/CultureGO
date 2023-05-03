@@ -238,25 +238,25 @@ const Home = () => {
    
    
       if(xPos <= 0){
-       document.getElementById("cardTest").style.left = (0) + "px";
+       setUpperCardLeft(0);
        
      }else{
        xPos = (xPos - movespeedX);
-       document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
+       setUpperCardLeft(parseInt(xPos) + "px");
      }
    
    
      if(yPos <= 0){
-       document.getElementById("cardTest").style.top = (0) + "px";
+       setUpperCardTop(0);
      }else{
        yPos = (yPos - movespeedY);
-       document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
+       setUpperCardTop( parseInt(yPos) + "px")
      }
    
      if(parseInt(yPos) <= 0 && parseInt(xPos) <= 0){
-       document.getElementById("cardTest").style.top = (0) + "px";
-       document.getElementById("cardTest").style.left = (0) + "px";
-       document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
+       setUpperCardTop(0);
+       setUpperCardLeft(0);
+       setUpperCardTransform("rotate(" + 0*(0) + "deg)");
        clearInterval(myInterval);
      }
    }, 5);
@@ -280,28 +280,28 @@ const Home = () => {
     
     
           xPos = (xPos + movespeedX);
-          document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
+          setUpperCardLeft(parseInt(xPos) + "px");
    
           yPos = (yPos + movespeedY);
-          document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
+          setUpperCardTop(parseInt(yPos) + "px");
         
     
         if(yPos <= -window.innerHeight || yPos >= window.innerHeight){
-         document.getElementById("cardTest").style.top = (0) + "px";
-         document.getElementById("cardTest").style.left = (0) + "px";
+         setUpperCardTop(0);
+         setUpperCardLeft(0);
          
    
-        document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
+        setUpperCardTransform( "rotate(" + 0*(0) + "deg)");
         isOut(movespeedX);
          clearInterval(myInterval);
         }
         if(xPos <= -window.innerWidth || xPos >= window.innerWidth){
           
-         document.getElementById("cardTest").style.top = (0) + "px";
-         document.getElementById("cardTest").style.left = (0) + "px";
+    
+         setUpperCardTop(0);
+         setUpperCardLeft(0);
          
-   
-     document.getElementById("cardTest").style.transform = "rotate(" + 0 + "deg)";
+     setUpperCardTransform("rotate(" + 0 + "deg)");
      isOut(movespeedX);
 
          clearInterval(myInterval);
