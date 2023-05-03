@@ -100,14 +100,6 @@ const Home = () => {
     } else {
       setCurrentSight(currentSight + 1)
     }
-    setItemData({
-      name: sights[currentSight].name,
-      shortInfo: sights[currentSight].short_info,
-      images: sights[currentSight].images,
-      shortPrice: sights[currentSight].short_price,
-      openHoursToday: getOpenHoursToday(sights[currentSight].open_hours),
-      location: sights[currentSight].location
-    });
     setNextItemData({
       name: sights[currentSight + 1].name,
       shortInfo: sights[currentSight + 1].short_info,
@@ -116,10 +108,18 @@ const Home = () => {
       openHoursToday: getOpenHoursToday(sights[currentSight + 1].open_hours),
       location: sights[currentSight + 1].location
     });
+    setItemData({
+      name: sights[currentSight].name,
+      shortInfo: sights[currentSight].short_info,
+      images: sights[currentSight].images,
+      shortPrice: sights[currentSight].short_price,
+      openHoursToday: getOpenHoursToday(sights[currentSight].open_hours),
+      location: sights[currentSight].location
+    });
     setCurrentImage(0)
   }
 
-  async function handleLikeClick() {
+  async function handleLikeClick(swipe) {
     let likedSightId = ''
     if (currentSight === 0) {
       likedSightId = sights[sights.length - 1].sight_id
@@ -137,12 +137,14 @@ const Home = () => {
         sightId: likedSightId,
       }),
     });
-    updateSight()
+    if(!swipe)
+      updateSight()
   }
 
-  async function handleDislikeClick() {
+  async function handleDislikeClick(swipe) {
     //TODO: handle dislike
-    updateSight()
+    if(!swipe)
+      updateSight()
   }
 
   const lift = (e) => {
@@ -180,9 +182,9 @@ const Home = () => {
    
    
      if(holding){
-       setUpperCardLeft(-startX + clientX + "px")
-       setUpperCardTop(0)
-       setUpperCardTransform("rotate(" + 25*(procent) + "deg)")
+       document.getElementById("cardTest").style.left = -startX + clientX + "px";
+       document.getElementById("cardTest").style.top = 0  ;
+       document.getElementById("cardTest").style.transform = "rotate(" + 0*(procent) + "deg)";
      }
    }
    
@@ -211,6 +213,7 @@ const Home = () => {
      var r = 150;
    
    
+     setTimeout(() => {}, 5000)
      if(getDistance(middlePosX,middlePosY, window.innerWidth/2, window.innerHeight/2 ) > r){
      
        moveAway(StartPosX, StartPosY);
@@ -223,6 +226,7 @@ const Home = () => {
    }
    
    const moveHome = (xs, ys) => {
+    console.log("move home")
      
    
    
@@ -238,25 +242,24 @@ const Home = () => {
    
    
       if(xPos <= 0){
-       setUpperCardLeft(0);
-       
+        document.getElementById("cardTest").style.left = 0;
      }else{
        xPos = (xPos - movespeedX);
-       setUpperCardLeft(parseInt(xPos) + "px");
+       document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
      }
    
    
      if(yPos <= 0){
-       setUpperCardTop(0);
+       document.getElementById("cardTest").style.top = 0;
      }else{
        yPos = (yPos - movespeedY);
-       setUpperCardTop( parseInt(yPos) + "px")
+       document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
      }
    
      if(parseInt(yPos) <= 0 && parseInt(xPos) <= 0){
-       setUpperCardTop(0);
-       setUpperCardLeft(0);
-       setUpperCardTransform("rotate(" + 0*(0) + "deg)");
+       document.getElementById("cardTest").style.top = 0;
+       document.getElementById("cardTest").style.left = 0;
+       document.getElementById("cardTest").style.transform = "rotate(" + 0*(0) + "deg)";
        clearInterval(myInterval);
      }
    }, 5);
@@ -264,8 +267,7 @@ const Home = () => {
    }
    
    const moveAway= (xs, ys) => {
-   
-   
+      console.log("moveAway")
        var nrofFrames = 10;  
     
        var xPos = xs;
@@ -280,45 +282,43 @@ const Home = () => {
     
     
           xPos = (xPos + movespeedX);
-          setUpperCardLeft(parseInt(xPos) + "px");
+          document.getElementById("cardTest").style.left = parseInt(xPos) + "px";
    
           yPos = (yPos + movespeedY);
-          setUpperCardTop(parseInt(yPos) + "px");
+          document.getElementById("cardTest").style.top = parseInt(yPos) + "px";
         
     
         if(yPos <= -window.innerHeight || yPos >= window.innerHeight){
-         setUpperCardTop(0);
-         setUpperCardLeft(0);
+         document.getElementById("cardTest").style.top = 0;
+         document.getElementById("cardTest").style.left = 0;
          
-   
-        setUpperCardTransform( "rotate(0 deg)");
+        document.getElementById("cardTest").style.transform = "rotate(0 deg)";
         isOut(movespeedX);
          clearInterval(myInterval);
         }
         if(xPos <= -window.innerWidth || xPos >= window.innerWidth){
           
     
-         setUpperCardTop(0);
-         setUpperCardLeft(0);
+         document.getElementById("cardTest").style.top = 0;
+         document.getElementById("cardTest").style.left = 0;
          
-     setUpperCardTransform("rotate(" + 0 + "deg)");
+     document.getElementById("cardTest").style.transform = "rotate(" + 0 + "deg)";
      isOut(movespeedX);
 
          clearInterval(myInterval);
         }
    
       }, 5);
-   
     }
 
   const isOut = (movespeedX) => {
 
     if(movespeedX > 0) {
-      handleLikeClick()
+      handleLikeClick(true)
     } else {
-      handleDislikeClick()
+      handleDislikeClick(true)
     }
-    updateSight();
+    updateSight()
   }
 
   return (
@@ -351,10 +351,10 @@ const Buttons = ({handleLikeClick, handleDislikeClick}) => {
   return (
     <div  id="disable22"  className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
-        <div onClick={() => handleDislikeClick()}>
+        <div onClick={() => handleDislikeClick(false)}>
           <img src={Dislike}></img>
         </div>
-        <div onClick={() => handleLikeClick()}>
+        <div onClick={() => handleLikeClick(false)}>
           <img src={Like}></img>
         </div>
       </div>
