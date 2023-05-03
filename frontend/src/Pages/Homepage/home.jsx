@@ -59,6 +59,11 @@ const Home = () => {
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
 
+  const [upperCardTop, setUpperCardTop] = useState(0)
+  const [upperCardLeft, setUpperCardLeft] = useState(0)
+  const [upperCardTransform, setUpperCardTransform] = useState(0)
+  
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`);
@@ -151,7 +156,6 @@ const Home = () => {
      startX = clientX;
      startY = clientY;
    
-     document.getElementById("cardTest").style.backgroundColor = "none";
      document.getElementById("disable").style.opacity = 0;
      document.getElementById("disable2").style.opacity = 0;
      document.getElementById("disable22").style.opacity = 0;
@@ -176,10 +180,9 @@ const Home = () => {
    
    
      if(holding){
-       document.getElementById("cardTest").style.left = -startX + clientX + "px";
-       document.getElementById("cardTest").style.top = 0  + 0 + "px";
-   
-       document.getElementById("cardTest").style.transform = "rotate(" + 25*(procent) + "deg)";
+       setUpperCardLeft(-startX + clientX + "px")
+       setUpperCardTop(0)
+       setUpperCardTransform("rotate(" + 25*(procent) + "deg)")
      }
    }
    
@@ -213,7 +216,6 @@ const Home = () => {
        moveAway(StartPosX, StartPosY);
      }else{
        moveHome(StartPosX, StartPosY);
-      
      }
    
    
@@ -317,7 +319,6 @@ const Home = () => {
       handleDislikeClick()
     }
     updateSight();
-
   }
 
   return (
