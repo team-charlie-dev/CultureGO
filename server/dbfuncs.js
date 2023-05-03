@@ -28,7 +28,7 @@ export const getItems = async (amount, user) => {
 
 export const getOpenHours = async (sightId) => {
   const {data, error} = await supabase.from('open_hours').select().eq('sight_id', sightId)
-  return data[0]
+  return data ? data[0] : []
 }
 
 export const getLocation = async (addressId) => {
