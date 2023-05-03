@@ -9,6 +9,7 @@ import serverUrl from '../../address'
 import Walleticon from "../../Components/icons/WalletIcon"
 import LocationIcon from "../../Components/icons/LocationIcon"
 import Clockicon from "../../Components/icons/ClockIcon"
+import FullCard from "../../Components/FullCard/FullCard"
 
 const userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a' //charlie
 
@@ -39,6 +40,7 @@ const getOpenHoursToday = (openHours) => {
 
 const Home = () => {
   const [itemData, setItemData] = useState({
+    sightId: "",
     name: "",
     shortInfo: "",
     images: [],
@@ -56,6 +58,7 @@ const Home = () => {
       const data = await response.json();
       setSights(data)
       setItemData({
+        sightId: data[currentSight].sight_id,
         name: data[currentSight].name,
         shortInfo: data[currentSight].short_info,
         images: data[currentSight].images,
@@ -88,63 +91,21 @@ const Home = () => {
     }
   }
 
-  return (
-    <div className="bg-white w-full relative overflow-hidden h-[calc(100%-var(--navbar-height))]">
-      <Header />
-      <div className="flex justify-end px-7">
-        <CitySelector />
-      </div>
-
-      <div className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-        <div className="relative h-[85%] w-auto font-inriaSans px-3">
-          <div className="w-full h-full absolute flex">
-            <div className="w-1/2 h-full relative" onClick={()=>handleImageChange('left')}></div>
-            <div className="w-1/2 h-full relative" onClick={()=>handleImageChange('right')}></div>
-          </div>
-          <div
-            style={{
-              backgroundImage:
-                "linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,1))",
-              position: "absolute",
-              width: "100%",
-              height: "10%",
-            }}
-          ></div>
-          <Image imgUrl={itemData.images[currentImage]} />
-          <div className="absolute bottom-0 left-0 right-0 px-3">
-            <InfoBox name={itemData.name} info={itemData.shortInfo} shortPrice = {itemData.shortPrice} openHoursToday={itemData.openHoursToday} location={itemData.location}/>
-          </div>
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-3 flex gap-x-5">
-            {itemData.images.map((image, index) => {
-              return <div 
-                className={`${index===currentImage?'bg-primaryDark':'bg-white'} rounded-full w-3 h-3`} 
-                key={image}
-                onClick={()=>setCurrentImage(index)}
-                />
-            })}
-            
-          </div>
-        </div>
-        <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights}/>
-      </div>
-    </div>
+  const [infoCard, setInfoCard] = useState(
+    {
+        show: false, 
+        id: 'null',
+        name: 'null',
+        nmbrOfPics: 1
+    }
   );
-};
 
-export default Home;
-
-const Image = ({ imgUrl }) => {
-  return (
-    <div className="h-full">
-      <img alt={imgUrl} src={imgUrl} className="rounded-b-[30px] object-cover h-full"></img>
-    </div>
-  );
-};
-
-const InfoBox = ({ name, info , shortPrice, openHoursToday, location}) => {
+const InfoBox = ({sightId, sightName, info , shortPrice, openHoursToday, location}) => {
+  console.log (sightId)
+  console.log ()
   return (
     <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
-      <h1 className="italic text-2xl px-5 font-bold text-sh" style={{textShadow:'1px 1px 5px rgba(0,0,0, 0.7)'}}>{name}</h1>
+      <h1 className="italic text-2xl px-5 font-bold text-sh" style={{textShadow:'1px 1px 5px rgba(0,0,0, 0.7)'}}>{sightName}</h1>
       <p className="text-base p-5 text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{info} </p>
       <div className="flex justify-between px-5 items-center">
         <div className="grid grid-cols-2 w-2/3">
@@ -160,13 +121,94 @@ const InfoBox = ({ name, info , shortPrice, openHoursToday, location}) => {
           <Walleticon />
           <p className="text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{shortPrice == null ? '-' : shortPrice}</p>
           </div>
-
         </div>
-        <Arrow />
+        <div onClick={() => setInfoCard ({
+            show: true,
+            id: sightId,
+            name: sightName,
+            nmbrOfPics: 1
+          })}>
+          <Arrow/>
+        </div>
       </div>
     </div>
   );
 };
+
+console.log (itemData.sightId)
+
+  return (
+    <div>
+
+      <div className="bg-white w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
+        <Header/>
+        
+        <div className="flex justify-end px-7" style={{opacity : infoCard.show ? 0 : 1}}>
+          <CitySelector />
+        </div>
+
+        <div className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
+          <div className="relative h-[85%] w-auto font-inriaSans px-3">
+            <div className="w-full h-full absolute flex">
+              <div className="w-1/2 h-full relative" onClick={()=>handleImageChange('left')}></div>
+              <div className="w-1/2 h-full relative" onClick={()=>handleImageChange('right')}></div>
+            </div>
+            <div
+              style={{
+                backgroundImage:
+                  "linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,1))",
+                position: "absolute",
+                width: "100%",
+                height: "10%",
+              }}
+            ></div>
+            <Image imgUrl={itemData.images[currentImage]} />
+            <div className="absolute bottom-0 left-0 right-0 px-3">
+              <InfoBox sightId={itemData.sightId} sightName={itemData.name} info={itemData.shortInfo} shortPrice = {itemData.shortPrice} openHoursToday={itemData.openHoursToday} location={itemData.location}/>
+            
+            </div>
+            
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-3 flex gap-x-5">
+              {itemData.images.map((image, index) => {
+                return <div 
+                  className={`${index===currentImage?'bg-primaryDark':'bg-white'} rounded-full w-3 h-3`} 
+                  key={image}
+                  onClick={()=>setCurrentImage(index)}
+                  />
+              })}
+              
+            </div>
+          </div>
+          <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights}/>
+        </div>
+      </div>
+      <div className="absolute h-full pt-20">
+
+        {
+        /* if show true show card else nothing */
+        infoCard.show === true ?
+        /* full info card */
+        <div className=" w-full h-full bg-opacity-0 ">
+            <FullCard infoState={[infoCard, setInfoCard]} />
+          </div> : ""
+        }
+        </div>
+    </div>
+
+  );
+};
+
+export default Home;
+
+const Image = ({ imgUrl }) => {
+  return (
+    <div className="h-full">
+      <img alt={imgUrl} src={imgUrl} className="rounded-b-[30px] object-cover h-full"></img>
+    </div>
+  );
+};
+
+
 
 const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItemData: [itemData, setItemData], sights, currentImageData:[currentImage, setCurrentImage]}) => {
   function updateSight() {
@@ -176,6 +218,7 @@ const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItem
       setCurrentSight(currentSight + 1)
     }
     setItemData({
+      sightId: sights[currentSight].sight_id,
       name: sights[currentSight].name,
       shortInfo: sights[currentSight].short_info,
       images: sights[currentSight].images,
