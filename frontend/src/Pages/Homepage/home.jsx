@@ -233,8 +233,10 @@ const Home = () => {
     var movespeedY = yPos / nrofFrames;
 
     var myInterval = setInterval(function () {
-
-
+      if(!document.getElementById("upperCard")){
+        clearInterval(myInterval)
+        return
+      }
       if (xPos <= 0) {
         document.getElementById("upperCard").style.left = 0;
       } else {
@@ -257,7 +259,6 @@ const Home = () => {
         clearInterval(myInterval);
       }
     }, 5);
-
   }
 
   const moveAway = (xs, ys) => {
