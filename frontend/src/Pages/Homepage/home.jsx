@@ -10,8 +10,6 @@ import FullCard from "../../Components/FullCard/FullCard";
 
 import Card from "./Card";
 
-const userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a' //charlie
-
 const getOpenHoursToday = (openHours) => {
   const day = new Date().getDay()
   if (openHours) {
@@ -37,7 +35,7 @@ const getOpenHoursToday = (openHours) => {
   return '-'
 }
 
-const Home = () => {
+const Home = ({setIsLoggedin}) => {
   const [itemData, setItemData] = useState({
     sightId: "",
     name: "",
@@ -63,8 +61,16 @@ const Home = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`);
+      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": localStorage.getItem('token')
+      }})
       const data = await response.json();
+      if(response.status == 403){
+        setIsLoggedin(false)
+      }
       setSights(data)
       setItemData({
         sightId: data[currentSight].sight_id,
@@ -73,7 +79,7 @@ const Home = () => {
         images: data[currentSight].images,
         shortPrice: data[currentSight].short_price,
         openHoursToday: getOpenHoursToday(data[currentSight].open_hours),
-        location: data[currentSight].location
+        location: data[currentSight].location,
       });
       setNextItemData({
         name: data[currentSight + 1].name,
@@ -91,7 +97,7 @@ const Home = () => {
       setCurrentSight(currentSight + 1)
     }
   }, []);
-
+  
   function updateSight() {
     if (currentSight === 23) {
       setCurrentSight(0)
@@ -126,16 +132,20 @@ const Home = () => {
     else {
       likedSightId = sights[currentSight - 1].sight_id
     }
-    await fetch(`http://${serverUrl}:4000/addlikes`, {
+    const response = await fetch(`http://${serverUrl}:4000/addlikes`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        'x-access-token': localStorage.getItem('token')
       },
       body: JSON.stringify({
-        userId: userId,
+        userId: localStorage.getItem('user_id'),
         sightId: likedSightId,
       }),
     });
+    if(response.status == 403){
+      setIsLoggedin(false)
+    }
     if (!swipe)
       updateSight()
   }

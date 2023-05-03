@@ -1,6 +1,8 @@
 import cors from "cors";
 import express from "express";
-
+import bodyParser from "body-parser";
+import bcryptjs from "bcryptjs";
+import jsonwebtoken from "jsonwebtoken";
 const app = express();
 const port = 4000;
 
@@ -11,12 +13,100 @@ import {
   getUser,
   addLikes,
   supabase,
+  createUser,
+  getSubTags,
+  getTagValue,
+  getRandomSights,
   removeLikes,
 } from "./dbfuncs.js";
+import { algorithm } from "./algorithm.js";
 
+// vet inte vad de gör men bra att de finns! låt va kvar
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+  //if the request is to signup or signin, we don't need to check for a token
+  if (req.path === "/signup" || req.path === "/signin") {
+    return next();
+  }
+  const token = req.headers["x-access-token"];
+  if (!token) {
+    return res.status(403).send({
+      message: "No token provided!",
+    });
+  }
+  let decoded;
+  try {
+    decoded = jsonwebtoken.verify(token, process.env.SECRET_KEY);
+  } catch (error) {
+    return res.status(403).send({
+      message: "Token not valid!",
+    });
+  }
+  next();
+});
+
+// tar emot username och password från frontend
+// krypterar lösenordet
+// skapar användare i databasen med username och krypterat lösenord
+// om användaren redan finns skickas ett meddelande som säger "user already exists", annars får man tillbaka user_id och username
+app.post("/signup", async (req, res) => {
+  const { username, password } = req.body;
+  const hashedPass = bcryptjs.hashSync(password, 8);
+  const userData = await createUser(username, hashedPass);
+
+  if (userData.message && userData.message === "user already exists") {
+    return res.send({ userData });
+  }
+  const token = jsonwebtoken.sign(
+    { id: userData.username },
+    process.env.SECRET_KEY,
+    {
+      expiresIn: 86400, // 24 hours
+    }
+  );
+  return res.send({ ...userData[0], token });
+});
+
+// tar emot username och password från frontend
+// hämtar användare från databasen med username, användare innehåller user_id, username och krypterat lösenord
+// jämför krypterat lösenord med det som skickades från frontend
+// om lösenorden matchar skickas ett meddelande som säger "Login successful" och användarens user_id och username
+// om lösenorden inte matchar skickas ett meddelande som säger "Login unsuccessful" och ett felmeddelande
+app.post("/signin", async (req, res) => {
+  const { username, password } = req.body;
+  const user = await getUser(username);
+  if (user.error) {
+    return res.send({
+      message: "Login unsuccessful",
+      error: user.error,
+    });
+  }
+  const isPasswordValid = bcryptjs.compareSync(password, user.password);
+  const data = {
+    message: "Login unsuccessful",
+  };
+  if (isPasswordValid) {
+    const token = jsonwebtoken.sign(
+      { id: user.username },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: 86400, // 24 hours
+      }
+    );
+    data.message = "Login successful";
+    data.userData = { user_id: user.user_id, username: user.username, token };
+  }
+  res.send({ data });
+});
+
+app.get("/validatetoken", async (req, res) => {
+  return res.send({ message: "Token valid" });
+});
 
 app.get("/charlie", (req, res) => {
   res.send(
@@ -51,7 +141,6 @@ app.get("/helloworld", (req, res) => {
 
 app.get("/getitem", async (req, res) => {
   const amount = parseInt(req.query.amount) || 1;
-
   res.send(await getItems(amount, null));
 });
 
@@ -94,6 +183,29 @@ app.get("/info", async (req, res) => {
   const onlyLong = req.query.onlyLong;
 
   res.send(await getFullInfo(sightId, onlyLong));
+});
+
+app.get("/subtag", async (req, res) => {
+  const sightId = req.query.sightId;
+
+  res.send(await getSubTags(sightId));
+});
+
+app.get("/tagvalues", async (req, res) => {
+  //const userID = req.query.userID;
+  const tagId = req.query.tagId;
+
+  res.send(await getTagValue("cfb5b9bd-ece8-470e-89c0-8ac52122652a", tagId));
+});
+
+app.get("/algorithm", async (req, res) => {
+  const sights = await getRandomSights(10);
+  const userID = req.query.userID;
+  res.send(await algorithm(userID, sights));
+});
+
+app.get("/random", async (req, res) => {
+  res.send(await getRandomSights());
 });
 
 app.listen(port, () => {
