@@ -11,6 +11,9 @@ import {
   getUser,
   addLikes,
   supabase,
+  getSubTags,
+  getTagValue,
+  algorithm,
 } from "./dbfuncs.js";
 
 app.use(cors());
@@ -95,6 +98,27 @@ app.get("/info", async (req, res) => {
 
   res.send(await getFullInfo(sightId, onlyLong));
 });
+
+app.get("/subtag", async (req, res) => {
+  const sightId = req.query.sightId;
+
+  res.send(await getSubTags(sightId));
+});
+
+app.get("/tagvalue", async (req, res) => {
+  //const userID = req.query.userID;
+  const tagId = req.query.tagId
+
+  res.send(await getTagValue('cfb5b9bd-ece8-470e-89c0-8ac52122652a', tagId))
+})
+
+app.get("/algorithm", async (req, res) => {
+  const sights = await getItems(10, null)
+  const userID = req.query.userID;
+  console.log(sights)
+  res.send(await algorithm(userID, sights))
+  
+})
 
 app.listen(port, () => {
   console.log(`Express server is listening on port: ${port}`);

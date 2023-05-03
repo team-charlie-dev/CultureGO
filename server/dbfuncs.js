@@ -17,11 +17,12 @@ export const getItems = async (amount, user) => {
     const images = []
     const open_hours = await getOpenHours(sight_id)
     const location = await getLocation(address_id)
+    const sub_tags = await getSubTags(sight_id)
 
     for (let i = 1; i <= number_of_img; i++)
       images.push(BASE_IMG_URL + 'sights/' + sight_id + '/' + i + '.jpg')
 
-    return {sight_id, name, short_info, long_info, price, main_tag_id, address_id, images, short_price, open_hours, location}
+    return {sight_id, name, short_info, long_info, price, main_tag_id, address_id, images, short_price, open_hours, location, sub_tags}
   }))
 }
 
@@ -77,5 +78,42 @@ export const addLikes = async (userId, sightId) => {
   if (error) return error
 
   return {sightId}
+
+}
+
+export const getSubTags = async (sightId) => {
+  const {data, error} = await supabase.from('sub_tag').select('tag_id').eq('sight_id', sightId)
+  if(error) return error
+
+  return data
+}
+
+export const getTagValue = async (userId, tagId) => {
+  const {data, error} = await supabase.from('tag_values').select('value').eq('user_id', 'cfb5b9bd-ece8-470e-89c0-8ac52122652a').eq('tag_id', tagId)
+  if(error) return error
+
+  return data
+}
+
+export const algorithm = async(userId, sights) => {
+
+
+  const similarities = []
+  let similarity = 0
+  const values = []
+
+  for(let i = 0; i < sights.length; i++) {
+    for(let j = 0; j < sights[i].sub_tags.length; j++) {
+      const tagId = sights[i].sub_tags[j].tag_id
+      //values.push(tagId)
+      const value = (await getTagValue(userId, tagId))[0].value
+      similarity += value
+      getTagValue(userId, tagId)
+    }
+    similarities.push([sights[i], similarity])
+    similarity = 0
+  }
+
+  return similarities
 
 }
