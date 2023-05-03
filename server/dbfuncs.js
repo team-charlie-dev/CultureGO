@@ -13,6 +13,7 @@ export const getItems = async (amount, user) => {
 
   // TODO fixa så att den väljer annorlunda varje gång
   const splicedData = data.splice(0, amount)
+  console.log('hej');
   return await Promise.all(splicedData.map(async ({sight_id, name, short_info, long_info, price, main_tag_id, address_id, number_of_img, short_price}) => {
     const images = []
     const open_hours = await getOpenHours(sight_id)
@@ -27,7 +28,7 @@ export const getItems = async (amount, user) => {
 
 export const getOpenHours = async (sightId) => {
   const {data, error} = await supabase.from('open_hours').select().eq('sight_id', sightId)
-  return data[0]
+  return data ? data[0] : []
 }
 
 export const getLocation = async (addressId) => {
