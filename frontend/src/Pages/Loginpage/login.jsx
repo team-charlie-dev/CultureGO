@@ -5,20 +5,25 @@ import serverUrl from "../../address";
 export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
   const [inputUsername, setInputUsername] = useState("");
   const [inputPassword, setInputPassword] = useState("");
-  const [successful, setSuccessful] = useState(true);
+  const [isCredentialsValid, setIsCredentialsValid] = useState({
+    username: false,
+    password: false,
+  });
+
   const [errorMsg, setErrorMsg] = useState("");
 
   const validatePassowrd = (password) => {
     if (password.length < 5) {
       setErrorMsg("Password must be at least 5 characters long")
-      setSuccessful(false);
+      setIsCredentialsValid({ ...isCredentialsValid, password: false });
     }
     else if(password.includes(" ")){
       setErrorMsg("Password must not include spaces")
-      setSuccessful(false);
+      setIsCredentialsValid({ ...isCredentialsValid, password: false });
     }
     else {
-      setSuccessful(true);
+      setErrorMsg("")
+      setIsCredentialsValid({ ...isCredentialsValid, password: true });
     }
     setInputPassword(password);
   }
@@ -26,14 +31,15 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
   const validateUsername = (username) => {
     if (username.length > 15) {
       setErrorMsg("Username cannot be longer than 15 characters long")
-      setSuccessful(false);
+      setIsCredentialsValid({ ...isCredentialsValid, username: false });
     }
     else if(username.includes(" ")){
       setErrorMsg("Username must not include spaces")
-      setSuccessful(false);
+      setIsCredentialsValid({ ...isCredentialsValid, username: false });
     }
     else {
-      setSuccessful(true);
+      setErrorMsg("")
+      setIsCredentialsValid({ ...isCredentialsValid, username: true });
     }
     setInputUsername(username);
   }
@@ -54,14 +60,13 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
     }
     const resJson = await res.json();
     if (resJson?.error) {
-      setSuccessful(false);
+      setIsCredentialsValid({ username: false, password: false });
       setErrorMsg(resJson.error);
     }
      else {
       localStorage.setItem("token", resJson.userData.token);
       localStorage.setItem("user_id", resJson.userData.user_id);
       localStorage.setItem("username", resJson.userData.username);
-      setSuccessful(true);
       setIsLoggedin(true);
     }
   };
@@ -81,14 +86,13 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
     }
     const resJson = await res.json();
     if(resJson?.error){
-      setSuccessful(false);
+      setIsCredentialsValid({ username: false, password: false });
       setErrorMsg(resJson.error);
     }
     else{
       localStorage.setItem("token", resJson.userData.token);
       localStorage.setItem("user_id", resJson.userData.user_id);
       localStorage.setItem("username", resJson.userData.username);
-      setSuccessful(true);
       setIsLoggedin(true);
     }
   };
@@ -106,7 +110,7 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
 
       <div
         className={`h-1/5 flex flex-col justify-end ${
-          successful ? "opacity-0" : "opacity-100"
+          (isCredentialsValid.password && isCredentialsValid.username) ? "opacity-0" : "opacity-100"
         }`}
       >
         <div className="text-center text-xl ">{errorMsg}</div>
@@ -135,7 +139,8 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
             </div>
             <div className="w-full text-center flex justify-around">
               <button
-                className=" bg-primaryDark text-white rounded-md"
+                disabled={(!isCredentialsValid.password || !isCredentialsValid.username)}
+                className={`bg-primaryDark text-white rounded-md`}
                 style={{
                   border: "none",
                   padding: "15px 32px",
@@ -149,6 +154,7 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
               </button>
 
               <button
+                disabled={(!isCredentialsValid.password || !isCredentialsValid.username)}
                 className=" bg-primaryDark text-white rounded-md"
                 style={{
                   border: "none",
