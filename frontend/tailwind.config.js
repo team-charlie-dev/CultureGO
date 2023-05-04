@@ -23,7 +23,7 @@ export default {
 
       white: "#FFFFFF",
       gray: "#808080",
-      infoColor: "#FFECCC",
+      infoColor: "#404040",
       transparent: "rgba(255,255,255,0)",
       red: "#FF0000",
       black: "#000000", 

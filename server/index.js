@@ -32,6 +32,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use((req, res, next) => {
+  console.log(req.path);
   //if the request is to signup or signin, we don't need to check for a token
   if (req.path === "/signup" || req.path === "/signin" || req.path === "/algorithm") {
     return next();
@@ -153,7 +154,7 @@ app.post("/tags", async (req, res) => {
 });
 
 app.get("/likes", async (req, res) => {
-  let userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a';
+  let userId = req.query.userId;
   let page = req.query.page || 0;
   let filter = req.query.filter || "none";
   let sort = req.query.sort || "new";
@@ -169,12 +170,25 @@ app.post("/addlikes", async (req, res) => {
 });
 
 app.delete("/likes", (req, res) => {
-  let userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a'
+  let userId = req.query.userId;
 
-  removeLikes(userId, req.body)
+  removeLikes(userId, req.body);
 
   res.status(204).send();
 });
+
+app.post("/swipe", (req, res) => {
+  let userId = req.body.userId
+  let sightId = req.body.sightId
+  let liked = req.body.liked
+
+  if (liked)
+  {
+    addLikes(userId, sightId)
+  }
+
+  res.sendStatus(204)
+})
 
 app.get("/getuser", async (req, res) => {
   const userId = req.query.userid;

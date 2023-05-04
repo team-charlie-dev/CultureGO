@@ -6,16 +6,19 @@ import Clockicon from "../../Components/icons/ClockIcon"
 import Arrow from "../../Components/icons/Arrow";
 
 const Image = ({ imgUrl, mode}) => {
+
+    const imgPlaceholder = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg"
+
     return (
         <div className="h-full">
-            <img id={mode} alt={imgUrl} src={imgUrl} className="rounded-b-[30px] object-cover h-full"></img>
+            <img id={mode} alt={imgUrl} src={imgUrl || imgPlaceholder} className="rounded-b-[30px] object-cover h-full"></img>
         </div>
     );
 };
 
 const InfoBox = ({ name, info, shortPrice, openHoursToday, location, arrowClickHandler }) => {
     return (
-        <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
+        <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-30">
             <h1 className="italic text-2xl px-5 font-bold text-sh" style={{ textShadow: '1px 1px 5px rgba(0,0,0, 0.7)' }}>{name}</h1>
             <p className="text-base p-5 text-sh" style={{ textShadow: '2px 2px 5px rgba(0,0,0, 1)' }}>{info} </p>
             <div className="flex justify-between px-5 items-center">
