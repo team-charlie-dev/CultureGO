@@ -7,7 +7,6 @@ import City from "../../Components/icons/City";
 import serverUrl from '../../address'
 
 import FullCard from "../../Components/FullCard/FullCard";
-
 import Card from "./Card";
 
 const getOpenHoursToday = (openHours) => {
@@ -35,33 +34,24 @@ const getOpenHoursToday = (openHours) => {
   return '-'
 }
 
+const emptyItem = {
+  sightId: "",
+  name: "",
+  shortInfo: "",
+  images: [],
+  shortPrice: "",
+  openHoursToday: "",
+  location: "",
+}
+
 const Home = ({setIsLoggedin}) => {
-  const [itemData, setItemData] = useState({
-    sightId: "",
-    name: "",
-    shortInfo: "",
-    images: [],
-    shortPrice: "",
-    openHoursToday: "",
-    location: "",
-  });
-
-  const [nextItemData, setNextItemData] = useState({
-    name: "",
-    shortInfo: "",
-    images: [],
-    shortPrice: "",
-    openHoursToday: "",
-    location: "",
-  });
-
-  const [currentSight, setCurrentSight] = useState(15)
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
-
+  
   useEffect(() => {
+    var ignore = false;
     const fetchData = async () => {
-      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`, {
+      const response = await fetch(`http://${serverUrl}:4000/algorithm`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -71,89 +61,72 @@ const Home = ({setIsLoggedin}) => {
       if(response.status == 403){
         setIsLoggedin(false)
       }
+      if (ignore)
+        return;
       setSights(data)
-      setItemData({
-        sightId: data[currentSight].sight_id,
-        name: data[currentSight].name,
-        shortInfo: data[currentSight].short_info,
-        images: data[currentSight].images,
-        shortPrice: data[currentSight].short_price,
-        openHoursToday: getOpenHoursToday(data[currentSight].open_hours),
-        location: data[currentSight].location,
-      });
-      setNextItemData({
-        name: data[currentSight + 1].name,
-        shortInfo: data[currentSight + 1].short_info,
-        images: data[currentSight + 1].images,
-        shortPrice: data[currentSight + 1].short_price,
-        openHoursToday: getOpenHoursToday(data[currentSight + 1].open_hours),
-        location: data[currentSight + 1].location
-      });
+      // console.log(data)
     };
     fetchData();
-    if (currentSight === 23) {
-      setCurrentSight(0)
-    } else {
-      setCurrentSight(currentSight + 1)
-    }
+
+    return () => ignore = true
   }, []);
   
-  function updateSight() {
-    if (currentSight === 23) {
-      setCurrentSight(0)
-    } else {
-      setCurrentSight(currentSight + 1)
+  const fetchSights = async () => {
+    fetch(`http://${serverUrl}:4000/algorithm`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": localStorage.getItem('token')
+      }})
+      .then(res => res.json())
+      .then(json => {
+        setSights(arr => arr.concat(json))
+      })
     }
-    setNextItemData({
-      name: sights[currentSight + 1].name,
-      shortInfo: sights[currentSight + 1].short_info,
-      images: sights[currentSight + 1].images,
-      shortPrice: sights[currentSight + 1].short_price,
-      openHoursToday: getOpenHoursToday(sights[currentSight + 1].open_hours),
-      location: sights[currentSight + 1].location
-    });
-    setItemData({
-      sightId: sights[currentSight].sight_id,
-      name: sights[currentSight].name,
-      shortInfo: sights[currentSight].short_info,
-      images: sights[currentSight].images,
-      shortPrice: sights[currentSight].short_price,
-      openHoursToday: getOpenHoursToday(sights[currentSight].open_hours),
-      location: sights[currentSight].location
-    });
+
+  function updateSight() {
+    // console.log(sights.length)
+    if (sights.length < 3)
+      fetchSights()
+
+    setSights(arr => arr.slice(1))
     setCurrentImage(0)
   }
 
-  async function handleLikeClick(swipe) {
-    let likedSightId = ''
-    if (currentSight === 0) {
-      likedSightId = sights[sights.length - 1].sight_id
-    }
-    else {
-      likedSightId = sights[currentSight - 1].sight_id
-    }
-    const response = await fetch(`http://${serverUrl}:4000/addlikes`, {
-      method: "POST",
+  const getItemData = (sight) => {
+    if (sight)
+      return {
+        name: sight.name,
+        shortInfo: sight.short_info,
+        images: sight.images,
+        shortPrice: sight.short_price,
+        openHoursToday: getOpenHoursToday(sight.open_hours),
+        location: sight.location
+      }
+    else return emptyItem
+  }
+
+  const sendSwipeMessage = async (sightId, like) => {
+    // console.log(sights)
+
+    const response = await fetch(`http://${serverUrl}:4000/swipe`, {
+      method: 'POST',
       headers: {
         "Content-Type": "application/json",
         'x-access-token': localStorage.getItem('token')
       },
       body: JSON.stringify({
         userId: localStorage.getItem('user_id'),
-        sightId: likedSightId,
+        sightId: sightId,
+        liked: like
       }),
-    });
-    if(response.status == 403){
+    })
+
+    if (response.status == 403) {
       setIsLoggedin(false)
     }
-    if (!swipe)
-      updateSight()
-  }
 
-  async function handleDislikeClick(swipe) {
-    //TODO: handle dislike
-    if (!swipe)
-      updateSight()
+    updateSight()
   }
 
   const lift = (e) => {
@@ -170,7 +143,6 @@ const Home = ({setIsLoggedin}) => {
     document.getElementById("disable1").style.opacity = 0;
     document.getElementById("disable2").style.opacity = 0;
     document.getElementById("disable3").style.opacity = 0;
-
   }
 
   var holding = false;
@@ -181,14 +153,12 @@ const Home = ({setIsLoggedin}) => {
   var StartPosY = 0;
 
   const move = (e) => {
-
     if (e.clientX == NaN || e.clientX == null) {
       var clientX = e.touches[0].clientX;
     } if (e.clientY == NaN || e.clientY == null) {
       var clientY = e.touches[0].clientY;
     }
     var procent = (-startX + clientX) / window.innerWidth;
-
 
     if (holding) {
       document.getElementById("upperCard").style.left = -startX + clientX + "px";
@@ -203,8 +173,6 @@ const Home = ({setIsLoggedin}) => {
 
     return Math.sqrt(x * x + y * y);
   }
-
-  var i = 0;
 
   const release = (e) => {
     if (e.clientX == NaN || e.clientX == null) {
@@ -221,22 +189,15 @@ const Home = ({setIsLoggedin}) => {
     var middlePosY = StartPosY + window.innerHeight / 2;
     var r = 150;
 
-
     if (getDistance(middlePosX, middlePosY, window.innerWidth / 2, window.innerHeight / 2) > r) {
       moveAway(StartPosX, 0);
     } else {
       moveHome(StartPosX, 0);
     }
-
-
-
   }
 
   const moveHome = (xs, ys) => {
-    console.log("move home")
-
-
-
+    // console.log("move home")
     var nrofFrames = 10;
 
     var xPos = xs;
@@ -257,7 +218,6 @@ const Home = ({setIsLoggedin}) => {
         document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
       }
 
-
       if (yPos <= 0) {
         document.getElementById("upperCard").style.top = 0;
       } else {
@@ -275,19 +235,16 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const moveAway = (xs, ys) => {
-    console.log("moveAway")
+    // console.log("moveAway")
     var nrofFrames = 10;
 
     var xPos = xs;
     var yPos = ys;
 
-
-
     var movespeedX = 0.4 * xPos / nrofFrames;
     var movespeedY = 0.4 * yPos / nrofFrames;
 
     var myInterval = setInterval(function () {
-
 
       xPos = (xPos + movespeedX);
       document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
@@ -301,7 +258,6 @@ const Home = ({setIsLoggedin}) => {
         document.getElementById("upperCard").style.top = 0;
         document.getElementById("upperCard").style.left = 0;
 
-
         document.getElementById("upperCard").style.transform = "rotate(0deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
@@ -310,7 +266,6 @@ const Home = ({setIsLoggedin}) => {
         document.getElementById("upperCard").src = document.getElementById("lowerCard").src
         document.getElementById("upperCard").style.top = 0;
         document.getElementById("upperCard").style.left = 0;
-
 
         document.getElementById("upperCard").style.transform = "rotate(" + 0 + "deg)";
         isOut(movespeedX);
@@ -321,13 +276,7 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const isOut = (movespeedX) => {
-
-    if (movespeedX > 0) {
-      handleLikeClick(true)
-    } else {
-      handleDislikeClick(true)
-    }
-    updateSight()
+    sendSwipeMessage(sights[0].sight_id, movespeedX > 0)
   }
   
   const [infoCard, setInfoCard] = useState(
@@ -340,15 +289,11 @@ const Home = ({setIsLoggedin}) => {
   );
 
   const cardClickHandler = () => {
-    // console.log("FUCK YEHAHHH", infoCard.show)
-    // console.log(sights)
-    // console.log(currentSight)
-    console.log(sights[currentSight])
     setInfoCard({
       show: !infoCard.show,
-      id: sights[(currentSight + sights.length - 1) % sights.length].sight_id,
-      name: itemData.name,
-      nmbrOfPics: 1
+      id: sights[0].sight_id,
+      name: sights[0].name,
+      nmbrOfPics: sights[0].images.length==0 ? 0 : 1
     })
   }
 
@@ -360,8 +305,8 @@ const Home = ({setIsLoggedin}) => {
           <CitySelector />
         </div>
         <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={itemData} arrowClickHandler={cardClickHandler}/>
-          <Buttons currentSight={currentSight} sights={sights} updateSight={updateSight} handleLikeClick={handleLikeClick} handleDislikeClick={handleDislikeClick} />
+          <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
+          <Buttons handleLikeClick={() => sendSwipeMessage(sights[0].sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0].sight_id, false)} />
         </div>
       </div>
 
@@ -371,19 +316,16 @@ const Home = ({setIsLoggedin}) => {
           <CitySelector />
         </div>
         <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"lowerCard"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={nextItemData} arrowClickHandler={cardClickHandler}/>
-          <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} nextItemData={[nextItemData, setNextItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} />
+          <Card mode={"lowerCard"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
+          <Buttons />
         </div>
       </div>
       
       { infoCard.show ?
-      <div className="absolute h-full w-full pt-20 z-50">
-        {infoCard.show ?  <FullCard infoState={[infoCard, setInfoCard]}/> : <></>}
-      </div>
-      :
-      <></>
-
-      }
+        <div className="absolute h-full w-full pt-20 z-50">
+          <FullCard infoState={[infoCard, setInfoCard]}/>
+        </div> 
+      : <></> }
       </>
   );
 };
@@ -392,10 +334,10 @@ const Buttons = ({ handleLikeClick, handleDislikeClick }) => {
   return (
     <div id="disable2" className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
-        <div onClick={() => handleDislikeClick(false)}>
+        <div onClick={handleLikeClick}>
           <img src={Dislike}></img>
         </div>
-        <div onClick={() => handleLikeClick(false)}>
+        <div onClick={handleLikeClick}>
           <img src={Like}></img>
         </div>
       </div>

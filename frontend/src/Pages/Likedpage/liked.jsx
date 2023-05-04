@@ -16,6 +16,8 @@ import Address from "../../address";
 
 const Liked = ({setIsLoggedin}) => {
 
+    const imgPlaceholder = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg"
+
     var [list, setList] = useState([])
     var [remove, setRemove] = useState([])
     var [map, setMap] = useState(new Map())
@@ -46,7 +48,7 @@ const Liked = ({setIsLoggedin}) => {
                 show: true, 
                 id: sight.sights.sight_id,
                 name: sight.sights.name,
-                nmbrOfPics: 1
+                nmbrOfPics: sight.sights.number_of_img==0 ? 0 : 1
             })
             
         }
@@ -117,7 +119,7 @@ const Liked = ({setIsLoggedin}) => {
                 onClick={() => handleInfoCard (sight)}
                 key={sight.sights.sight_id}>
                     <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
-                    img={`https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
+                    img={sight.sights.number_of_img==0 ? imgPlaceholder : `https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
                 </div>
                                 
                 setList(ls => {

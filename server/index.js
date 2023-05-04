@@ -173,6 +173,19 @@ app.delete("/likes", (req, res) => {
   res.status(204).send();
 });
 
+app.post("/swipe", (req, res) => {
+  let userId = req.body.userId
+  let sightId = req.body.sightId
+  let liked = req.body.liked
+
+  if (liked)
+  {
+    addLikes(userId, sightId)
+  }
+
+  res.sendStatus(204)
+})
+
 app.get("/getuser", async (req, res) => {
   const userId = req.query.userid;
   const user = await getUser(userId);
