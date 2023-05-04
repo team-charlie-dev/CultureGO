@@ -3,6 +3,7 @@ import GoBack from "../icons/GoBack";
 import ClockIcon from "../icons/ClockIcon";
 import WalletIcon from "../icons/WalletIcon";
 import LocationIcon from "../icons/LocationIcon";
+import serverURL from "../../address";
 import { useEffect, useState } from "react";
 
 const Image = ( {data} ) => {
@@ -92,7 +93,7 @@ export default function FullCard({infoState, setIsLoggedin}) {
             // if true, get TimeInfo and PriceInfo as well
         
             // call getInfo
-            let data = await fetch (`http://localhost:4000/info?sightId=${sigtId}&onlyLong=true`, {
+            let data = await fetch (`http://${serverURL}:4000/info?sightId=${sigtId}&onlyLong=true`, {
                 method: "GET",
                 headers: {
                   "Content-Type": "application/json",

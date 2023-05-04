@@ -47,8 +47,9 @@ function App() {
       return <Login loginState={[isLoggedin, setIsLoggedin]} />;
     }
   };
+
   return (
-    <div className="w-screen bg-primary font-inriaSans overflow-hidden">
+    <div className="w-screen bg-primary font-inriaSans overflow-hidden fixed">
       <div className="h-screen m-auto w-screen max-w-md relative">
         <Navbar state={[currentPage, setCurrentPage]}>
           {getPage(currentPage)}
