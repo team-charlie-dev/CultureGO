@@ -16,7 +16,8 @@ import {
   createUser,
   getSubTags,
   getTagValue,
-  getRandomSights
+  getRandomSights,
+  removeLikes,
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -58,7 +59,7 @@ app.post("/signup", async (req, res) => {
   const hashedPass = bcryptjs.hashSync(password, 8);
   const userData = await createUser(username, hashedPass);
 
-  if (userData[0].message || userData[0].message === "user already exists") {
+  if (userData.message && userData.message === "user already exists") {
     return res.send({ userData });
   }
   const token = jsonwebtoken.sign(
@@ -144,17 +145,14 @@ app.get("/getitem", async (req, res) => {
 });
 
 app.post("/tags", async (req, res) => {
-  console.log(req.body);
   res.status(200).send();
 });
 
 app.get("/likes", async (req, res) => {
-  let userId = req.query.userId;
+  let userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a';
   let page = req.query.page || 0;
   let filter = req.query.filter || "none";
   let sort = req.query.sort || "new";
-
-  console.log("yes");
 
   res.send(await getLikes(userId, page, filter, sort));
 });
@@ -167,7 +165,9 @@ app.post("/addlikes", async (req, res) => {
 });
 
 app.delete("/likes", (req, res) => {
-  console.log(req.body);
+  let userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a'
+
+  removeLikes(userId, req.body)
 
   res.status(204).send();
 });
@@ -193,10 +193,10 @@ app.get("/subtag", async (req, res) => {
 
 app.get("/tagvalues", async (req, res) => {
   //const userID = req.query.userID;
-  const tagId = req.query.tagId
+  const tagId = req.query.tagId;
 
-  res.send(await getTagValue('cfb5b9bd-ece8-470e-89c0-8ac52122652a', tagId))
-})
+  res.send(await getTagValue("cfb5b9bd-ece8-470e-89c0-8ac52122652a", tagId));
+});
 
 app.get("/algorithm", async (req, res) => {
   const userID = req.query.userID;
@@ -206,8 +206,8 @@ app.get("/algorithm", async (req, res) => {
 })
 
 app.get("/random", async (req, res) => {
-  res.send(await getRandomSights())
-})
+  res.send(await getRandomSights());
+});
 
 app.listen(port, () => {
   console.log(`Express server is listening on port: ${port}`);
