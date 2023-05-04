@@ -225,5 +225,5 @@ app.listen(port, () => {
 });
 
 app.get("/filter", async (req, res) => {
-  res.send(await getWithFilter(30))
+  res.send(await getWithFilter(30, '83cebddf-ed75-4069-bbcf-3d198416b354'))
 })

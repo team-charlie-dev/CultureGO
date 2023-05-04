@@ -151,25 +151,29 @@ export const getWithFilter = async(amount, userId) => {
   console.log('booooooost free ' + filter.free)
   console.log('booooooost random ' + filter.random)
 
+  const indoor = 'c9eaa966-a8ee-41ca-be9e-4480a368a705'
+  const outdoor = '06bce9f7-14fc-4f55-a87b-7748ca990aa6'
+
   if ( filter.indoor ) {
 
     if ( filter.free )  {
-      const {data, error} = await supabase.rpc('random_sights_in_free', {amount: amount, usr: userId}) // query indoor+free
+      
+      const {data, error} = await supabase.rpc('random_sights_out_in_free', {amount: amount, tag: 'c9eaa966-a8ee-41ca-be9e-4480a368a705', usr: userId}) // query indoor+free
       return data
     } 
 
-    const {data, error} = await supabase.rpc('random_sights_in', {amount: amount, usr: userId}) // query indoor
+    const {data, error} = await supabase.rpc('random_sights_out_in', {amount: amount, tag: indoor, usr: userId}) // query indoor
     return data
   }
 
   if ( filter.outdoor ) {
 
     if ( filter.free ) { 
-      const {data, error} = await supabase.rpc('random_sights_out_free', {amount: amount, usr: userId}) // query outdoor+free
+      const {data, error} = await supabase.rpc('random_sights_out_in_free', {amount: amount, tag: '06bce9f7-14fc-4f55-a87b-7748ca990aa6', usr: userId}) // query outdoor+free
       return data
     } 
 
-    const {data, error} = await supabase.rpc('random_sights_out', {amount: amount, usr: userId}) // query outdoor
+    const {data, error} = await supabase.rpc('random_sights_out_in', {amount: amount, tag: outdoor, usr: userId}) // query outdoor
     return data
   }
 
