@@ -6,9 +6,10 @@ import LocationIcon from "../icons/LocationIcon";
 import { useEffect, useState } from "react";
 
 const Image = ( {data} ) => {
+    const imgPlaceholder = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg"
     const [id, pics] = data;
-    
-    let img =
+    console.log(pics)
+    let img = pics==0 ? imgPlaceholder :  
     `https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${id}/1.jpg`;
     return (
         <div className="h-full">
