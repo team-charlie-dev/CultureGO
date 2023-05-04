@@ -1,2 +1,2 @@
-const serverURL = "130.229.152.229";
+const serverURL = 'localhost';
 export default serverURL;
