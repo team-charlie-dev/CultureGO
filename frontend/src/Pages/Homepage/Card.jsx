@@ -6,9 +6,12 @@ import Clockicon from "../../Components/icons/ClockIcon"
 import Arrow from "../../Components/icons/Arrow";
 
 const Image = ({ imgUrl, mode}) => {
+
+    const imgPlaceholder = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg"
+
     return (
         <div className="h-full">
-            <img id={mode} alt={imgUrl} src={imgUrl} className="rounded-b-[30px] object-cover h-full"></img>
+            <img id={mode} alt={imgUrl} src={imgUrl || imgPlaceholder} className="rounded-b-[30px] object-cover h-full"></img>
         </div>
     );
 };

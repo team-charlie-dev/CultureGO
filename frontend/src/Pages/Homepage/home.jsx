@@ -348,7 +348,7 @@ const Home = ({setIsLoggedin}) => {
       show: !infoCard.show,
       id: sights[(currentSight + sights.length - 1) % sights.length].sight_id,
       name: itemData.name,
-      nmbrOfPics: 1
+      nmbrOfPics: itemData.images.length==0 ? 0 : 1
     })
   }
 
