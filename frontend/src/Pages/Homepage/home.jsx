@@ -35,6 +35,16 @@ const getOpenHoursToday = (openHours) => {
   return '-'
 }
 
+const emptyItem = {
+  sightId: "",
+  name: "",
+  shortInfo: "",
+  images: [],
+  shortPrice: "",
+  openHoursToday: "",
+  location: "",
+}
+
 const Home = ({setIsLoggedin}) => {
   const [itemData, setItemData] = useState({
     sightId: "",
@@ -61,7 +71,7 @@ const Home = ({setIsLoggedin}) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`, {
+      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=5`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -72,77 +82,53 @@ const Home = ({setIsLoggedin}) => {
         setIsLoggedin(false)
       }
       setSights(data)
-      setItemData({
-        sightId: data[currentSight].sight_id,
-        name: data[currentSight].name,
-        shortInfo: data[currentSight].short_info,
-        images: data[currentSight].images,
-        shortPrice: data[currentSight].short_price,
-        openHoursToday: getOpenHoursToday(data[currentSight].open_hours),
-        location: data[currentSight].location,
-      });
-      setNextItemData({
-        name: data[currentSight + 1].name,
-        shortInfo: data[currentSight + 1].short_info,
-        images: data[currentSight + 1].images,
-        shortPrice: data[currentSight + 1].short_price,
-        openHoursToday: getOpenHoursToday(data[currentSight + 1].open_hours),
-        location: data[currentSight + 1].location
-      });
+
     };
     fetchData();
-    if (currentSight === 23) {
-      setCurrentSight(0)
-    } else {
-      setCurrentSight(currentSight + 1)
-    }
+
   }, []);
   
-  function updateSight() {
-    if (currentSight === 23) {
-      setCurrentSight(0)
-    } else {
-      setCurrentSight(currentSight + 1)
+  const fetchSights = async () => {
+    fetch(`http://${serverUrl}:4000/getitem?amount=5`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": localStorage.getItem('token')
+      }})
+      .then(res => res.json())
+      .then(json => {
+        setSights(arr => arr.concat(json))
+      })
     }
-    setNextItemData({
-      name: sights[currentSight + 1].name,
-      shortInfo: sights[currentSight + 1].short_info,
-      images: sights[currentSight + 1].images,
-      shortPrice: sights[currentSight + 1].short_price,
-      openHoursToday: getOpenHoursToday(sights[currentSight + 1].open_hours),
-      location: sights[currentSight + 1].location
-    });
-    setItemData({
-      sightId: sights[currentSight].sight_id,
-      name: sights[currentSight].name,
-      shortInfo: sights[currentSight].short_info,
-      images: sights[currentSight].images,
-      shortPrice: sights[currentSight].short_price,
-      openHoursToday: getOpenHoursToday(sights[currentSight].open_hours),
-      location: sights[currentSight].location
-    });
+
+  function updateSight() {
+
+    console.log(sights.length)
+
+    if (sights.length < 3)
+      fetchSights()
+
+    setSights(arr => arr.slice(1))
+    
     setCurrentImage(0)
   }
 
+  const getItemData = (sight) => {
+    if (sight)
+      return {
+        name: sight.name,
+        shortInfo: sight.short_info,
+        images: sight.images,
+        shortPrice: sight.short_price,
+        openHoursToday: getOpenHoursToday(sight.open_hours),
+        location: sight.location
+      }
+    else return emptyItem
+  }
+
   async function handleLikeClick(swipe) {
-    let likedSightId = ''
-    if (currentSight === 0) {
-      likedSightId = sights[sights.length - 1].sight_id
-    }
-    else {
-      likedSightId = sights[currentSight - 1].sight_id
-    }
-    const response = await fetch(`http://${serverUrl}:4000/addlikes`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        'x-access-token': localStorage.getItem('token')
-      },
-      body: JSON.stringify({
-        userId: localStorage.getItem('user_id'),
-        sightId: likedSightId,
-      }),
-    });
+    const response = await sendSwipeMessage(sights[0].sight_id, true)
+
     if(response.status == 403){
       setIsLoggedin(false)
     }
@@ -151,9 +137,32 @@ const Home = ({setIsLoggedin}) => {
   }
 
   async function handleDislikeClick(swipe) {
-    //TODO: handle dislike
+    const response = await sendSwipeMessage(sights[0].sight_id, false)
+
+    if (response.status == 403) {
+      setIsLoggedin(false)
+    }
+
     if (!swipe)
       updateSight()
+  }
+
+  const sendSwipeMessage = async (sightId, like) => {
+
+    console.log(sights)
+
+    return await fetch(`http://${serverUrl}:4000/swipe`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        'x-access-token': localStorage.getItem('token')
+      },
+      body: JSON.stringify({
+        userId: localStorage.getItem('user_id'),
+        sightId: sightId,
+        liked: like
+      }),
+    })
   }
 
   const lift = (e) => {
@@ -227,15 +236,10 @@ const Home = ({setIsLoggedin}) => {
     } else {
       moveHome(StartPosX, 0);
     }
-
-
-
   }
 
   const moveHome = (xs, ys) => {
     console.log("move home")
-
-
 
     var nrofFrames = 10;
 
@@ -281,13 +285,10 @@ const Home = ({setIsLoggedin}) => {
     var xPos = xs;
     var yPos = ys;
 
-
-
     var movespeedX = 0.4 * xPos / nrofFrames;
     var movespeedY = 0.4 * yPos / nrofFrames;
 
     var myInterval = setInterval(function () {
-
 
       xPos = (xPos + movespeedX);
       document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
@@ -340,15 +341,11 @@ const Home = ({setIsLoggedin}) => {
   );
 
   const cardClickHandler = () => {
-    // console.log("FUCK YEHAHHH", infoCard.show)
-    // console.log(sights)
-    // console.log(currentSight)
-    console.log(sights[currentSight])
     setInfoCard({
       show: !infoCard.show,
-      id: sights[(currentSight + sights.length - 1) % sights.length].sight_id,
-      name: itemData.name,
-      nmbrOfPics: itemData.images.length==0 ? 0 : 1
+      id: sights[0].sight_id,
+      name: sights[0].name,
+      nmbrOfPics: sights[0].images.length==0 ? 0 : 1
     })
   }
 
@@ -360,7 +357,7 @@ const Home = ({setIsLoggedin}) => {
           <CitySelector />
         </div>
         <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={itemData} arrowClickHandler={cardClickHandler}/>
+          <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
           <Buttons currentSight={currentSight} sights={sights} updateSight={updateSight} handleLikeClick={handleLikeClick} handleDislikeClick={handleDislikeClick} />
         </div>
       </div>
@@ -371,7 +368,7 @@ const Home = ({setIsLoggedin}) => {
           <CitySelector />
         </div>
         <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"lowerCard"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={nextItemData} arrowClickHandler={cardClickHandler}/>
+          <Card mode={"lowerCard"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
           <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} nextItemData={[nextItemData, setNextItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} />
         </div>
       </div>
