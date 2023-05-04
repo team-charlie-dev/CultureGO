@@ -51,7 +51,7 @@ const Home = ({setIsLoggedin}) => {
   useEffect(() => {
     var ignore = false;
     const fetchData = async () => {
-      const response = await fetch(`http://${serverUrl}:4000/algorithm`, {
+      const response = await fetch(`http://${serverUrl}:4000/algorithm?userID=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +72,7 @@ const Home = ({setIsLoggedin}) => {
   }, []);
   
   const fetchSights = async () => {
-    fetch(`http://${serverUrl}:4000/algorithm`, {
+    fetch(`http://${serverUrl}:4000/algorithm?userID=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -334,7 +334,7 @@ const Buttons = ({ handleLikeClick, handleDislikeClick }) => {
   return (
     <div id="disable2" className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
-        <div onClick={handleLikeClick}>
+        <div onClick={handleDislikeClick}>
           <img src={Dislike}></img>
         </div>
         <div onClick={handleLikeClick}>
