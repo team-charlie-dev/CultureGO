@@ -17,7 +17,10 @@ import {
   getSubTags,
   getTagValue,
   getRandomSights,
-  removeLikes,
+  updateFilter,
+  getWithFilter,
+  filter,
+  removeLikes
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -145,6 +148,7 @@ app.get("/getitem", async (req, res) => {
 });
 
 app.post("/tags", async (req, res) => {
+  updateFilter(req.body);
   res.status(200).send();
 });
 
@@ -199,10 +203,17 @@ app.get("/tagvalues", async (req, res) => {
 });
 
 app.get("/algorithm", async (req, res) => {
+  // tar fram userID
   const userID = req.query.userID;
-  const sights = await getRandomSights(100, userID)
-  res.send(await algorithm(userID, sights))
   
+  // gettar sights och massa info om dom
+  const sights = await getRandomSights(100, userID)
+  
+  // skickar tillbaka 3 random sights 
+  if( filter.random ) res.send([sights[0], sights[1], sights[2], sights[3]])
+  
+  // kallar algon med random sights och usrID
+  else  res.send(await algorithm(userID, sights))
 })
 
 app.get("/random", async (req, res) => {
@@ -212,3 +223,7 @@ app.get("/random", async (req, res) => {
 app.listen(port, () => {
   console.log(`Express server is listening on port: ${port}`);
 });
+
+app.get("/filter", async (req, res) => {
+  res.send(await getWithFilter(30))
+})
