@@ -29,7 +29,7 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   //if the request is to signup or signin, we don't need to check for a token
-  if (req.path === "/signup" || req.path === "/signin") {
+  if (req.path === "/signup" || req.path === "/signin" || req.path === "/algorithm") {
     return next();
   }
   const token = req.headers["x-access-token"];
@@ -199,8 +199,8 @@ app.get("/tagvalues", async (req, res) => {
 })
 
 app.get("/algorithm", async (req, res) => {
-  const sights = await getRandomSights(10)
   const userID = req.query.userID;
+  const sights = await getRandomSights(100, userID)
   res.send(await algorithm(userID, sights))
   
 })
