@@ -147,7 +147,7 @@ export const getTagValue = async (userId) => {
 }
 
 export const getRandomSights = async(amount) => {
-  // gettar random sights, TODO check if filter is active
+  // gettar random sights
   const data = await getWithFilter(amount)
 
   // gettar varje sights resterande info
