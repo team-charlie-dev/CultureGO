@@ -5,7 +5,38 @@ import serverUrl from "../../address";
 export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
   const [inputUsername, setInputUsername] = useState("");
   const [inputPassword, setInputPassword] = useState("");
-  const [unsuccessful, setUnsuccessful] = useState(false);
+  const [successful, setSuccessful] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const validatePassowrd = (password) => {
+    if (password.length < 5) {
+      setErrorMsg("Password must be at least 5 characters long")
+      setSuccessful(false);
+    }
+    else if(password.includes(" ")){
+      setErrorMsg("Password must not include spaces")
+      setSuccessful(false);
+    }
+    else {
+      setSuccessful(true);
+    }
+    setInputPassword(password);
+  }
+  
+  const validateUsername = (username) => {
+    if (username.length > 15) {
+      setErrorMsg("Username cannot be longer than 15 characters long")
+      setSuccessful(false);
+    }
+    else if(username.includes(" ")){
+      setErrorMsg("Username must not include spaces")
+      setSuccessful(false);
+    }
+    else {
+      setSuccessful(true);
+    }
+    setInputUsername(username);
+  }
 
   const handleLogin = async () => {
     const res = await fetch(`http://${serverUrl}:4000/signin`, {
@@ -22,12 +53,15 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
       setIsLoggedin(false);
     }
     const resJson = await res.json();
-    if (resJson?.data?.message === "Login unsuccessful") {
-      setUnsuccessful(true);
-    } else {
-      localStorage.setItem("token", resJson.data.userData.token);
-      localStorage.setItem("user_id", resJson.data.userData.user_id);
-      localStorage.setItem("username", resJson.data.userData.username);
+    if (resJson?.error) {
+      setSuccessful(false);
+      setErrorMsg(resJson.error);
+    }
+     else {
+      localStorage.setItem("token", resJson.userData.token);
+      localStorage.setItem("user_id", resJson.userData.user_id);
+      localStorage.setItem("username", resJson.userData.username);
+      setSuccessful(true);
       setIsLoggedin(true);
     }
   };
@@ -46,11 +80,19 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
       setIsLoggedin(false);
     }
     const resJson = await res.json();
-    localStorage.setItem("token", resJson.token);
-    localStorage.setItem("user_id", resJson.user_id);
-    localStorage.setItem("username", resJson.username);
-    setIsLoggedin(true);
+    if(resJson?.error){
+      setSuccessful(false);
+      setErrorMsg(resJson.error);
+    }
+    else{
+      localStorage.setItem("token", resJson.userData.token);
+      localStorage.setItem("user_id", resJson.userData.user_id);
+      localStorage.setItem("username", resJson.userData.username);
+      setSuccessful(true);
+      setIsLoggedin(true);
+    }
   };
+
 
   return (
     <div className="relative w-full h-full bg-white z-50 overflow-hidden">
@@ -64,10 +106,10 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
 
       <div
         className={`h-1/5 flex flex-col justify-end ${
-          unsuccessful ? "opacity-100" : "opacity-0"
+          successful ? "opacity-0" : "opacity-100"
         }`}
       >
-        <div className="text-center text-2xl ">Wrong Password or Username</div>
+        <div className="text-center text-xl ">{errorMsg}</div>
       </div>
 
       <div className="h-1/2 flex">
@@ -79,7 +121,7 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
                 <input
                   className="w-full p-2 outline-none"
                   type="text"
-                  onChange={(e) => setInputUsername(e.target.value)}
+                  onChange={(e) => validateUsername(e.target.value)}
                 />
               </label>
               <label className="w-full text-center flex border-4 border-primaryDark rounded-lg">
@@ -87,7 +129,7 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
                 <input
                   className="w-full p-2 outline-none"
                   type="password"
-                  onChange={(e) => setInputPassword(e.target.value)}
+                  onChange={(e) => validatePassowrd(e.target.value)}
                 />
               </label>
             </div>

@@ -15,7 +15,7 @@ export const createUser = async (username, password) => {
     .select("user_id, username");
   if (error) {
     if (error.code == "23505") {
-      return { message: "user already exists" };
+      return { error: "User already exists" };
     }
     return error;
   }
@@ -28,7 +28,7 @@ export const getUser = async (username) => {
     .select("username, user_id, password")
     .eq("username", username);
   if (error) return error;
-  if (data.length == 0) return { error: "user not found" };
+  if (data.length == 0) return { error: "User not found" };
   return data[0];
 };
 
