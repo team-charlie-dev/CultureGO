@@ -189,12 +189,12 @@ export const getWithFilter = async(amount) => {
 
     if ( filter.free )  {
       const {data, error} = await supabase.rpc('random_sights_in_free', {amount: amount}) // query indoor+free
-      console.log("dataaaa1 " + data)
+      // console.log("dataaaa1 " + data)
       return data
     } 
 
     const {data, error} = await supabase.rpc('random_sights_in', {amount: amount}) // query indoor
-    console.log("dataaaa2 " + data)
+    // console.log("dataaaa2 " + data)
     return data
   }
 
@@ -202,23 +202,23 @@ export const getWithFilter = async(amount) => {
 
     if ( filter.free ) { 
       const {data, error} = await supabase.rpc('random_sights_out_free', {amount: amount}) // query outdoor+free
-      console.log("dataaaa3 " + data)
+      // console.log("dataaaa3 " + data)
       return data
     } 
 
     const {data, error} = await supabase.rpc('random_sights_out', {amount: amount}) // query outdoor
-    console.log("dataaaa4 " + data)
+    // console.log("dataaaa4 " + data)
     return data
   }
 
   if ( filter.free ) {
     const {data, error} = await supabase.rpc('random_sights_free', {amount: amount})
-    console.log("dataaaa5 " + data)
+    // console.log("dataaaa5 " + data)
     return data
   } 
   console.log("heje")
   const {data, error} = await supabase.rpc('random_sights', {amount: amount})
   if (error) return error
-  console.log("dataaaa6 ")
+  // console.log("dataaaa6 ")
   return data
 }

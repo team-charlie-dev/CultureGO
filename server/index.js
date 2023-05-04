@@ -18,7 +18,8 @@ import {
   getTagValue,
   getRandomSights,
   updateFilter,
-  getWithFilter
+  getWithFilter,
+  filter
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -206,8 +207,10 @@ app.get("/algorithm", async (req, res) => {
   const sights = await getRandomSights(10)
   // tar fram userID
   const userID = req.query.userID;
+  // skickar tillbaka 3 random sights 
+  if( filter.random ) res.send([sights[0], sights[1], sights[2], sights[3]])
   // kallar algon med random sights och usrID
-  res.send(await algorithm(userID, sights))
+  else  res.send(await algorithm(userID, sights))
   
 })
 
