@@ -1,2 +1,2 @@
-const serverURL = 'localhost';
+const serverURL = process.env.REACT_APP_SERVER_URL || "localhost";
 export default serverURL;
