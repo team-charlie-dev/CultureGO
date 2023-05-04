@@ -106,14 +106,14 @@ export const getSubTags = async (sightId) => {
 }
 
 export const getTagValue = async (userId) => {
-  const {data, error} = await supabase.from('tag_values').select('tag_id, value').eq('user_id', 'cfb5b9bd-ece8-470e-89c0-8ac52122652a')
+  const {data, error} = await supabase.from('tag_values').select('tag_id, value').eq('user_id', userId)
   if(error) return error
 
   return data
 }
 
-export const getRandomSights = async(amount) => {
-  const {data, error} = await supabase.rpc('random_sights')
+export const getRandomSights = async(amount, userId) => {
+  const {data, error} = await supabase.rpc('random_sights', {amount: amount, usr: userId})
   if(error) return error
 
   const splicedData = data.splice(0, amount)
