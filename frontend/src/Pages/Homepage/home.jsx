@@ -7,7 +7,6 @@ import City from "../../Components/icons/City";
 import serverUrl from '../../address'
 
 import FullCard from "../../Components/FullCard/FullCard";
-
 import Card from "./Card";
 
 const getOpenHoursToday = (openHours) => {
@@ -46,32 +45,13 @@ const emptyItem = {
 }
 
 const Home = ({setIsLoggedin}) => {
-  const [itemData, setItemData] = useState({
-    sightId: "",
-    name: "",
-    shortInfo: "",
-    images: [],
-    shortPrice: "",
-    openHoursToday: "",
-    location: "",
-  });
-
-  const [nextItemData, setNextItemData] = useState({
-    name: "",
-    shortInfo: "",
-    images: [],
-    shortPrice: "",
-    openHoursToday: "",
-    location: "",
-  });
-
-  const [currentSight, setCurrentSight] = useState(15)
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
-
+  
   useEffect(() => {
+    var ignore = false;
     const fetchData = async () => {
-      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=5`, {
+      const response = await fetch(`http://${serverUrl}:4000/algorithm`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -81,15 +61,18 @@ const Home = ({setIsLoggedin}) => {
       if(response.status == 403){
         setIsLoggedin(false)
       }
+      if (ignore)
+        return;
       setSights(data)
-
+      // console.log(data)
     };
     fetchData();
 
+    return () => ignore = true
   }, []);
   
   const fetchSights = async () => {
-    fetch(`http://${serverUrl}:4000/getitem?amount=5`, {
+    fetch(`http://${serverUrl}:4000/algorithm`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -102,14 +85,11 @@ const Home = ({setIsLoggedin}) => {
     }
 
   function updateSight() {
-
-    console.log(sights.length)
-
+    // console.log(sights.length)
     if (sights.length < 3)
       fetchSights()
 
     setSights(arr => arr.slice(1))
-    
     setCurrentImage(0)
   }
 
@@ -126,32 +106,10 @@ const Home = ({setIsLoggedin}) => {
     else return emptyItem
   }
 
-  async function handleLikeClick(swipe) {
-    const response = await sendSwipeMessage(sights[0].sight_id, true)
-
-    if(response.status == 403){
-      setIsLoggedin(false)
-    }
-    if (!swipe)
-      updateSight()
-  }
-
-  async function handleDislikeClick(swipe) {
-    const response = await sendSwipeMessage(sights[0].sight_id, false)
-
-    if (response.status == 403) {
-      setIsLoggedin(false)
-    }
-
-    if (!swipe)
-      updateSight()
-  }
-
   const sendSwipeMessage = async (sightId, like) => {
+    // console.log(sights)
 
-    console.log(sights)
-
-    return await fetch(`http://${serverUrl}:4000/swipe`, {
+    const response = await fetch(`http://${serverUrl}:4000/swipe`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -163,6 +121,12 @@ const Home = ({setIsLoggedin}) => {
         liked: like
       }),
     })
+
+    if (response.status == 403) {
+      setIsLoggedin(false)
+    }
+
+    updateSight()
   }
 
   const lift = (e) => {
@@ -179,7 +143,6 @@ const Home = ({setIsLoggedin}) => {
     document.getElementById("disable1").style.opacity = 0;
     document.getElementById("disable2").style.opacity = 0;
     document.getElementById("disable3").style.opacity = 0;
-
   }
 
   var holding = false;
@@ -190,14 +153,12 @@ const Home = ({setIsLoggedin}) => {
   var StartPosY = 0;
 
   const move = (e) => {
-
     if (e.clientX == NaN || e.clientX == null) {
       var clientX = e.touches[0].clientX;
     } if (e.clientY == NaN || e.clientY == null) {
       var clientY = e.touches[0].clientY;
     }
     var procent = (-startX + clientX) / window.innerWidth;
-
 
     if (holding) {
       document.getElementById("upperCard").style.left = -startX + clientX + "px";
@@ -212,8 +173,6 @@ const Home = ({setIsLoggedin}) => {
 
     return Math.sqrt(x * x + y * y);
   }
-
-  var i = 0;
 
   const release = (e) => {
     if (e.clientX == NaN || e.clientX == null) {
@@ -230,7 +189,6 @@ const Home = ({setIsLoggedin}) => {
     var middlePosY = StartPosY + window.innerHeight / 2;
     var r = 150;
 
-
     if (getDistance(middlePosX, middlePosY, window.innerWidth / 2, window.innerHeight / 2) > r) {
       moveAway(StartPosX, 0);
     } else {
@@ -239,8 +197,7 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const moveHome = (xs, ys) => {
-    console.log("move home")
-
+    // console.log("move home")
     var nrofFrames = 10;
 
     var xPos = xs;
@@ -261,7 +218,6 @@ const Home = ({setIsLoggedin}) => {
         document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
       }
 
-
       if (yPos <= 0) {
         document.getElementById("upperCard").style.top = 0;
       } else {
@@ -279,7 +235,7 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const moveAway = (xs, ys) => {
-    console.log("moveAway")
+    // console.log("moveAway")
     var nrofFrames = 10;
 
     var xPos = xs;
@@ -302,7 +258,6 @@ const Home = ({setIsLoggedin}) => {
         document.getElementById("upperCard").style.top = 0;
         document.getElementById("upperCard").style.left = 0;
 
-
         document.getElementById("upperCard").style.transform = "rotate(0deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
@@ -311,7 +266,6 @@ const Home = ({setIsLoggedin}) => {
         document.getElementById("upperCard").src = document.getElementById("lowerCard").src
         document.getElementById("upperCard").style.top = 0;
         document.getElementById("upperCard").style.left = 0;
-
 
         document.getElementById("upperCard").style.transform = "rotate(" + 0 + "deg)";
         isOut(movespeedX);
@@ -322,13 +276,7 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const isOut = (movespeedX) => {
-
-    if (movespeedX > 0) {
-      handleLikeClick(true)
-    } else {
-      handleDislikeClick(true)
-    }
-    updateSight()
+    sendSwipeMessage(sights[0].sight_id, movespeedX > 0)
   }
   
   const [infoCard, setInfoCard] = useState(
@@ -358,7 +306,7 @@ const Home = ({setIsLoggedin}) => {
         </div>
         <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
           <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
-          <Buttons currentSight={currentSight} sights={sights} updateSight={updateSight} handleLikeClick={handleLikeClick} handleDislikeClick={handleDislikeClick} />
+          <Buttons handleLikeClick={() => sendSwipeMessage(sights[0].sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0].sight_id, false)} />
         </div>
       </div>
 
@@ -369,18 +317,15 @@ const Home = ({setIsLoggedin}) => {
         </div>
         <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
           <Card mode={"lowerCard"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
-          <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} nextItemData={[nextItemData, setNextItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights} />
+          <Buttons />
         </div>
       </div>
       
       { infoCard.show ?
-      <div className="absolute h-full w-full pt-20 z-50">
-        {infoCard.show ?  <FullCard infoState={[infoCard, setInfoCard]}/> : <></>}
-      </div>
-      :
-      <></>
-
-      }
+        <div className="absolute h-full w-full pt-20 z-50">
+          <FullCard infoState={[infoCard, setInfoCard]}/>
+        </div> 
+      : <></> }
       </>
   );
 };
@@ -389,10 +334,10 @@ const Buttons = ({ handleLikeClick, handleDislikeClick }) => {
   return (
     <div id="disable2" className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
-        <div onClick={() => handleDislikeClick(false)}>
+        <div onClick={handleLikeClick}>
           <img src={Dislike}></img>
         </div>
-        <div onClick={() => handleLikeClick(false)}>
+        <div onClick={handleLikeClick}>
           <img src={Like}></img>
         </div>
       </div>
