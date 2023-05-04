@@ -19,7 +19,8 @@ import {
   getRandomSights,
   updateFilter,
   getWithFilter,
-  filter
+  filter,
+  removeLikes
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -32,7 +33,7 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   //if the request is to signup or signin, we don't need to check for a token
-  if (req.path === "/signup" || req.path === "/signin" || req.path === "/algorithm" || req.path === "/random" || req.path === "/tagvalues" || req.path === "/filter") {
+  if (req.path === "/signup" || req.path === "/signin" || req.path === "/algorithm") {
     return next();
   }
   const token = req.headers["x-access-token"];
@@ -61,7 +62,7 @@ app.post("/signup", async (req, res) => {
   const hashedPass = bcryptjs.hashSync(password, 8);
   const userData = await createUser(username, hashedPass);
 
-  if (userData[0].message || userData[0].message === "user already exists") {
+  if (userData.message && userData.message === "user already exists") {
     return res.send({ userData });
   }
   const token = jsonwebtoken.sign(
@@ -147,18 +148,15 @@ app.get("/getitem", async (req, res) => {
 });
 
 app.post("/tags", async (req, res) => {
-  console.log(req.body);
   updateFilter(req.body);
   res.status(200).send();
 });
 
 app.get("/likes", async (req, res) => {
-  let userId = req.query.userId;
+  let userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a';
   let page = req.query.page || 0;
   let filter = req.query.filter || "none";
   let sort = req.query.sort || "new";
-
-  console.log("yes");
 
   res.send(await getLikes(userId, page, filter, sort));
 });
@@ -171,7 +169,9 @@ app.post("/addlikes", async (req, res) => {
 });
 
 app.delete("/likes", (req, res) => {
-  console.log(req.body);
+  let userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a'
+
+  removeLikes(userId, req.body)
 
   res.status(204).send();
 });
@@ -197,26 +197,28 @@ app.get("/subtag", async (req, res) => {
 
 app.get("/tagvalues", async (req, res) => {
   //const userID = req.query.userID;
-  const tagId = req.query.tagId
+  const tagId = req.query.tagId;
 
-  res.send(await getTagValue('cfb5b9bd-ece8-470e-89c0-8ac52122652a', tagId))
-})
+  res.send(await getTagValue("cfb5b9bd-ece8-470e-89c0-8ac52122652a", tagId));
+});
 
 app.get("/algorithm", async (req, res) => {
-  // gettar sights och massa info om dom
-  const sights = await getRandomSights(10)
   // tar fram userID
   const userID = req.query.userID;
+  
+  // gettar sights och massa info om dom
+  const sights = await getRandomSights(100, userID)
+  
   // skickar tillbaka 3 random sights 
   if( filter.random ) res.send([sights[0], sights[1], sights[2], sights[3]])
+  
   // kallar algon med random sights och usrID
   else  res.send(await algorithm(userID, sights))
-  
 })
 
 app.get("/random", async (req, res) => {
-  res.send(await getRandomSights())
-})
+  res.send(await getRandomSights());
+});
 
 app.listen(port, () => {
   console.log(`Express server is listening on port: ${port}`);

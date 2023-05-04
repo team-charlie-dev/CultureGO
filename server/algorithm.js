@@ -54,7 +54,7 @@ export const algorithm = async(userId, sights) => {
     for(let i = 0; i < values.length; i++) {
       ht.set(values[i].tag_id, values[i].value)
     }
-    console.log(ht.get('fcde0ef4-3083-4898-821f-2f5a1893a25c'))
+   // console.log(ht.get('fcde0ef4-3083-4898-821f-2f5a1893a25c'))
   
     const similarities = []
     let similarity = 0

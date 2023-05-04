@@ -37,78 +37,44 @@ export const getItems = async (amount, user) => {
   if (error) return error;
 
   // TODO fixa så att den väljer annorlunda varje gång
-  const splicedData = data.splice(0, amount);
-  return await Promise.all(
-    splicedData.map(
-      async ({
-        sight_id,
-        name,
-        short_info,
-        long_info,
-        price,
-        main_tag_id,
-        address_id,
-        number_of_img,
-        short_price,
-      }) => {
-        const images = [];
-        const open_hours = await getOpenHours(sight_id);
-        const location = await getLocation(address_id);
 
-        for (let i = 1; i <= number_of_img; i++)
-          images.push(BASE_IMG_URL + "sights/" + sight_id + "/" + i + ".jpg");
+  const splicedData = data.splice(0, amount)
+  console.log('hej');
+  return await Promise.all(splicedData.map(async ({sight_id, name, short_info, long_info, price, main_tag_id, address_id, number_of_img, short_price}) => {
+    const images = []
+    const open_hours = await getOpenHours(sight_id)
+    const location = await getLocation(address_id)
 
-        return {
-          sight_id,
-          name,
-          short_info,
-          long_info,
-          price,
-          main_tag_id,
-          address_id,
-          images,
-          short_price,
-          open_hours,
-          location,
-        };
-      }
-    )
-  );
-};
+    for (let i = 1; i <= number_of_img; i++)
+      images.push(BASE_IMG_URL + 'sights/' + sight_id + '/' + i + '.jpg')
+
+    return {sight_id, name, short_info, long_info, price, main_tag_id, address_id, images, short_price, open_hours, location}
+  }))
+}
 
 export const getOpenHours = async (sightId) => {
-  const { data, error } = await supabase
-    .from("open_hours")
-    .select()
-    .eq("sight_id", sightId);
-  return data[0];
-};
+  const {data, error} = await supabase.from('open_hours').select().eq('sight_id', sightId)
+  return data ? data[0] : []
+}
 
 export const getLocation = async (addressId) => {
-  const { data, error } = await supabase
-    .from("addresses")
-    .select("location")
-    .eq("address_id", addressId);
-  // console.log(data[0].location)
-  return data[0].location;
-};
+  const {data, error} = await supabase.from('addresses').select('location').eq('address_id', addressId)
+  return data[0].location
+}
+
 
 export const getLikes = async (userId, page, filter, sort) => {
   const { data, error } = await supabase
-    .from("liked_sights")
-    .select("user_id, liked_at, sights (sight_id, name)")
-    .order("liked_at", { ascending: sort === "old" })
-    .eq("user_id", userId)
-    .range(page * 10, page * 10 + 9);
+    .from('liked_sights')
+    .select('user_id, liked_at, sights (sight_id, name)')
+    .order('liked_at', { ascending: sort === "old" })
+    .eq('user_id', userId)
+    .range(page * 10, page * 10 + 9)
+    
+  if (error) return error
 
-  if (error) return error;
-
-  console.log("working");
-
-  console.log(data);
-
-  return data;
-};
+  return data
+}
 
 export const getFullInfo = async (sightId, onlyLong) => {
   // commented version doesnt work on sights that are missing in the opening hours table
@@ -140,15 +106,15 @@ export const getSubTags = async (sightId) => {
 }
 
 export const getTagValue = async (userId) => {
-  const {data, error} = await supabase.from('tag_values').select('tag_id, value').eq('user_id', 'cfb5b9bd-ece8-470e-89c0-8ac52122652a')
+  const {data, error} = await supabase.from('tag_values').select('tag_id, value').eq('user_id', userId)
   if(error) return error
 
   return data
 }
 
-export const getRandomSights = async(amount) => {
+export const getRandomSights = async(amount, userId) => {
   // gettar random sights
-  const data = await getWithFilter(amount)
+  const data = await getWithFilter(amount, userId)
 
   // gettar varje sights resterande info
   const splicedData = data.splice(0, amount)
@@ -178,7 +144,7 @@ export const updateFilter = async(newBoost) => {
 }
 
 // filtering the get with ugly if else spaghetti nest
-export const getWithFilter = async(amount) => {
+export const getWithFilter = async(amount, userId) => {
   console.log("filter settings!!!")
   console.log('booooooost outdoor ' + filter.outdoor)
   console.log('booooooost indoor ' + filter.indoor)
@@ -188,37 +154,35 @@ export const getWithFilter = async(amount) => {
   if ( filter.indoor ) {
 
     if ( filter.free )  {
-      const {data, error} = await supabase.rpc('random_sights_in_free', {amount: amount}) // query indoor+free
-      // console.log("dataaaa1 " + data)
+      const {data, error} = await supabase.rpc('random_sights_in_free', {amount: amount, usr: userId}) // query indoor+free
       return data
     } 
 
-    const {data, error} = await supabase.rpc('random_sights_in', {amount: amount}) // query indoor
-    // console.log("dataaaa2 " + data)
+    const {data, error} = await supabase.rpc('random_sights_in', {amount: amount, usr: userId}) // query indoor
     return data
   }
 
   if ( filter.outdoor ) {
 
     if ( filter.free ) { 
-      const {data, error} = await supabase.rpc('random_sights_out_free', {amount: amount}) // query outdoor+free
-      // console.log("dataaaa3 " + data)
+      const {data, error} = await supabase.rpc('random_sights_out_free', {amount: amount, usr: userId}) // query outdoor+free
       return data
     } 
 
-    const {data, error} = await supabase.rpc('random_sights_out', {amount: amount}) // query outdoor
-    // console.log("dataaaa4 " + data)
+    const {data, error} = await supabase.rpc('random_sights_out', {amount: amount, usr: userId}) // query outdoor
     return data
   }
 
   if ( filter.free ) {
-    const {data, error} = await supabase.rpc('random_sights_free', {amount: amount})
-    // console.log("dataaaa5 " + data)
+    const {data, error} = await supabase.rpc('random_sights_free', {amount: amount, usr: userId})
     return data
   } 
-  console.log("heje")
-  const {data, error} = await supabase.rpc('random_sights', {amount: amount})
+  
+  const {data, error} = await supabase.rpc('random_sights', {amount: amount, usr: userId})
   if (error) return error
-  // console.log("dataaaa6 ")
   return data
+}
+
+export const removeLikes = async (userId, sightIds) => {
+  await supabase.from('liked_sights').delete().eq('user_id', userId).in('sight_id', sightIds)
 }
