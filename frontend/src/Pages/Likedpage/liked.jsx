@@ -114,7 +114,8 @@ const Liked = ({setIsLoggedin}) => {
             {
                 let card = <div 
                 className=" cursor-pointer" 
-                onClick={() => handleInfoCard (sight)}>
+                onClick={() => handleInfoCard (sight)}
+                key={sight.sights.sight_id}>
                     <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
                     img={`https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
                 </div>
