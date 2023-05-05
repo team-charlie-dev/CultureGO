@@ -63,8 +63,11 @@ app.post("/signup", async (req, res) => {
   const hashedPass = bcryptjs.hashSync(password, 8);
   const userData = await createUser(username, hashedPass);
 
-  if (userData.message && userData.message === "user already exists") {
-    return res.send({ userData });
+  if (userData.error && userData.error === "User already exists") {
+    return res.send({
+      message: "Signup unsuccessful",
+      error: userData.error,
+    });
   }
   const token = jsonwebtoken.sign(
     { id: userData.username },
@@ -73,7 +76,11 @@ app.post("/signup", async (req, res) => {
       expiresIn: 86400, // 24 hours
     }
   );
-  return res.send({ ...userData[0], token });
+  const data = {
+    message: "Signup successful",
+    userData: { ...userData[0], token },
+  };
+  return res.send(data);
 });
 
 // tar emot username och password från frontend
@@ -104,8 +111,10 @@ app.post("/signin", async (req, res) => {
     );
     data.message = "Login successful";
     data.userData = { user_id: user.user_id, username: user.username, token };
+    return res.send(data);
   }
-  res.send({ data });
+  data.error = "Password incorrect";
+  res.send(data);
 });
 
 app.get("/validatetoken", async (req, res) => {
