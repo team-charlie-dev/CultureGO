@@ -4,220 +4,340 @@ import Dislike from "../../Components/icons/Dislike.svg";
 import Logo from "../../Components/icons/Logo.svg";
 import CityButton from "../../Components/buttons/button";
 import City from "../../Components/icons/City";
-import Arrow from "../../Components/icons/Arrow";
 import serverUrl from '../../address'
-import Walleticon from "../../Components/icons/WalletIcon"
-import LocationIcon from "../../Components/icons/LocationIcon"
-import Clockicon from "../../Components/icons/ClockIcon"
 
-const userId = 'cfb5b9bd-ece8-470e-89c0-8ac52122652a' //charlie
+import FullCard from "../../Components/FullCard/FullCard";
+import Card from "./Card";
 
 const getOpenHoursToday = (openHours) => {
   const day = new Date().getDay()
-  if(openHours) {
-  switch (day) {
-    case 0:
-      return openHours.sunday
-    case 1:
-      return openHours.monday
-    case 2:
-      return openHours.tuesday
-    case 3:
-      return openHours.wednesday
-    case 4:
-      return openHours.thursday
-    case 5:
-      return openHours.friday
-    case 6:
-      return openHours.saturday
-    default:
-      return '-'
-    }    
+  if (openHours) {
+    switch (day) {
+      case 0:
+        return openHours.sunday
+      case 1:
+        return openHours.monday
+      case 2:
+        return openHours.tuesday
+      case 3:
+        return openHours.wednesday
+      case 4:
+        return openHours.thursday
+      case 5:
+        return openHours.friday
+      case 6:
+        return openHours.saturday
+      default:
+        return '-'
+    }
   }
   return '-'
 }
 
-const Home = () => {
-  const [itemData, setItemData] = useState({
-    name: "",
-    shortInfo: "",
-    images: [],
-    shortPrice: "",
-    openHoursToday: "",
-    location: "",
-  });
-  const [currentSight, setCurrentSight] = useState(15)
+const emptyItem = {
+  sightId: "",
+  name: "",
+  shortInfo: "",
+  images: [],
+  shortPrice: "",
+  openHoursToday: "",
+  location: "",
+}
+
+const Home = ({setIsLoggedin}) => {
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
-
+  
   useEffect(() => {
+    var ignore = false;
     const fetchData = async () => {
-      const response = await fetch(`http://${serverUrl}:4000/getitem?amount=50`);
-      const data = await response.json();
-      setSights(data)
-      setItemData({
-        name: data[currentSight].name,
-        shortInfo: data[currentSight].short_info,
-        images: data[currentSight].images,
-        shortPrice: data[currentSight].short_price,
-        openHoursToday: getOpenHoursToday(data[currentSight].open_hours),
-        location: data[currentSight].location
-      });
-    };
-    fetchData();
-    if(currentSight === 23) {
-      setCurrentSight(0)
-    } else {
-      setCurrentSight(currentSight + 1)
-    }
-  }, []);
-
-  const handleImageChange = (side) => {
-    if(side === "left") {
-      if(currentImage === 0) {
-        setCurrentImage(itemData.images.length - 1)
-      } else {
-        setCurrentImage(currentImage - 1)
-      }
-    } else if(side === "right"){
-      if(currentImage === itemData.images.length - 1) {
-        setCurrentImage(0)
-      } else {
-        setCurrentImage(currentImage + 1)
-      }
-    }
-  }
-
-  return (
-    <div className="bg-white w-full relative overflow-hidden h-[calc(100%-var(--navbar-height))]">
-      <Header />
-      <div className="flex justify-end px-7">
-        <CitySelector />
-      </div>
-
-      <div className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-        <div className="relative h-[85%] w-auto font-inriaSans px-3">
-          <div className="w-full h-full absolute flex">
-            <div className="w-1/2 h-full relative" onClick={()=>handleImageChange('left')}></div>
-            <div className="w-1/2 h-full relative" onClick={()=>handleImageChange('right')}></div>
-          </div>
-          <div
-            style={{
-              backgroundImage:
-                "linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,1))",
-              position: "absolute",
-              width: "100%",
-              height: "10%",
-            }}
-          ></div>
-          <Image imgUrl={itemData.images[currentImage]} />
-          <div className="absolute bottom-0 left-0 right-0 px-3">
-            <InfoBox name={itemData.name} info={itemData.shortInfo} shortPrice = {itemData.shortPrice} openHoursToday={itemData.openHoursToday} location={itemData.location}/>
-          </div>
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-3 flex gap-x-5">
-            {itemData.images.map((image, index) => {
-              return <div 
-                className={`${index===currentImage?'bg-primaryDark':'bg-white'} rounded-full w-3 h-3`} 
-                key={image}
-                onClick={()=>setCurrentImage(index)}
-                />
-            })}
-            
-          </div>
-        </div>
-        <Buttons currentSightData={[currentSight, setCurrentSight]} currentItemData={[itemData, setItemData]} currentImageData={[currentImage, setCurrentImage]} sights={sights}/>
-      </div>
-    </div>
-  );
-};
-
-export default Home;
-
-const Image = ({ imgUrl }) => {
-  return (
-    <div className="h-full">
-      <img alt={imgUrl} src={imgUrl} className="rounded-b-[30px] object-cover h-full"></img>
-    </div>
-  );
-};
-
-const InfoBox = ({ name, info , shortPrice, openHoursToday, location}) => {
-  return (
-    <div className="items-center bg-infoColor rounded-[30px] p-3 text-white backdrop-blur-[2px] bg-opacity-70">
-      <h1 className="italic text-2xl px-5 font-bold text-sh" style={{textShadow:'1px 1px 5px rgba(0,0,0, 0.7)'}}>{name}</h1>
-      <p className="text-base p-5 text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{info} </p>
-      <div className="flex justify-between px-5 items-center">
-        <div className="grid grid-cols-2 w-2/3">
-          <div className="flex">
-          <Clockicon />
-          <p className="text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{openHoursToday || '-'}</p>
-          </div>
-          <div className="flex">
-          <LocationIcon />
-          <p className="text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{location || '-'}</p>
-          </div>
-          <div className="flex">
-          <Walleticon />
-          <p className="text-sh" style={{textShadow:'2px 2px 5px rgba(0,0,0, 1)'}}>{shortPrice == null ? '-' : shortPrice}</p>
-          </div>
-
-        </div>
-        <Arrow />
-      </div>
-    </div>
-  );
-};
-
-const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItemData: [itemData, setItemData], sights, currentImageData:[currentImage, setCurrentImage]}) => {
-  function updateSight() {
-    if(currentSight === 23) {
-      setCurrentSight(0)
-    } else {
-      setCurrentSight(currentSight + 1)
-    }
-    setItemData({
-      name: sights[currentSight].name,
-      shortInfo: sights[currentSight].short_info,
-      images: sights[currentSight].images,
-      shortPrice: sights[currentSight].short_price,
-      openHoursToday: getOpenHoursToday(sights[currentSight].open_hours),
-      location: sights[currentSight].location
-    });
-    setCurrentImage(0)
-  }
-  async function handleLikeClick(){
-    let likedSightId = ''
-    if(currentSight === 0) {
-      likedSightId = sights[sights.length-1].sight_id
-    }
-    else {
-      likedSightId = sights[currentSight-1].sight_id
-    }
-    await fetch(`http://${serverUrl}:4000/addlikes`, {
-      method: "POST",
+      const response = await fetch(`http://${serverUrl}:4000/algorithm?userID=${localStorage.getItem('user_id')}`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "x-access-token": localStorage.getItem('token')
+      }})
+      const data = await response.json();
+      if(response.status == 403){
+        setIsLoggedin(false)
+      }
+      if (ignore)
+        return;
+      setSights(data)
+      // console.log(data)
+    };
+    fetchData();
+
+    return () => ignore = true
+  }, []);
+  
+  const fetchSights = async () => {
+    fetch(`http://${serverUrl}:4000/algorithm?userID=${localStorage.getItem('user_id')}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": localStorage.getItem('token')
+      }})
+      .then(res => res.json())
+      .then(json => {
+        setSights(arr => arr.concat(json))
+      })
+    }
+
+  function updateSight() {
+    // console.log(sights.length)
+    if (sights.length < 3)
+      fetchSights()
+
+    setSights(arr => arr.slice(1))
+    setCurrentImage(0)
+  }
+
+  const getItemData = (sight) => {
+    if (sight)
+      return {
+        name: sight.name,
+        shortInfo: sight.short_info,
+        images: sight.images,
+        shortPrice: sight.short_price,
+        openHoursToday: getOpenHoursToday(sight.open_hours),
+        location: sight.location
+      }
+    else return emptyItem
+  }
+
+  const sendSwipeMessage = async (sightId, like) => {
+    // console.log(sights)
+
+    const response = await fetch(`http://${serverUrl}:4000/swipe`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        'x-access-token': localStorage.getItem('token')
       },
       body: JSON.stringify({
-        userId: userId,
-        sightId: likedSightId,
+        userId: localStorage.getItem('user_id'),
+        sightId: sightId,
+        liked: like
       }),
-    });
+    })
+
+    if (response.status == 403) {
+      setIsLoggedin(false)
+    }
+
     updateSight()
   }
 
-  async function handleDislikeClick(){
-    //TODO: handle dislike
-    updateSight()
+  const lift = (e) => {
+    if (e.clientX == NaN || e.clientX == null) {
+      var clientX = e.touches[0].clientX;
+    } if (e.clientY == NaN || e.clientY == null) {
+      var clientY = e.touches[0].clientY;
+    }
+
+    holding = true;
+    startX = clientX;
+    startY = clientY;
+
+    document.getElementById("disable1").style.opacity = 0;
+    document.getElementById("disable2").style.opacity = 0;
+    document.getElementById("disable3").style.opacity = 0;
+  }
+
+  var holding = false;
+  var startX;
+  var startY;
+
+  var StartPosX = 0;
+  var StartPosY = 0;
+
+  const move = (e) => {
+    if (e.clientX == NaN || e.clientX == null) {
+      var clientX = e.touches[0].clientX;
+    } if (e.clientY == NaN || e.clientY == null) {
+      var clientY = e.touches[0].clientY;
+    }
+    var procent = (-startX + clientX) / window.innerWidth;
+
+    if (holding) {
+      document.getElementById("upperCard").style.left = -startX + clientX + "px";
+      document.getElementById("upperCard").style.top = 0;
+      document.getElementById("upperCard").style.transform = "rotate(" + 25 * (procent) + "deg)";
+    }
+  }
+
+  const getDistance = (x1, y1, x2, y2) => {
+    let y = x2 - x1;
+    let x = y2 - y1;
+
+    return Math.sqrt(x * x + y * y);
+  }
+
+  const release = (e) => {
+    if (e.clientX == NaN || e.clientX == null) {
+      var clientX = e.changedTouches[0].clientX;
+    } if (e.clientY == NaN || e.clientY == null) {
+      var clientY = e.changedTouches[0].clientY;
+    }
+
+    holding = false;
+    StartPosX = -startX + clientX;
+    StartPosY = -startY + clientY;
+
+    var middlePosX = StartPosX + window.innerWidth / 2;
+    var middlePosY = StartPosY + window.innerHeight / 2;
+    var r = 150;
+
+    if (getDistance(middlePosX, middlePosY, window.innerWidth / 2, window.innerHeight / 2) > r) {
+      moveAway(StartPosX, 0);
+    } else {
+      moveHome(StartPosX, 0);
+    }
+  }
+
+  const moveHome = (xs, ys) => {
+    // console.log("move home")
+    var nrofFrames = 10;
+
+    var xPos = xs;
+    var yPos = ys;
+
+    var movespeedX = xPos / nrofFrames;
+    var movespeedY = yPos / nrofFrames;
+
+    var myInterval = setInterval(function () {
+      if(!document.getElementById("upperCard")){
+        clearInterval(myInterval)
+        return
+      }
+      if (xPos <= 0) {
+        document.getElementById("upperCard").style.left = 0;
+      } else {
+        xPos = (xPos - movespeedX);
+        document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
+      }
+
+      if (yPos <= 0) {
+        document.getElementById("upperCard").style.top = 0;
+      } else {
+        yPos = (yPos - movespeedY);
+        document.getElementById("upperCard").style.top = parseInt(yPos) + "px";
+      }
+
+      if (parseInt(yPos) <= 0 && parseInt(xPos) <= 0) {
+        document.getElementById("upperCard").style.top = 0;
+        document.getElementById("upperCard").style.left = 0;
+        document.getElementById("upperCard").style.transform = "rotate(" + 0 * (0) + "deg)";
+        clearInterval(myInterval);
+      }
+    }, 5);
+  }
+
+  const moveAway = (xs, ys) => {
+    // console.log("moveAway")
+    var nrofFrames = 10;
+
+    var xPos = xs;
+    var yPos = ys;
+
+    var movespeedX = 0.4 * xPos / nrofFrames;
+    var movespeedY = 0.4 * yPos / nrofFrames;
+
+    var myInterval = setInterval(function () {
+
+      xPos = (xPos + movespeedX);
+      document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
+
+      yPos = (yPos + movespeedY);
+      document.getElementById("upperCard").style.top = parseInt(yPos) + "px";
+
+
+      if (yPos <= -window.innerHeight || yPos >= window.innerHeight) {
+        document.getElementById("upperCard").src = document.getElementById("lowerCard").src
+        document.getElementById("upperCard").style.top = 0;
+        document.getElementById("upperCard").style.left = 0;
+
+        document.getElementById("upperCard").style.transform = "rotate(0deg)";
+        isOut(movespeedX);
+        clearInterval(myInterval);
+      }
+      if (xPos <= -window.innerWidth || xPos >= window.innerWidth) {
+        document.getElementById("upperCard").src = document.getElementById("lowerCard").src
+        document.getElementById("upperCard").style.top = 0;
+        document.getElementById("upperCard").style.left = 0;
+
+        document.getElementById("upperCard").style.transform = "rotate(" + 0 + "deg)";
+        isOut(movespeedX);
+        clearInterval(myInterval);
+      }
+
+    }, 5);
+  }
+
+  const isOut = (movespeedX) => {
+    sendSwipeMessage(sights[0].sight_id, movespeedX > 0)
+  }
+  
+  const [infoCard, setInfoCard] = useState(
+    {
+        show: false, 
+        id: '5949257c-2cfa-4380-a609-6075a503e5fa',
+        name: 'Kiungsträdgården',
+        nmbrOfPics: 1
+    }
+  );
+
+  const cardClickHandler = () => {
+    setInfoCard({
+      show: !infoCard.show,
+      id: sights[0].sight_id,
+      name: sights[0].name,
+      nmbrOfPics: sights[0].images.length==0 ? 0 : 1
+    })
   }
 
   return (
-    <div className="h-[15%] flex-col justify-center flex p-5">
+    <>
+      <div id="upperCard" className={`rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]`}>
+        <Header />
+        <div id="disable1" className="flex justify-end px-7">
+          <CitySelector />
+        </div>
+        <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
+          <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
+          <Buttons handleLikeClick={() => sendSwipeMessage(sights[0].sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0].sight_id, false)} />
+        </div>
+      </div>
+
+      <div className="bg-white z-10 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
+        <Header />
+        <div className="flex justify-end px-7">
+          <CitySelector />
+        </div>
+        <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
+          <Card mode={"lowerCard"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
+          <Buttons />
+        </div>
+      </div>
+      
+      { infoCard.show ?
+        <div className="absolute h-full w-full pt-20 z-50">
+          <FullCard infoState={[infoCard, setInfoCard]}/>
+        </div> 
+      : <></> }
+      </>
+  );
+};
+
+const Buttons = ({ handleLikeClick, handleDislikeClick }) => {
+  return (
+    <div id="disable2" className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
-        <div onClick={() => handleDislikeClick()}>
+        <div onClick={handleDislikeClick}>
           <img src={Dislike}></img>
         </div>
-        <div onClick={() => handleLikeClick()}>
+        <div onClick={handleLikeClick}>
           <img src={Like}></img>
         </div>
       </div>
@@ -227,7 +347,7 @@ const Buttons = ({currentSightData: [currentSight, setCurrentSight], currentItem
 
 const Header = () => {
   return (
-    <header className="p-3 pt-5 h-[10%]">
+    <header id="disable3" className="p-3 pt-5 h-[10%]">
       <img src={Logo}></img>
     </header>
   );
@@ -248,4 +368,4 @@ const CitySelector = () => {
   );
 };
 
-const ArrowButton = () => {};
+export default Home;

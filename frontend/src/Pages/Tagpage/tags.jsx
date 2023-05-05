@@ -5,7 +5,7 @@ import Free from '../../Components/icons/tag-page-icons/Free.png'
 import Random from '../../Components/icons/tag-page-icons/Random.png'
 import TagCard from './TagCard'
 
-export default function Tags({changeScreen}) {
+export default function Tags({changeScreen, setIsLoggedin}) {
   //Outdoor = 0, Indoor = 1, Free = 2, Random = 3
   const [clicked, changeClicked] = useState([false, false, false, false])
   const [doneClicked, changeDoneClicked] = useState(false)
@@ -29,10 +29,16 @@ export default function Tags({changeScreen}) {
     fetch('http://localhost:4000/tags', {
             method: "POST",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                'x-access-token': localStorage.getItem('token')
             },
             body: JSON.stringify({outdoor, indoor, free, random})
         })
+      .then(res => {
+        if(res.status == 403){
+          setIsLoggedin(false)
+        }
+      })
 
     changeScreen('home')
   }

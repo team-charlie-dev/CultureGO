@@ -14,7 +14,9 @@ import FullCard from "../../Components/FullCard/FullCard.jsx";
 import Address from "../../address";
 
 
-const Liked = () => {
+const Liked = ({setIsLoggedin}) => {
+
+    const imgPlaceholder = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg"
 
     var [list, setList] = useState([])
     var [remove, setRemove] = useState([])
@@ -25,6 +27,9 @@ const Liked = () => {
     var [contentPage, setContentPage] = useState(0)
 
     var scrollRef = useRef()
+    const delRef = useRef()
+
+    delRef.current = del
 
     /* state for info/full card */
     const [infoCard, setInfoCard] = useState(
@@ -35,6 +40,30 @@ const Liked = () => {
             nmbrOfPics: 1
         }
     );
+
+    const handleInfoCard = (sight) => {
+        // console.log(delRef.current)
+        if (delRef.current === false){
+            setInfoCard({
+                show: true, 
+                id: sight.sights.sight_id,
+                name: sight.sights.name,
+                nmbrOfPics: sight.sights.number_of_img==0 ? 0 : 1
+            })
+            
+        }
+        else
+        {
+            
+            setInfoCard({
+                show: false, 
+                id: 'null',
+                name: 'null',
+                nmbrOfPics: 1
+            })
+            
+        }
+    }
 
     const fn = (a, value) => {
 
@@ -63,8 +92,15 @@ const Liked = () => {
         let ignore = false
 
         const getData = async () => {
-            let data = await fetch(`http://${Address}:4000/likes?page=${contentPage}&sort=${sortNew?"new":"old"}`)
-                .then(res => {
+            let data = await fetch(`http://${Address}:4000/likes?page=${contentPage}&sort=${sortNew?"new":"old"}&userId=${localStorage.getItem('user_id')}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": localStorage.getItem('token')
+      }}).then(res => {
+                if(res.status == 403){
+                    setIsLoggedin(false)
+                }
                     let json = res.json();
                     return json
                 })
@@ -80,15 +116,10 @@ const Liked = () => {
             {
                 let card = <div 
                 className=" cursor-pointer" 
-                onClick={() => setInfoCard(
-                    {
-                        show: true, 
-                        id: sight.sights.sight_id,
-                        name: sight.sights.name,
-                        nmbrOfPics: 1
-                    })}>
+                onClick={() => handleInfoCard (sight)}
+                key={sight.sights.sight_id}>
                     <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
-                    img={`https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
+                    img={sight.sights.number_of_img==0 ? imgPlaceholder : `https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
                 </div>
                                 
                 setList(ls => {
@@ -125,13 +156,17 @@ const Liked = () => {
             map.delete(id)
         }
 
-        fetch(`http://${Address}:4000/likes`, {
+        const response = fetch(`http://${Address}:4000/likes?userId=${localStorage.getItem('user_id')}`, {
             method: "DELETE",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                "x-access-token": localStorage.getItem('token')
             },
             body: JSON.stringify(remove)
         })
+        if(response.status == 403){
+            setIsLoggedin(false)
+        }
 
         setList(list);
         setRemove([]);
@@ -184,7 +219,7 @@ const Liked = () => {
                 infoCard.show === true ?
                 /* full info card */
                 <div className=" w-full h-full bg-opacity-0 ">
-                    <FullCard infoState={[infoCard, setInfoCard]} />
+                    <FullCard infoState={[infoCard, setInfoCard]} setIsLoggedin={setIsLoggedin} />
                 </div> : ""
             }
 

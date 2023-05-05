@@ -3,12 +3,14 @@ import GoBack from "../icons/GoBack";
 import ClockIcon from "../icons/ClockIcon";
 import WalletIcon from "../icons/WalletIcon";
 import LocationIcon from "../icons/LocationIcon";
+import serverURL from "../../address";
 import { useEffect, useState } from "react";
 
 const Image = ( {data} ) => {
+    const imgPlaceholder = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg"
     const [id, pics] = data;
-    
-    let img =
+    console.log(pics)
+    let img = pics==0 ? imgPlaceholder :  
     `https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${id}/1.jpg`;
     return (
         <div className="h-full">
@@ -73,7 +75,7 @@ const InfoBox = ( {data} ) => {
     );
 };
 
-export default function FullCard({infoState}) {
+export default function FullCard({infoState, setIsLoggedin}) {
 
     const [infoCard, setInfoCard] = infoState;
     const [moreInfo, setMoreInfo] = useState ({
@@ -91,8 +93,16 @@ export default function FullCard({infoState}) {
             // if true, get TimeInfo and PriceInfo as well
         
             // call getInfo
-            let data = await fetch (`http://localhost:4000/info?sightId=${sigtId}&onlyLong=true`)
+            let data = await fetch (`http://${serverURL}:4000/info?sightId=${sigtId}&onlyLong=true`, {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  "x-access-token": localStorage.getItem('token')
+                }})
             .then(res => {
+                if(res.status == 403){
+                    setIsLoggedin(false)
+                }
                 let json = res.json ();
                 return json
             })
@@ -132,7 +142,7 @@ export default function FullCard({infoState}) {
         <div className=" z-30 w-full h-full bg-opacity-0 font-inriaSans ">
             <div className=" relative h-[calc(100vh-var(--navbar-height)-5rem)] ">
                 <Image data={[id, pics]} />
-                <div className="items-center mx-3 rounded-[30px] p-3 text-white bg-infoColor backdrop-blur-[2px] bg-opacity-30 absolute bottom-6 left-0 right-0 max-h-[40%] overflow-scroll overflow-x-hidden ">
+                <div className="items-center mx-3 rounded-[30px] p-3 text-white bg-infoColor backdrop-blur-[2px] bg-opacity-30 absolute bottom-6 left-0 right-0 max-h-[60%] overflow-scroll overflow-x-hidden ">
                     <InfoBox data={[name, moreInfo]}/>
                 </div>
             </div>           
