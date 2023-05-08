@@ -254,7 +254,8 @@ const Home = ({setIsLoggedin}) => {
 
 
       if (yPos <= -window.innerHeight || yPos >= window.innerHeight) {
-        document.getElementById("upperCard").src = document.getElementById("lowerCard").src
+        document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
+        document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
         document.getElementById("upperCard").style.top = 0;
         document.getElementById("upperCard").style.left = 0;
 
@@ -263,7 +264,8 @@ const Home = ({setIsLoggedin}) => {
         clearInterval(myInterval);
       }
       if (xPos <= -window.innerWidth || xPos >= window.innerWidth) {
-        document.getElementById("upperCard").src = document.getElementById("lowerCard").src
+        document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
+        document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
         document.getElementById("upperCard").style.top = 0;
         document.getElementById("upperCard").style.left = 0;
 
@@ -305,7 +307,7 @@ const Home = ({setIsLoggedin}) => {
           <CitySelector />
         </div>
         <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
+          <Card mode={"upperCardImage"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
           <Buttons handleLikeClick={() => sendSwipeMessage(sights[0].sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0].sight_id, false)} />
         </div>
       </div>
@@ -316,7 +318,7 @@ const Home = ({setIsLoggedin}) => {
           <CitySelector />
         </div>
         <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"lowerCard"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
+          <Card mode={"lowerCardImage"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
           <Buttons />
         </div>
       </div>
