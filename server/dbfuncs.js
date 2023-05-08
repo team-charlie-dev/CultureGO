@@ -212,11 +212,6 @@ export const updateFilter = async (newBoost) => {
 
 // filtering the get with ugly if else spaghetti nest
 export const getWithFilter = async (amount, userId) => {
-  console.log("filter settings!!!");
-  console.log("booooooost outdoor " + filter.outdoor);
-  console.log("booooooost indoor " + filter.indoor);
-  console.log("booooooost free " + filter.free);
-  console.log("booooooost random " + filter.random);
 
   const indoor = "c9eaa966-a8ee-41ca-be9e-4480a368a705";
   const outdoor = "06bce9f7-14fc-4f55-a87b-7748ca990aa6";
@@ -288,27 +283,38 @@ export const addDislikes = async (userId, sightId) => {
     .eq("user_id", userId)
     .eq("sight_id", sightId);
 
+  if(error) return error;
+
   if (disliked_sights.length === 0) {
-    const { data:ttl, ttlError } = await supabase.rpc("time_to_live", {
-      days: "7 days",
+    const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
+      days: "5 days",
     });
 
     if (ttlError) return ttlError;
 
-    console.log(ttl)
+    const { data, error } = await supabase.from("disliked_sights").insert([
+      {
+        user_id: userId,
+        sight_id: sightId,
+        time_to_live: ttl,
+        times_disliked: 1,
+      },
+    ]);
 
-    const { data, error } = await supabase
-      .from("disliked_sights")
-      .insert([
-        {
-          user_id: userId,
-          sight_id: sightId,
-          time_to_live: ttl,
-          times_disliked: 1,
-        },
-      ]);
-  } else {
+    if(error) return error
     
+  } else {
+    const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
+      days: "5 days",
+    });
+    const { error } = await supabase
+      .from("disliked_sights")
+      .update({
+        time_to_live: ttl,
+        times_disliked: disliked_sights[0].times_disliked + 1,
+      })
+      .eq("user_id", userId)
+      .eq("sight_id", sightId);
   }
 };
 
