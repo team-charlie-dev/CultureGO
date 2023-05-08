@@ -20,7 +20,9 @@ import {
   updateFilter,
   getWithFilter,
   filter,
-  removeLikes
+  removeLikes,
+  addDislikes,
+  updateTags
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -194,7 +196,11 @@ app.post("/swipe", (req, res) => {
   if (liked)
   {
     addLikes(userId, sightId)
+  } else{
+    addDislikes(userId, sightId)
   }
+
+  updateTags(userId, sightId, liked)
 
   res.sendStatus(204)
 })

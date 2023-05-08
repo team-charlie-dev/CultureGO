@@ -226,3 +226,11 @@ export const removeLikes = async (userId, sightIds) => {
     .eq("user_id", userId)
     .in("sight_id", sightIds);
 };
+
+export const addDislikes = (userId, sightId) => {
+
+}
+
+export const updateTags = (userId, sightId, liked) => {
+
+}
