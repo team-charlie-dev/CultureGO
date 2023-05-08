@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 const app = express();
-const port = 4000;
+const port = 1337;
 
 import {
   getFullInfo,
