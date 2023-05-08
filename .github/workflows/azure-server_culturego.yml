@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'CultureGO'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DAB92F71230E4673BF59C51251F2B9DD }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3209A08E509D4D12B62A39C3BE0CCB6A }}
           package: .
