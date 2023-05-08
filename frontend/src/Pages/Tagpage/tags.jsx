@@ -44,7 +44,7 @@ export default function Tags({ changeScreen, setIsLoggedin }) {
   }
 
   function handleClickDone() {
-    const [indoor, outdoor, free, random] = clicked
+    const [outdoor, indoor, free, random] = clicked
     fetch(`http://localhost:4000/tags?userId=${localStorage.getItem('user_id')}`, {
       method: "POST",
       headers: {
