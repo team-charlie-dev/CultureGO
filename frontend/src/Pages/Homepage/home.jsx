@@ -47,6 +47,7 @@ const emptyItem = {
 const Home = ({setIsLoggedin}) => {
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
+  const [isFetching, setIsFetching] = useState(false)
   
   useEffect(() => {
     var ignore = false;
@@ -72,6 +73,7 @@ const Home = ({setIsLoggedin}) => {
   }, []);
   
   const fetchSights = async () => {
+    setIsFetching(true)
     fetch(`http://${serverUrl}:4000/algorithm?userID=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
@@ -81,12 +83,12 @@ const Home = ({setIsLoggedin}) => {
       .then(res => res.json())
       .then(json => {
         setSights(arr => arr.concat(json))
+        setIsFetching(false)
       })
     }
 
   function updateSight() {
-    // console.log(sights.length)
-    if (sights.length < 3)
+    if (sights.length <= 3 && !isFetching)
       fetchSights()
 
     setSights(arr => arr.slice(1))
@@ -107,8 +109,6 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const sendSwipeMessage = async (sightId, like) => {
-    // console.log(sights)
-
     const response = await fetch(`http://${serverUrl}:4000/swipe`, {
       method: 'POST',
       headers: {
@@ -276,7 +276,7 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const isOut = (movespeedX) => {
-    sendSwipeMessage(sights[0].sight_id, movespeedX > 0)
+    sendSwipeMessage(sights[0]?.sight_id, movespeedX > 0)
   }
   
   const [infoCard, setInfoCard] = useState(
@@ -291,9 +291,9 @@ const Home = ({setIsLoggedin}) => {
   const cardClickHandler = () => {
     setInfoCard({
       show: !infoCard.show,
-      id: sights[0].sight_id,
-      name: sights[0].name,
-      nmbrOfPics: sights[0].images.length==0 ? 0 : 1
+      id: sights[0]?.sight_id,
+      name: sights[0]?.name,
+      nmbrOfPics: sights[0]?.images.length==0 ? 0 : 1
     })
   }
 
@@ -304,9 +304,9 @@ const Home = ({setIsLoggedin}) => {
         <div id="disable1" className="flex justify-end px-7">
           <CitySelector />
         </div>
-        <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
+        <div onTouchEnd={sights.length != 0 ? release : () => {}} onTouchStart={sights.length != 0 ? lift : () => {}} onTouchMove={sights.length != 0 ? move : () => {}} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
           <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
-          <Buttons handleLikeClick={() => sendSwipeMessage(sights[0].sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0].sight_id, false)} />
+          <Buttons handleLikeClick={() => sendSwipeMessage(sights[0]?.sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0]?.sight_id, false)} />
         </div>
       </div>
 
