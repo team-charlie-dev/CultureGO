@@ -216,7 +216,11 @@ export const getWithFilter = async (amount, userId) => {
   const indoor = "c9eaa966-a8ee-41ca-be9e-4480a368a705";
   const outdoor = "06bce9f7-14fc-4f55-a87b-7748ca990aa6";
 
-  if (filter.indoor) {
+  const {data:filters, error:filterError} = await supabase.from('user_filters').select().eq('user_id', userId)
+  console.log("user: ", userId)
+  console.log("filters: ", filters)
+
+  if (filters.indoor) {
     if (filter.free) {
       const { data, error } = await supabase.rpc("random_sights_out_in_free", {
         amount: amount,
