@@ -142,85 +142,144 @@ export const getSubTags = async (sightId) => {
 };
 
 export const getTagValue = async (userId) => {
-  const {data, error} = await supabase.from('tag_values').select('tag_id, value').eq('user_id', userId)
-  if(error) return error
+  const { data, error } = await supabase
+    .from("tag_values")
+    .select("tag_id, value")
+    .eq("user_id", userId);
+  if (error) return error;
 
-  return data
-}
+  return data;
+};
 
-export const getRandomSights = async(amount, userId) => {
+export const getRandomSights = async (amount, userId) => {
   // gettar random sights
-  const data = await getWithFilter(amount, userId)
+  const data = await getWithFilter(amount, userId);
 
   // gettar varje sights resterande info
-  const splicedData = data.splice(0, amount)
-  return await Promise.all(splicedData.map(async ({sight_id, name, short_info, long_info, price, main_tag_id, address_id, number_of_img, short_price}) => {
-    const images = []
-    const open_hours = await getOpenHours(sight_id)
-    const location = await getLocation(address_id)
-    const sub_tags = await getSubTags(sight_id)
+  const splicedData = data.splice(0, amount);
+  return await Promise.all(
+    splicedData.map(
+      async ({
+        sight_id,
+        name,
+        short_info,
+        long_info,
+        price,
+        main_tag_id,
+        address_id,
+        number_of_img,
+        short_price,
+      }) => {
+        const images = [];
+        const open_hours = await getOpenHours(sight_id);
+        const location = await getLocation(address_id);
+        const sub_tags = await getSubTags(sight_id);
 
-    // lägger till img paths
-    for (let i = 1; i <= number_of_img; i++)
-      images.push(BASE_IMG_URL + 'sights/' + sight_id + '/' + i + '.jpg')
+        // lägger till img paths
+        for (let i = 1; i <= number_of_img; i++)
+          images.push(BASE_IMG_URL + "sights/" + sight_id + "/" + i + ".jpg");
 
-      // return ?json obj? med massa info för varje sight
-    return {sight_id, name, short_info, long_info, price, main_tag_id, address_id, images, short_price, open_hours, location, sub_tags}
-  }))
-}
+        // return ?json obj? med massa info för varje sight
+        return {
+          sight_id,
+          name,
+          short_info,
+          long_info,
+          price,
+          main_tag_id,
+          address_id,
+          images,
+          short_price,
+          open_hours,
+          location,
+          sub_tags,
+        };
+      }
+    )
+  );
+};
 
 // adjusting filter values for filter
-export let filter = { 'outdoor': false, 'indoor': false, 'free': false, 'random': false }
-export const updateFilter = async(newBoost) => {
-  filter.outdoor = newBoost.outdoor
-  filter.indoor = newBoost.indoor
-  filter.free = newBoost.free
-  filter.random = newBoost.random
+export const updateFilter = async (newBoost, userId) => {
+  const { error } = await supabase
+    .from("user_filters")
+    .update({
+      outdoor: newBoost.outdoor,
+      indoor: newBoost.indoor,
+      free: newBoost.free,
+      random: newBoost.random,
+    })
+    .eq("user_id", userId);
+};
+
+export const getFilters = async (userId) => {
+  const {data: filters, error} = await supabase.from("user_filters").select().eq("user_id", userId)
+  return(filters[0])
 }
 
 // filtering the get with ugly if else spaghetti nest
-export const getWithFilter = async(amount, userId) => {
-  console.log("filter settings!!!")
-  console.log('booooooost outdoor ' + filter.outdoor)
-  console.log('booooooost indoor ' + filter.indoor)
-  console.log('booooooost free ' + filter.free)
-  console.log('booooooost random ' + filter.random)
+export const getWithFilter = async (amount, userId) => {
+  const indoor = "c9eaa966-a8ee-41ca-be9e-4480a368a705";
+  const outdoor = "06bce9f7-14fc-4f55-a87b-7748ca990aa6";
 
-  const indoor = 'c9eaa966-a8ee-41ca-be9e-4480a368a705'
-  const outdoor = '06bce9f7-14fc-4f55-a87b-7748ca990aa6'
+  const { data: filters, error: filterError } = await supabase
+    .from("user_filters")
+    .select()
+    .eq("user_id", userId);
+  console.log("user: ", userId);
+  console.log("filters: ", filters);
 
-  if ( filter.indoor ) {
+  if (filters[0].indoor) {
+    if (filters[0].free) {
+      const { data, error } = await supabase.rpc("random_sights_out_in_free", {
+        amount: amount,
+        tag: "c9eaa966-a8ee-41ca-be9e-4480a368a705",
+        usr: userId,
+      }); // query indoor+free
+      return data;
+    }
 
-    if ( filter.free )  {
-      
-      const {data, error} = await supabase.rpc('random_sights_out_in_free', {amount: amount, tag: 'c9eaa966-a8ee-41ca-be9e-4480a368a705', usr: userId}) // query indoor+free
-      return data
-    } 
-
-    const {data, error} = await supabase.rpc('random_sights_out_in', {amount: amount, tag: indoor, usr: userId}) // query indoor
-    return data
+    const { data, error } = await supabase.rpc("random_sights_out_in", {
+      amount: amount,
+      tag: indoor,
+      usr: userId,
+    }); // query indoor
+    return data;
   }
 
-  if ( filter.outdoor ) {
+  if (filters[0].outdoor) {
+    if (filters[0].free) {
+      const { data, error } = await supabase.rpc("random_sights_out_in_free", {
+        amount: amount,
+        tag: "06bce9f7-14fc-4f55-a87b-7748ca990aa6",
+        usr: userId,
+      }); // query outdoor+free
+      return data;
+    }
 
-    if ( filter.free ) { 
-      const {data, error} = await supabase.rpc('random_sights_out_in_free', {amount: amount, tag: '06bce9f7-14fc-4f55-a87b-7748ca990aa6', usr: userId}) // query outdoor+free
-      return data
-    } 
-
-    const {data, error} = await supabase.rpc('random_sights_out_in', {amount: amount, tag: outdoor, usr: userId}) // query outdoor
-    return data
+    const { data, error } = await supabase.rpc("random_sights_out_in", {
+      amount: amount,
+      tag: outdoor,
+      usr: userId,
+    }); // query outdoor
+    return data;
   }
 
-  if ( filter.free ) {
-    const {data, error} = await supabase.rpc('random_sights_free', {amount: amount, usr: userId})
-    return data
-  } 
-  
-  const {data, error} = await supabase.rpc('random_sights', {amount: amount, usr: userId})
-  if (error) return error
-  return data
-}
+  if (filters[0].free) {
+    const { data, error } = await supabase.rpc("random_sights_free", {
+      amount: amount,
+      usr: userId,
+    });
+    return data;
+  }
+
+  const { data, error } = await supabase.rpc("random_sights", {
+    amount: amount,
+    usr: userId,
+  });
+  if (error) return error;
+  return data;
+};
 
 export const removeLikes = async (userId, sightIds) => {
   await supabase
@@ -230,9 +289,46 @@ export const removeLikes = async (userId, sightIds) => {
     .in("sight_id", sightIds);
 };
 
-export const addDislikes = (userId, sightId) => {
+export const addDislikes = async (userId, sightId) => {
+  const { data: disliked_sights, error } = await supabase
+    .from("disliked_sights")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("sight_id", sightId);
 
-}
+  if (error) return error;
+
+  if (disliked_sights.length === 0) {
+    const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
+      days: "5 days",
+    });
+
+    if (ttlError) return ttlError;
+
+    const { data, error } = await supabase.from("disliked_sights").insert([
+      {
+        user_id: userId,
+        sight_id: sightId,
+        time_to_live: ttl,
+        times_disliked: 1,
+      },
+    ]);
+
+    if (error) return error;
+  } else {
+    const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
+      days: "5 days",
+    });
+    const { error } = await supabase
+      .from("disliked_sights")
+      .update({
+        time_to_live: ttl,
+        times_disliked: disliked_sights[0].times_disliked + 1,
+      })
+      .eq("user_id", userId)
+      .eq("sight_id", sightId);
+  }
+};
 
 export const updateTags = async (userId, sightId, liked) => {
   // fetch tag val
