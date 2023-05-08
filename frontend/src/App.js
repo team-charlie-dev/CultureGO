@@ -49,8 +49,8 @@ function App() {
   };
 
   return (
-    <div className="w-screen bg-primary font-inriaSans overflow-hidden fixed">
-      <div className="h-screen m-auto w-screen max-w-md relative">
+    <div className="w-screen h-full bg-primary font-inriaSans overflow-hidden fixed">
+      <div className="h-full m-auto w-screen max-w-md relative">
         <Navbar state={[currentPage, setCurrentPage]}>
           {getPage(currentPage)}
         </Navbar>
