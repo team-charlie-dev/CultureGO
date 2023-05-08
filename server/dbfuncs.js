@@ -21,7 +21,7 @@ export const createUser = async (username, password) => {
   }
 
   // set default tag values for new user
-  setDefaultTagValues(data[0].user_id)
+  setDefaultValues(data[0].user_id)
   return data;
 };
 
@@ -361,7 +361,7 @@ export const updateTags = async (userId, sightId, liked) => {
   if (error) console.log(error)
 }
 
-const setDefaultTagValues = async (user_id) => {
+const setDefaultValues = async (user_id) => {
   // getta tags
   const {data, error} = await supabase.from('tags').select('tag_id')
 
@@ -369,6 +369,8 @@ const setDefaultTagValues = async (user_id) => {
 
   // skicka tags med 0.5 val 
   const { error:insError } = await supabase.from('tag_values').insert(data.map(({tag_id}) => {return {tag_id, user_id, value: 0.5}}))
+
+  const {error:filterError} = await supabase.from('user_filters').insert({user_id})
 
   if (insError) console.log(insError)
 }
