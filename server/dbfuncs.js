@@ -19,6 +19,9 @@ export const createUser = async (username, password) => {
     }
     return error;
   }
+
+  // set default tag values for new user
+  setDefaultTagValues(data[0].user_id)
   return data;
 };
 
@@ -327,4 +330,45 @@ export const addDislikes = async (userId, sightId) => {
   }
 };
 
-export const updateTags = (userId, sightId, liked) => {};
+export const updateTags = async (userId, sightId, liked) => {
+  // fetch tag val
+  const tagValues = await getTagValue(userId)
+  const tags = {}
+  tagValues.forEach(({tag_id, value}) => Object.assign(tags, {[tag_id]: value}))
+  var updatedValues = []
+
+  // fetch sight tags
+  const subTags = await getSubTags(sightId)
+
+  // get main tag (sight)
+  const {data: [{main_tag_id: mainTag}]} = await supabase.from('sights').select('main_tag_id').eq('sight_id', sightId)
+
+  // update main tag value separately for easier future changing
+  let value = tags[mainTag] * 0.9 + (liked ? 0.1 : 0)
+  updatedValues.push({tag_id: mainTag, user_id: userId, value})
+
+  // update sub-tag values
+  subTags.forEach(({tag_id}) => {
+
+      // if we like it, move 10% closer to 1, if we dislike move 10% closer to 0
+      value = tags[tag_id] * 0.9 + (liked ? 0.1 : 0)
+      updatedValues.push({tag_id, user_id: userId, value})
+
+  });
+
+  // push to db
+  const {error} = await supabase.from('tag_values').upsert(updatedValues)
+  if (error) console.log(error)
+}
+
+const setDefaultTagValues = async (user_id) => {
+  // getta tags
+  const {data, error} = await supabase.from('tags').select('tag_id')
+
+  if (error) console.log(error)
+
+  // skicka tags med 0.5 val 
+  const { error:insError } = await supabase.from('tag_values').insert(data.map(({tag_id}) => {return {tag_id, user_id, value: 0.5}}))
+
+  if (insError) console.log(insError)
+}
