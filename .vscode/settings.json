@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/7435e034-941f-49b5-a227-1767fe033f3a/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/CultureGO",
+    "appService.deploySubpath": "."
+}
