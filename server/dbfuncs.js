@@ -197,31 +197,37 @@ export const getRandomSights = async (amount, userId) => {
 };
 
 // adjusting filter values for filter
-export let filter = {
-  outdoor: false,
-  indoor: false,
-  free: false,
-  random: false,
+export const updateFilter = async (newBoost, userId) => {
+  const { error } = await supabase
+    .from("user_filters")
+    .update({
+      outdoor: newBoost.outdoor,
+      indoor: newBoost.indoor,
+      free: newBoost.free,
+      random: newBoost.random,
+    })
+    .eq("user_id", userId);
 };
-export const updateFilter = async (newBoost) => {
-  filter.outdoor = newBoost.outdoor;
-  filter.indoor = newBoost.indoor;
-  filter.free = newBoost.free;
-  filter.random = newBoost.random;
-};
+
+export const getFilters = async (userId) => {
+  const {data: filters, error} = await supabase.from("user_filters").select().eq("user_id", userId)
+  return(filters[0])
+}
 
 // filtering the get with ugly if else spaghetti nest
 export const getWithFilter = async (amount, userId) => {
-
   const indoor = "c9eaa966-a8ee-41ca-be9e-4480a368a705";
   const outdoor = "06bce9f7-14fc-4f55-a87b-7748ca990aa6";
 
-  const {data:filters, error:filterError} = await supabase.from('user_filters').select().eq('user_id', userId)
-  console.log("user: ", userId)
-  console.log("filters: ", filters)
+  const { data: filters, error: filterError } = await supabase
+    .from("user_filters")
+    .select()
+    .eq("user_id", userId);
+  console.log("user: ", userId);
+  console.log("filters: ", filters);
 
-  if (filters.indoor) {
-    if (filter.free) {
+  if (filters[0].indoor) {
+    if (filters[0].free) {
       const { data, error } = await supabase.rpc("random_sights_out_in_free", {
         amount: amount,
         tag: "c9eaa966-a8ee-41ca-be9e-4480a368a705",
@@ -238,8 +244,8 @@ export const getWithFilter = async (amount, userId) => {
     return data;
   }
 
-  if (filter.outdoor) {
-    if (filter.free) {
+  if (filters[0].outdoor) {
+    if (filters[0].free) {
       const { data, error } = await supabase.rpc("random_sights_out_in_free", {
         amount: amount,
         tag: "06bce9f7-14fc-4f55-a87b-7748ca990aa6",
@@ -256,7 +262,7 @@ export const getWithFilter = async (amount, userId) => {
     return data;
   }
 
-  if (filter.free) {
+  if (filters[0].free) {
     const { data, error } = await supabase.rpc("random_sights_free", {
       amount: amount,
       usr: userId,
@@ -287,7 +293,7 @@ export const addDislikes = async (userId, sightId) => {
     .eq("user_id", userId)
     .eq("sight_id", sightId);
 
-  if(error) return error;
+  if (error) return error;
 
   if (disliked_sights.length === 0) {
     const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
@@ -305,8 +311,7 @@ export const addDislikes = async (userId, sightId) => {
       },
     ]);
 
-    if(error) return error
-    
+    if (error) return error;
   } else {
     const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
       days: "5 days",
