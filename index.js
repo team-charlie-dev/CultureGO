@@ -209,7 +209,7 @@ app.post("/swipe", async (req, res) => {
 
   await updateTags(userId, sightId, liked);
 
-  res.status(204);
+  res.status(204).send();
 });
 
 app.get("/getuser", async (req, res) => {
