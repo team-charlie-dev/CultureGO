@@ -15,7 +15,7 @@ export default function Tags({ changeScreen, setIsLoggedin }) {
 
   useEffect(() => {
     const getFilters = async () => {
-      const response = await fetch(`http://${serverUrl}:4000/getfilters?userId=${localStorage.getItem('user_id')}`, {
+      const response = await fetch(`${serverUrl}/getfilters?userId=${localStorage.getItem('user_id')}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
