@@ -22,7 +22,7 @@ import {
   removeLikes,
   addDislikes,
   updateTags,
-  getFilters
+  getFilters,
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -70,7 +70,7 @@ app.post("/signup", async (req, res) => {
   const userData = await createUser(username, hashedPass);
 
   if (userData.error && userData.error === "User already exists") {
-    return res.send({
+    return res.jsonp({
       message: "Signup unsuccessful",
       error: userData.error,
     });
@@ -86,7 +86,7 @@ app.post("/signup", async (req, res) => {
     message: "Signup successful",
     userData: { ...userData[0], token },
   };
-  return res.send(data);
+  return res.jsonp(data);
 });
 
 // tar emot username och password från frontend
@@ -98,7 +98,7 @@ app.post("/signin", async (req, res) => {
   const { username, password } = req.body;
   const user = await getUser(username);
   if (user.error) {
-    return res.send({
+    return res.jsonp({
       message: "Login unsuccessful",
       error: user.error,
     });
@@ -117,29 +117,29 @@ app.post("/signin", async (req, res) => {
     );
     data.message = "Login successful";
     data.userData = { user_id: user.user_id, username: user.username, token };
-    return res.send(data);
+    return res.jsonp(data);
   }
   data.error = "Password incorrect";
-  res.send(data);
+  res.jsonp(data);
 });
 
 app.get("/validatetoken", async (req, res) => {
-  return res.send({ message: "Token valid" });
+  return res.jsonp({ message: "Token valid" });
 });
 
 app.get("/charlie", (req, res) => {
-  res.send(
+  res.jsonp(
     '<img src="https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg" style="width:100%"/>'
   );
 });
 
 app.get("/", (req, res) => {
-  res.send("This is the home page");
+  res.jsonp("This is the home page");
 });
 
 app.get("/testDB", async (req, res) => {
   const data = await supabase.from("testtable").select();
-  res.send(data);
+  res.jsonp(data);
 });
 
 app.get("/helloworld", (req, res) => {
@@ -160,7 +160,7 @@ app.get("/helloworld", (req, res) => {
 
 app.get("/getitem", async (req, res) => {
   const amount = parseInt(req.query.amount) || 1;
-  res.send(await getItems(amount, null));
+  res.jsonp(await getItems(amount, null));
 });
 
 app.post("/tags", async (req, res) => {
@@ -169,8 +169,8 @@ app.post("/tags", async (req, res) => {
 });
 
 app.get("/getfilters", async (req, res) => {
-  res.send(await getFilters(req.query.userId))
-})
+  res.jsonp(await getFilters(req.query.userId));
+});
 
 app.get("/likes", async (req, res) => {
   let userId = req.query.userId;
@@ -178,14 +178,14 @@ app.get("/likes", async (req, res) => {
   let filter = req.query.filter || "none";
   let sort = req.query.sort || "new";
 
-  res.send(await getLikes(userId, page, filter, sort));
+  res.jsonp(await getLikes(userId, page, filter, sort));
 });
 
 app.post("/addlikes", async (req, res) => {
   const { userId, sightId } = req.body;
 
   const data = await addLikes(userId, sightId);
-  res.send(data);
+  res.jsonp(data);
 });
 
 app.delete("/likes", (req, res) => {
@@ -201,42 +201,41 @@ app.post("/swipe", (req, res) => {
   let sightId = req.body.sightId;
   let liked = req.body.liked;
 
-  if (liked)
-  {
-    addLikes(userId, sightId)
-  } else{
-    addDislikes(userId, sightId)
+  if (liked) {
+    addLikes(userId, sightId);
+  } else {
+    addDislikes(userId, sightId);
   }
 
-  updateTags(userId, sightId, liked)
+  updateTags(userId, sightId, liked);
 
-  res.sendStatus(204)
-})
+  res.jsonpStatus(204);
+});
 
 app.get("/getuser", async (req, res) => {
   const userId = req.query.userid;
   const user = await getUser(userId);
-  res.send(user);
+  res.jsonp(user);
 });
 
 app.get("/info", async (req, res) => {
   const sightId = req.query.sightId;
   const onlyLong = req.query.onlyLong;
 
-  res.send(await getFullInfo(sightId, onlyLong));
+  res.jsonp(await getFullInfo(sightId, onlyLong));
 });
 
 app.get("/subtag", async (req, res) => {
   const sightId = req.query.sightId;
 
-  res.send(await getSubTags(sightId));
+  res.jsonp(await getSubTags(sightId));
 });
 
 app.get("/tagvalues", async (req, res) => {
   //const userID = req.query.userID;
   const tagId = req.query.tagId;
 
-  res.send(await getTagValue("cfb5b9bd-ece8-470e-89c0-8ac52122652a", tagId));
+  res.jsonp(await getTagValue("cfb5b9bd-ece8-470e-89c0-8ac52122652a", tagId));
 });
 
 app.get("/algorithm", async (req, res) => {
@@ -244,18 +243,17 @@ app.get("/algorithm", async (req, res) => {
   const userID = req.query.userID;
 
   // gettar sights och massa info om dom
-  const sights = await getRandomSights(100, userID)
-  
-  const filters = getFilters(userID)
-  // skickar tillbaka 3 random sights 
-  if( filters.random ) res.send([sights[0], sights[1], sights[2], sights[3]])
- 
+  const sights = await getRandomSights(100, userID);
+
+  const filters = getFilters(userID);
+  // skickar tillbaka 3 random sights
+  if (filters.random) res.jsonp([sights[0], sights[1], sights[2], sights[3]]);
   // kallar algon med random sights och usrID
-  else res.send(await algorithm(userID, sights));
+  else res.jsonp(await algorithm(userID, sights));
 });
 
 app.get("/random", async (req, res) => {
-  res.send(await getRandomSights());
+  res.jsonp(await getRandomSights());
 });
 
 app.listen(port, () => {
@@ -263,5 +261,5 @@ app.listen(port, () => {
 });
 
 app.get("/filter", async (req, res) => {
-  res.send(await getWithFilter(30, "83cebddf-ed75-4069-bbcf-3d198416b354"));
+  res.jsonp(await getWithFilter(30, "83cebddf-ed75-4069-bbcf-3d198416b354"));
 });
