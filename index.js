@@ -45,7 +45,7 @@ app.use((req, res, next) => {
   }
   const token = req.headers["x-access-token"];
   if (!token) {
-    return res.status(403).send({
+    return resstatus(403).send({
       message: "No token provided!",
     });
   }
@@ -53,7 +53,7 @@ app.use((req, res, next) => {
   try {
     decoded = jsonwebtoken.verify(token, process.env.SECRET_KEY);
   } catch (error) {
-    return res.status(403).send({
+    return resstatus(403).send({
       message: "Token not valid!",
     });
   }
@@ -165,7 +165,7 @@ app.get("/getitem", async (req, res) => {
 
 app.post("/tags", async (req, res) => {
   updateFilter(req.body, req.query.userId);
-  res.status(200).send();
+  resstatus(200).send();
 });
 
 app.get("/getfilters", async (req, res) => {
@@ -193,7 +193,7 @@ app.delete("/likes", (req, res) => {
 
   removeLikes(userId, req.body);
 
-  res.status(204).send();
+  resstatus(204).send();
 });
 
 app.post("/swipe", (req, res) => {
@@ -209,7 +209,7 @@ app.post("/swipe", (req, res) => {
 
   updateTags(userId, sightId, liked);
 
-  res.jsonpStatus(204);
+  res.status(204);
 });
 
 app.get("/getuser", async (req, res) => {
