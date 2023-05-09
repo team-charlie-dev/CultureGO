@@ -324,7 +324,7 @@ const Home = ({setIsLoggedin}) => {
           {
             let isFirst = sights.indexOf(sight) == 0
             return (
-              <div key={Math.random()} id={isFirst ? "upperCard" : ""} ref={isFirst ? topCardRef : undefined} 
+              <div key={sight.sight_id} id={isFirst ? "upperCard" : ""} ref={isFirst ? topCardRef : undefined} 
                 className={`rounded-md w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]`}>
                 <Header disable={isFirst}/>
                 <div id={isFirst ? "disable1" : ""} className="flex justify-end px-7">
