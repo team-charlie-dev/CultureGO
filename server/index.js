@@ -22,7 +22,7 @@ import {
   removeLikes,
   addDislikes,
   updateTags,
-  getFilters
+  getFilters,
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -143,7 +143,7 @@ app.get("/testDB", async (req, res) => {
 });
 
 app.get("/helloworld", (req, res) => {
-  res.json("Hello World!");
+  res.send("Hello World!");
 });
 
 //api routes
@@ -164,13 +164,13 @@ app.get("/getitem", async (req, res) => {
 });
 
 app.post("/tags", async (req, res) => {
-  updateFilter(req.body, req.query.userId);
+  await updateFilter(req.body, req.query.userId);
   res.status(200).send();
 });
 
 app.get("/getfilters", async (req, res) => {
-  res.send(await getFilters(req.query.userId))
-})
+  res.send(await getFilters(req.query.userId));
+});
 
 app.get("/likes", async (req, res) => {
   let userId = req.query.userId;
@@ -188,30 +188,29 @@ app.post("/addlikes", async (req, res) => {
   res.send(data);
 });
 
-app.delete("/likes", (req, res) => {
+app.delete("/likes", async (req, res) => {
   let userId = req.query.userId;
 
-  removeLikes(userId, req.body);
+  await removeLikes(userId, req.body);
 
   res.status(204).send();
 });
 
-app.post("/swipe", (req, res) => {
+app.post("/swipe", async (req, res) => {
   let userId = req.body.userId;
   let sightId = req.body.sightId;
   let liked = req.body.liked;
 
-  if (liked)
-  {
-    addLikes(userId, sightId)
-  } else{
-    addDislikes(userId, sightId)
+  if (liked) {
+    await addLikes(userId, sightId);
+  } else {
+    await addDislikes(userId, sightId);
   }
 
-  updateTags(userId, sightId, liked)
+  await updateTags(userId, sightId, liked);
 
-  res.sendStatus(204)
-})
+  res.status(204).send();
+});
 
 app.get("/getuser", async (req, res) => {
   const userId = req.query.userid;
@@ -244,12 +243,11 @@ app.get("/algorithm", async (req, res) => {
   const userID = req.query.userID;
 
   // gettar sights och massa info om dom
-  const sights = await getRandomSights(100, userID)
-  
-  const filters = getFilters(userID)
-  // skickar tillbaka 3 random sights 
-  if( filters.random ) res.send([sights[0], sights[1], sights[2], sights[3]])
- 
+  const sights = await getRandomSights(100, userID);
+
+  const filters = await getFilters(userID);
+  // skickar tillbaka 3 random sights
+  if (filters.random) res.send([sights[0], sights[1], sights[2], sights[3]]);
   // kallar algon med random sights och usrID
   else res.send(await algorithm(userID, sights));
 });

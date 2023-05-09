@@ -21,7 +21,7 @@ export const createUser = async (username, password) => {
   }
 
   // set default tag values for new user
-  setDefaultValues(data[0].user_id)
+  await setDefaultValues(data[0].user_id);
   return data;
 };
 
@@ -89,12 +89,12 @@ export const getOpenHours = async (sightId) => {
 };
 
 export const getSightAddress = async (addressId) => {
-  const {data, error} = await supabase
+  const { data, error } = await supabase
     .from("addresses")
     .select()
-    .eq("address_id", addressId)
-  return data ? data[0] : {street: "", zip: "", city: ""};
-}
+    .eq("address_id", addressId);
+  return data ? data[0] : { street: "", zip: "", city: "" };
+};
 
 export const getLocation = async (addressId) => {
   const { data, error } = await supabase
@@ -125,9 +125,9 @@ export const getFullInfo = async (sightId, onlyLong) => {
     .select("long_info, price, address_id")
     .eq("sight_id", sightId);
   const open_hours = await getOpenHours(sightId);
-  console.log("address_id ", data[0].address_id)
-  const address = await getSightAddress(data[0].address_id)
-  console.log("address ", address)
+  console.log("address_id ", data[0].address_id);
+  const address = await getSightAddress(data[0].address_id);
+  console.log("address ", address);
   if (error) return error;
 
   return [data, open_hours, address];
@@ -224,9 +224,12 @@ export const updateFilter = async (newBoost, userId) => {
 };
 
 export const getFilters = async (userId) => {
-  const {data: filters, error} = await supabase.from("user_filters").select().eq("user_id", userId)
-  return(filters[0])
-}
+  const { data: filters, error } = await supabase
+    .from("user_filters")
+    .select()
+    .eq("user_id", userId);
+  return filters[0];
+};
 
 // filtering the get with ugly if else spaghetti nest
 export const getWithFilter = async (amount, userId) => {
@@ -343,47 +346,58 @@ export const addDislikes = async (userId, sightId) => {
 
 export const updateTags = async (userId, sightId, liked) => {
   // fetch tag val
-  const tagValues = await getTagValue(userId)
-  const tags = {}
-  tagValues.forEach(({tag_id, value}) => Object.assign(tags, {[tag_id]: value}))
-  var updatedValues = []
+  const tagValues = await getTagValue(userId);
+  const tags = {};
+  tagValues.forEach(({ tag_id, value }) =>
+    Object.assign(tags, { [tag_id]: value })
+  );
+  var updatedValues = [];
 
   // fetch sight tags
-  const subTags = await getSubTags(sightId)
+  const subTags = await getSubTags(sightId);
 
   // get main tag (sight)
-  const {data: [{main_tag_id: mainTag}]} = await supabase.from('sights').select('main_tag_id').eq('sight_id', sightId)
+  const {
+    data: [{ main_tag_id: mainTag }],
+  } = await supabase
+    .from("sights")
+    .select("main_tag_id")
+    .eq("sight_id", sightId);
 
   // update main tag value separately for easier future changing
-  let value = tags[mainTag] * 0.9 + (liked ? 0.1 : 0)
-  updatedValues.push({tag_id: mainTag, user_id: userId, value})
+  let value = tags[mainTag] * 0.9 + (liked ? 0.1 : 0);
+  updatedValues.push({ tag_id: mainTag, user_id: userId, value });
 
   // update sub-tag values
-  subTags.forEach(({tag_id}) => {
-
-      // if we like it, move 10% closer to 1, if we dislike move 10% closer to 0
-      value = tags[tag_id] * 0.9 + (liked ? 0.1 : 0)
-      updatedValues.push({tag_id, user_id: userId, value})
-
+  subTags.forEach(({ tag_id }) => {
+    // if we like it, move 10% closer to 1, if we dislike move 10% closer to 0
+    value = tags[tag_id] * 0.9 + (liked ? 0.1 : 0);
+    updatedValues.push({ tag_id, user_id: userId, value });
   });
 
   // push to db
-  const {error} = await supabase.from('tag_values').upsert(updatedValues)
-  if (error) console.log(error)
-}
+  const { error } = await supabase.from("tag_values").upsert(updatedValues);
+  if (error) console.log(error);
+};
 
 const setDefaultValues = async (user_id) => {
   // getta tags
-  const {data, error} = await supabase.from('tags').select('tag_id')
+  const { data, error } = await supabase.from("tags").select("tag_id");
 
-  if (error) console.log(error)
+  if (error) console.log(error);
 
-  // skicka tags med 0.5 val 
-  const { error:insError } = await supabase.from('tag_values').insert(data.map(({tag_id}) => {return {tag_id, user_id, value: 0.5}}))
+  // skicka tags med 0.5 val
+  const { error: insError } = await supabase.from("tag_values").insert(
+    data.map(({ tag_id }) => {
+      return { tag_id, user_id, value: 0.5 };
+    })
+  );
 
-  const {error:filterError} = await supabase.from('user_filters').insert({user_id})
+  const { error: filterError } = await supabase
+    .from("user_filters")
+    .insert({ user_id });
 
-  if (insError) console.log(insError)
+  if (insError) console.log(insError);
 
-  if (filterError) console.log(filterError)
-}
+  if (filterError) console.log(filterError);
+};
