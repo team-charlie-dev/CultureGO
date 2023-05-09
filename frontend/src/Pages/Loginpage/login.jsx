@@ -45,7 +45,7 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
   }
 
   const handleLogin = async () => {
-    const res = await fetch(`http://${serverUrl}:4000/signin`, {
+    const res = await fetch(`${serverUrl}/signin`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
     }
   };
   const handleCreateAccount = async () => {
-    const res = await fetch(`http://${serverUrl}:4000/signup`, {
+    const res = await fetch(`${serverUrl}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
