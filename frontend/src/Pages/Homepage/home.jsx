@@ -80,7 +80,6 @@ const Home = ({setIsLoggedin}) => {
       if (ignore)
         return;
       setSights(data)
-      // console.log(data)
     };
     fetchData();
 
@@ -202,7 +201,6 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const moveHome = (xs, ys) => {
-    // console.log("move home")
     var nrofFrames = 10;
 
     var xPos = xs;
@@ -240,7 +238,6 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const moveAway = (xs, ys) => {
-    // console.log("moveAway")
     var nrofFrames = 10;
 
     var xPos = xs;
@@ -258,22 +255,12 @@ const Home = ({setIsLoggedin}) => {
       topCardRef.current.style.top = parseInt(yPos) + "px";
 
       if (yPos <= -window.innerHeight || yPos >= window.innerHeight) {
-        // document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
-        // document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
-        // topCardRef.current.style.top = 0;
-        // topCardRef.current.style.left = 0;
 
-        // topCardRef.current.style.transform = "rotate(0deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
       }
       if (xPos <= -window.innerWidth || xPos >= window.innerWidth) {
-        // document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
-        // document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
-        // topCardRef.current.style.top = 0;
-        // topCardRef.current.style.left = 0;
 
-        // topCardRef.current.style.transform = "rotate(" + 0 + "deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
       }
@@ -320,29 +307,6 @@ const Home = ({setIsLoggedin}) => {
 
   return (
     <>
-      {/* <div id="upperCard" className={`rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]`}>
-        <Header />
-        <div id="disable1" className="flex justify-end px-7">
-          <CitySelector />
-        </div>
-        <div onTouchEnd={sights.length ? release : () => {}} onTouchStart={sights.length ? lift : () => {}} 
-        onTouchMove={sights.length ? move : () => {}} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"upperCardImage"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
-          <Buttons handleLikeClick={() => sendSwipeMessage(sights[0].sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0].sight_id, false)} />
-        </div>
-      </div>
-
-      <div className="bg-white z-10 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
-        <Header />
-        <div className="flex justify-end px-7">
-          <CitySelector />
-        </div>
-        <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"lowerCardImage"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
-          <Buttons />
-        </div>
-      </div> */}
-
       <div className="h-full w-full bg-white">
       
         <div className="bg-white w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
