@@ -44,10 +44,25 @@ const emptyItem = {
   location: "",
 }
 
+const getItemData = (sight) => {
+  if (sight)
+    return {
+      name: sight.name,
+      shortInfo: sight.short_info,
+      images: sight.images,
+      shortPrice: sight.short_price,
+      openHoursToday: getOpenHoursToday(sight.open_hours),
+      location: sight.location
+    }
+  else return emptyItem
+}
+
 const Home = ({setIsLoggedin}) => {
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
   const [isFetching, setIsFetching] = useState(false)
+
+
   
   useEffect(() => {
     var ignore = false;
@@ -88,24 +103,13 @@ const Home = ({setIsLoggedin}) => {
     }
 
   function updateSight() {
+    console.log("UPDATING")
+    console.log(sights)
     if (sights.length <= 3 && !isFetching)
       fetchSights()
 
     setSights(arr => arr.slice(1))
     setCurrentImage(0)
-  }
-
-  const getItemData = (sight) => {
-    if (sight)
-      return {
-        name: sight.name,
-        shortInfo: sight.short_info,
-        images: sight.images,
-        shortPrice: sight.short_price,
-        openHoursToday: getOpenHoursToday(sight.open_hours),
-        location: sight.location
-      }
-    else return emptyItem
   }
 
   const sendSwipeMessage = async (sightId, like) => {
@@ -158,7 +162,13 @@ const Home = ({setIsLoggedin}) => {
     } if (e.clientY == NaN || e.clientY == null) {
       var clientY = e.touches[0].clientY;
     }
+
+    // console.log(clientX)
+
     var procent = (-startX + clientX) / window.innerWidth;
+
+
+    console.log(startX)
 
     if (holding) {
       document.getElementById("upperCard").style.left = -startX + clientX + "px";
@@ -254,22 +264,22 @@ const Home = ({setIsLoggedin}) => {
 
 
       if (yPos <= -window.innerHeight || yPos >= window.innerHeight) {
-        document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
-        document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
-        document.getElementById("upperCard").style.top = 0;
-        document.getElementById("upperCard").style.left = 0;
+        // document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
+        // document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
+        // document.getElementById("upperCard").style.top = 0;
+        // document.getElementById("upperCard").style.left = 0;
 
-        document.getElementById("upperCard").style.transform = "rotate(0deg)";
+        // document.getElementById("upperCard").style.transform = "rotate(0deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
       }
       if (xPos <= -window.innerWidth || xPos >= window.innerWidth) {
-        document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
-        document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
-        document.getElementById("upperCard").style.top = 0;
-        document.getElementById("upperCard").style.left = 0;
+        // document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
+        // document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
+        // document.getElementById("upperCard").style.top = 0;
+        // document.getElementById("upperCard").style.left = 0;
 
-        document.getElementById("upperCard").style.transform = "rotate(" + 0 + "deg)";
+        // document.getElementById("upperCard").style.transform = "rotate(" + 0 + "deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
       }
@@ -291,6 +301,7 @@ const Home = ({setIsLoggedin}) => {
   );
 
   const cardClickHandler = () => {
+    console.log("hahaha", infoCard.show)
     setInfoCard({
       show: !infoCard.show,
       id: sights[0]?.sight_id,
@@ -299,9 +310,25 @@ const Home = ({setIsLoggedin}) => {
     })
   }
 
+  
+  const CardHolder = ({sight, firstCard, swipeFuncs: {release, lift, move}, cardClickHandler}) => {
+    return (
+      <div className="flex flex-col h-[calc(100%-10%-1.5rem)]"
+        onTouchEnd={firstCard && sights.length ? release : () => {}} 
+        onTouchStart={firstCard && sights.length ? lift : () => {}}
+        onTouchMove={firstCard && sights.length ? move : () => {}}
+      >
+        <Card mode={firstCard ? "upperCardImage" : "lowerCardImage"} currentImage={currentImage} setCurrentImage={setCurrentImage} 
+          itemData={getItemData(sight)} arrowClickHandler={cardClickHandler}/>
+        <Buttons disable={firstCard} handleLikeClick={() => sendSwipeMessage(sight.sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sight.sight_id, false)}/>
+      </div>
+    )
+  }
+
+
   return (
     <>
-      <div id="upperCard" className={`rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]`}>
+      {/* <div id="upperCard" className={`rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]`}>
         <Header />
         <div id="disable1" className="flex justify-end px-7">
           <CitySelector />
@@ -321,10 +348,43 @@ const Home = ({setIsLoggedin}) => {
           <Card mode={"lowerCardImage"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
           <Buttons />
         </div>
+      </div> */}
+
+      <div className="h-full w-full bg-white">
+      
+        <div className="bg-white w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
+          <Header />
+          <div className="flex justify-end px-7">
+            <CitySelector />
+          </div>
+          <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
+            <Card mode={"lowerCardImage"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
+            <Buttons />
+          </div>
+        </div>
+      {
+        sights.slice(0).reverse().map(sight => 
+          {
+            let isFirst = sights.indexOf(sight) == 0
+            return (
+              <div key={Math.random()} id={isFirst ? "upperCard" : ""} className={`rounded-md w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]`}>
+                <Header disable={isFirst}/>
+                <div id={isFirst ? "disable1" : ""} className="flex justify-end px-7">
+                  <CitySelector/>
+                </div>
+                  
+                <CardHolder sight={sight} firstCard={sights.indexOf(sight) == 0} swipeFuncs={{release, lift, move}} cardClickHandler={cardClickHandler}/>
+
+              </div>
+            )
+          }
+
+          )
+      }
       </div>
       
       { infoCard.show ?
-        <div className="absolute h-full w-full pt-20 z-50">
+        <div className="absolute h-full w-full pt-20 top-0 left-0">
           <FullCard infoState={[infoCard, setInfoCard]}/>
         </div> 
       : <></> }
@@ -332,9 +392,9 @@ const Home = ({setIsLoggedin}) => {
   );
 };
 
-const Buttons = ({ handleLikeClick, handleDislikeClick }) => {
+const Buttons = ({ handleLikeClick, handleDislikeClick, disable }) => {
   return (
-    <div id="disable2" className="h-[15%] flex-col justify-center flex p-5">
+    <div id={disable ? "disable2" : ""} className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
         <div onClick={handleDislikeClick}>
           <img src={Dislike}></img>
@@ -347,9 +407,9 @@ const Buttons = ({ handleLikeClick, handleDislikeClick }) => {
   );
 };
 
-const Header = () => {
+const Header = ({disable}) => {
   return (
-    <header id="disable3" className="p-3 pt-5 h-[10%]">
+    <header id={disable ? "disable3" : ""} className="p-3 pt-5 h-[10%]">
       <img src={Logo}></img>
     </header>
   );
