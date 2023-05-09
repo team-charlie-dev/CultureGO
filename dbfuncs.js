@@ -19,6 +19,9 @@ export const createUser = async (username, password) => {
     }
     return error;
   }
+
+  // set default tag values for new user
+  setDefaultValues(data[0].user_id);
   return data;
 };
 
@@ -85,6 +88,14 @@ export const getOpenHours = async (sightId) => {
   return data ? data[0] : [];
 };
 
+export const getSightAddress = async (addressId) => {
+  const { data, error } = await supabase
+    .from("addresses")
+    .select()
+    .eq("address_id", addressId);
+  return data ? data[0] : { street: "", zip: "", city: "" };
+};
+
 export const getLocation = async (addressId) => {
   const { data, error } = await supabase
     .from("addresses")
@@ -111,12 +122,15 @@ export const getFullInfo = async (sightId, onlyLong) => {
   // const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
   const { data, error } = await supabase
     .from("sights")
-    .select("long_info, price")
+    .select("long_info, price, address_id")
     .eq("sight_id", sightId);
   const open_hours = await getOpenHours(sightId);
+  console.log("address_id ", data[0].address_id);
+  const address = await getSightAddress(data[0].address_id);
+  console.log("address ", address);
   if (error) return error;
 
-  return [data, open_hours];
+  return [data, open_hours, address];
 };
 
 export const addLikes = async (userId, sightId) => {
@@ -197,32 +211,40 @@ export const getRandomSights = async (amount, userId) => {
 };
 
 // adjusting filter values for filter
-export let filter = {
-  outdoor: false,
-  indoor: false,
-  free: false,
-  random: false,
+export const updateFilter = async (newBoost, userId) => {
+  const { error } = await supabase
+    .from("user_filters")
+    .update({
+      outdoor: newBoost.outdoor,
+      indoor: newBoost.indoor,
+      free: newBoost.free,
+      random: newBoost.random,
+    })
+    .eq("user_id", userId);
 };
-export const updateFilter = async (newBoost) => {
-  filter.outdoor = newBoost.outdoor;
-  filter.indoor = newBoost.indoor;
-  filter.free = newBoost.free;
-  filter.random = newBoost.random;
+
+export const getFilters = async (userId) => {
+  const { data: filters, error } = await supabase
+    .from("user_filters")
+    .select()
+    .eq("user_id", userId);
+  return filters[0];
 };
 
 // filtering the get with ugly if else spaghetti nest
 export const getWithFilter = async (amount, userId) => {
-  console.log("filter settings!!!");
-  console.log("booooooost outdoor " + filter.outdoor);
-  console.log("booooooost indoor " + filter.indoor);
-  console.log("booooooost free " + filter.free);
-  console.log("booooooost random " + filter.random);
-
   const indoor = "c9eaa966-a8ee-41ca-be9e-4480a368a705";
   const outdoor = "06bce9f7-14fc-4f55-a87b-7748ca990aa6";
 
-  if (filter.indoor) {
-    if (filter.free) {
+  const { data: filters, error: filterError } = await supabase
+    .from("user_filters")
+    .select()
+    .eq("user_id", userId);
+  console.log("user: ", userId);
+  console.log("filters: ", filters);
+
+  if (filters[0].indoor) {
+    if (filters[0].free) {
       const { data, error } = await supabase.rpc("random_sights_out_in_free", {
         amount: amount,
         tag: "c9eaa966-a8ee-41ca-be9e-4480a368a705",
@@ -239,8 +261,8 @@ export const getWithFilter = async (amount, userId) => {
     return data;
   }
 
-  if (filter.outdoor) {
-    if (filter.free) {
+  if (filters[0].outdoor) {
+    if (filters[0].free) {
       const { data, error } = await supabase.rpc("random_sights_out_in_free", {
         amount: amount,
         tag: "06bce9f7-14fc-4f55-a87b-7748ca990aa6",
@@ -257,7 +279,7 @@ export const getWithFilter = async (amount, userId) => {
     return data;
   }
 
-  if (filter.free) {
+  if (filters[0].free) {
     const { data, error } = await supabase.rpc("random_sights_free", {
       amount: amount,
       usr: userId,
@@ -279,4 +301,103 @@ export const removeLikes = async (userId, sightIds) => {
     .delete()
     .eq("user_id", userId)
     .in("sight_id", sightIds);
+};
+
+export const addDislikes = async (userId, sightId) => {
+  const { data: disliked_sights, error } = await supabase
+    .from("disliked_sights")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("sight_id", sightId);
+
+  if (error) return error;
+
+  if (disliked_sights.length === 0) {
+    const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
+      days: "5 days",
+    });
+
+    if (ttlError) return ttlError;
+
+    const { data, error } = await supabase.from("disliked_sights").insert([
+      {
+        user_id: userId,
+        sight_id: sightId,
+        time_to_live: ttl,
+        times_disliked: 1,
+      },
+    ]);
+
+    if (error) return error;
+  } else {
+    const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
+      days: "5 days",
+    });
+    const { error } = await supabase
+      .from("disliked_sights")
+      .update({
+        time_to_live: ttl,
+        times_disliked: disliked_sights[0].times_disliked + 1,
+      })
+      .eq("user_id", userId)
+      .eq("sight_id", sightId);
+  }
+};
+
+export const updateTags = async (userId, sightId, liked) => {
+  // fetch tag val
+  const tagValues = await getTagValue(userId);
+  const tags = {};
+  tagValues.forEach(({ tag_id, value }) =>
+    Object.assign(tags, { [tag_id]: value })
+  );
+  var updatedValues = [];
+
+  // fetch sight tags
+  const subTags = await getSubTags(sightId);
+
+  // get main tag (sight)
+  const {
+    data: [{ main_tag_id: mainTag }],
+  } = await supabase
+    .from("sights")
+    .select("main_tag_id")
+    .eq("sight_id", sightId);
+
+  // update main tag value separately for easier future changing
+  let value = tags[mainTag] * 0.9 + (liked ? 0.1 : 0);
+  updatedValues.push({ tag_id: mainTag, user_id: userId, value });
+
+  // update sub-tag values
+  subTags.forEach(({ tag_id }) => {
+    // if we like it, move 10% closer to 1, if we dislike move 10% closer to 0
+    value = tags[tag_id] * 0.9 + (liked ? 0.1 : 0);
+    updatedValues.push({ tag_id, user_id: userId, value });
+  });
+
+  // push to db
+  const { error } = await supabase.from("tag_values").upsert(updatedValues);
+  if (error) console.log(error);
+};
+
+const setDefaultValues = async (user_id) => {
+  // getta tags
+  const { data, error } = await supabase.from("tags").select("tag_id");
+
+  if (error) console.log(error);
+
+  // skicka tags med 0.5 val
+  const { error: insError } = await supabase.from("tag_values").insert(
+    data.map(({ tag_id }) => {
+      return { tag_id, user_id, value: 0.5 };
+    })
+  );
+
+  const { error: filterError } = await supabase
+    .from("user_filters")
+    .insert({ user_id });
+
+  if (insError) console.log(insError);
+
+  if (filterError) console.log(filterError);
 };

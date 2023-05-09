@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 const app = express();
-const port = process.env.PORT || 1337;
+const port = process.env.PORT || 4000;
 
 import {
   getFullInfo,
@@ -19,8 +19,10 @@ import {
   getRandomSights,
   updateFilter,
   getWithFilter,
-  filter,
   removeLikes,
+  addDislikes,
+  updateTags,
+  getFilters,
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -162,8 +164,12 @@ app.get("/getitem", async (req, res) => {
 });
 
 app.post("/tags", async (req, res) => {
-  updateFilter(req.body);
+  updateFilter(req.body, req.query.userId);
   res.status(200).send();
+});
+
+app.get("/getfilters", async (req, res) => {
+  res.send(await getFilters(req.query.userId));
 });
 
 app.get("/likes", async (req, res) => {
@@ -197,7 +203,11 @@ app.post("/swipe", (req, res) => {
 
   if (liked) {
     addLikes(userId, sightId);
+  } else {
+    addDislikes(userId, sightId);
   }
+
+  updateTags(userId, sightId, liked);
 
   res.sendStatus(204);
 });
@@ -235,8 +245,9 @@ app.get("/algorithm", async (req, res) => {
   // gettar sights och massa info om dom
   const sights = await getRandomSights(100, userID);
 
+  const filters = getFilters(userID);
   // skickar tillbaka 3 random sights
-  if (filter.random) res.send([sights[0], sights[1], sights[2], sights[3]]);
+  if (filters.random) res.send([sights[0], sights[1], sights[2], sights[3]]);
   // kallar algon med random sights och usrID
   else res.send(await algorithm(userID, sights));
 });
