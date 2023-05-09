@@ -384,4 +384,6 @@ const setDefaultValues = async (user_id) => {
   const {error:filterError} = await supabase.from('user_filters').insert({user_id})
 
   if (insError) console.log(insError)
+
+  if (filterError) console.log(filterError)
 }
