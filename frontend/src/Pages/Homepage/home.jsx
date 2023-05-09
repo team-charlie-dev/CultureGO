@@ -47,11 +47,12 @@ const emptyItem = {
 const Home = ({setIsLoggedin}) => {
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
+  const [isFetching, setIsFetching] = useState(false)
   
   useEffect(() => {
     var ignore = false;
     const fetchData = async () => {
-      const response = await fetch(`http://${serverUrl}:4000/algorithm?userID=${localStorage.getItem('user_id')}`, {
+      const response = await fetch(`${serverUrl}/algorithm?userID=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +73,8 @@ const Home = ({setIsLoggedin}) => {
   }, []);
   
   const fetchSights = async () => {
-    fetch(`http://${serverUrl}:4000/algorithm?userID=${localStorage.getItem('user_id')}`, {
+    setIsFetching(true)
+    fetch(`${serverUrl}/algorithm?userID=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -81,12 +83,12 @@ const Home = ({setIsLoggedin}) => {
       .then(res => res.json())
       .then(json => {
         setSights(arr => arr.concat(json))
+        setIsFetching(false)
       })
     }
 
   function updateSight() {
-    // console.log(sights.length)
-    if (sights.length < 3)
+    if (sights.length <= 3 && !isFetching)
       fetchSights()
 
     setSights(arr => arr.slice(1))
@@ -107,9 +109,7 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const sendSwipeMessage = async (sightId, like) => {
-    // console.log(sights)
-
-    const response = await fetch(`http://${serverUrl}:4000/swipe`, {
+    const response = await fetch(`${serverUrl}/swipe`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -254,7 +254,8 @@ const Home = ({setIsLoggedin}) => {
 
 
       if (yPos <= -window.innerHeight || yPos >= window.innerHeight) {
-        document.getElementById("upperCard").src = document.getElementById("lowerCard").src
+        document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
+        document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
         document.getElementById("upperCard").style.top = 0;
         document.getElementById("upperCard").style.left = 0;
 
@@ -263,7 +264,8 @@ const Home = ({setIsLoggedin}) => {
         clearInterval(myInterval);
       }
       if (xPos <= -window.innerWidth || xPos >= window.innerWidth) {
-        document.getElementById("upperCard").src = document.getElementById("lowerCard").src
+        document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
+        document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
         document.getElementById("upperCard").style.top = 0;
         document.getElementById("upperCard").style.left = 0;
 
@@ -276,7 +278,7 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const isOut = (movespeedX) => {
-    sendSwipeMessage(sights[0].sight_id, movespeedX > 0)
+    sendSwipeMessage(sights[0]?.sight_id, movespeedX > 0)
   }
   
   const [infoCard, setInfoCard] = useState(
@@ -291,9 +293,9 @@ const Home = ({setIsLoggedin}) => {
   const cardClickHandler = () => {
     setInfoCard({
       show: !infoCard.show,
-      id: sights[0].sight_id,
-      name: sights[0].name,
-      nmbrOfPics: sights[0].images.length==0 ? 0 : 1
+      id: sights[0]?.sight_id,
+      name: sights[0]?.name,
+      nmbrOfPics: sights[0]?.images.length==0 ? 0 : 1
     })
   }
 
@@ -304,9 +306,9 @@ const Home = ({setIsLoggedin}) => {
         <div id="disable1" className="flex justify-end px-7">
           <CitySelector />
         </div>
-        <div onTouchEnd={release} onTouchStart={lift} onTouchMove={move} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"upperCard"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
-          <Buttons handleLikeClick={() => sendSwipeMessage(sights[0].sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0].sight_id, false)} />
+        <div onTouchEnd={sights.length ? release : () => {}} onTouchStart={sights.length ? lift : () => {}} onTouchMove={sights.length ? move : () => {}} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
+          <Card mode={"upperCardImage"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
+          <Buttons handleLikeClick={() => sendSwipeMessage(sights[0]?.sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0]?.sight_id, false)} />
         </div>
       </div>
 
@@ -316,7 +318,7 @@ const Home = ({setIsLoggedin}) => {
           <CitySelector />
         </div>
         <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"lowerCard"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
+          <Card mode={"lowerCardImage"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
           <Buttons />
         </div>
       </div>
