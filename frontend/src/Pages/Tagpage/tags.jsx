@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import Outdoor from '../../Components/icons/tag-page-icons/Outdoor.png'
-import Indoor from '../../Components/icons/tag-page-icons/Indoor.png'
-import Free from '../../Components/icons/tag-page-icons/Free.png'
-import Random from '../../Components/icons/tag-page-icons/Random.png'
+import Outdoor from '../../Components/icons/tag-page-icons/Outdoor.jpg'
+import Indoor from '../../Components/icons/tag-page-icons/Indoor.jpg'
+import Free from '../../Components/icons/tag-page-icons/Free.jpg'
+import Random from '../../Components/icons/tag-page-icons/Random.jpg'
 import TagCard from './TagCard'
 import serverUrl from '../../address'
 
@@ -65,10 +65,10 @@ export default function Tags({ changeScreen, setIsLoggedin }) {
   return (
     <div className='h-[calc(100%-var(--navbar-height))]'>
       <div className='grid grid-cols-2 h-full bg-black'>
-        <TagCard image={Outdoor} text="Outdoor" xPosition='right' yPosition='bottom' clicked={clicked[0]} handleClick={() => handleClick(0)} />
-        <TagCard image={Indoor} text="Indoor" xPosition='left' yPosition='bottom' clicked={clicked[1]} handleClick={() => handleClick(1)} />
-        <TagCard image={Free} text="Free" xPosition='right' yPosition='top' clicked={clicked[2]} handleClick={() => handleClick(2)} />
-        <TagCard image={Random} text="Random" xPosition='left' yPosition='top' clicked={clicked[3]} handleClick={() => handleClick(3)} />
+        <TagCard image={Outdoor} text="Outdoor" xPosition='center' yPosition='bottom' clicked={clicked[0]} handleClick={() => handleClick(0)} />
+        <TagCard image={Indoor} text="Indoor" xPosition='center' yPosition='bottom' clicked={clicked[1]} handleClick={() => handleClick(1)} />
+        <TagCard image={Free} text="Free" xPosition='center' yPosition='top' clicked={clicked[2]} handleClick={() => handleClick(2)} />
+        <TagCard image={Random} text="Random" xPosition='center' yPosition='top' clicked={clicked[3]} handleClick={() => handleClick(3)} />
       </div>
       <div className='flex justify-center'>
         <p className='bg-white text-center absolute top-[10%] px-[15%] font-inriaSans'>What mood are you in?</p>
