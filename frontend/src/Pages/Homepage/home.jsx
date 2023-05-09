@@ -52,7 +52,7 @@ const Home = ({setIsLoggedin}) => {
   useEffect(() => {
     var ignore = false;
     const fetchData = async () => {
-      const response = await fetch(`http://${serverUrl}:4000/algorithm?userID=${localStorage.getItem('user_id')}`, {
+      const response = await fetch(`${serverUrl}/algorithm?userID=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -74,7 +74,7 @@ const Home = ({setIsLoggedin}) => {
   
   const fetchSights = async () => {
     setIsFetching(true)
-    fetch(`http://${serverUrl}:4000/algorithm?userID=${localStorage.getItem('user_id')}`, {
+    fetch(`${serverUrl}/algorithm?userID=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -109,7 +109,7 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const sendSwipeMessage = async (sightId, like) => {
-    const response = await fetch(`http://${serverUrl}:4000/swipe`, {
+    const response = await fetch(`${serverUrl}/swipe`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",

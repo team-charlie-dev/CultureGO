@@ -13,7 +13,7 @@ function App() {
 
   useEffect(() => {
     const validateResponse = async () => {
-      const res = await fetch(`http://${serverUrl}:4000/validatetoken`, {
+      const res = await fetch(`${serverUrl}/validatetoken`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

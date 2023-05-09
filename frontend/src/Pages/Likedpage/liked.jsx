@@ -11,7 +11,7 @@ import {deleteContext} from './DeleteContext'
 
 import FullCard from "../../Components/FullCard/FullCard.jsx";
 
-import Address from "../../address";
+import serverUrl from "../../address";
 
 
 const Liked = ({setIsLoggedin}) => {
@@ -92,7 +92,7 @@ const Liked = ({setIsLoggedin}) => {
         let ignore = false
 
         const getData = async () => {
-            let data = await fetch(`http://${Address}:4000/likes?page=${contentPage}&sort=${sortNew?"new":"old"}&userId=${localStorage.getItem('user_id')}`, {
+            let data = await fetch(`${serverUrl}/likes?page=${contentPage}&sort=${sortNew?"new":"old"}&userId=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -156,7 +156,7 @@ const Liked = ({setIsLoggedin}) => {
             map.delete(id)
         }
 
-        const response = fetch(`http://${Address}:4000/likes?userId=${localStorage.getItem('user_id')}`, {
+        const response = fetch(`${serverUrl}/likes?userId=${localStorage.getItem('user_id')}`, {
             method: "DELETE",
             headers: {
                 "Content-Type" : "application/json",

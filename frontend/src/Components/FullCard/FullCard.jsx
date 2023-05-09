@@ -93,7 +93,7 @@ export default function FullCard({infoState, setIsLoggedin}) {
             // if true, get TimeInfo and PriceInfo as well
         
             // call getInfo
-            let data = await fetch (`http://${serverURL}:4000/info?sightId=${sigtId}&onlyLong=true`, {
+            let data = await fetch (`${serverURL}/info?sightId=${sigtId}&onlyLong=true`, {
                 method: "GET",
                 headers: {
                   "Content-Type": "application/json",
