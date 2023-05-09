@@ -50,11 +50,7 @@ app.use((req, res, next) => {
   }
   let decoded;
   try {
-    //decoded = jsonwebtoken.verify(token, process.env.SECRET_KEY);
-    decoded = jsonwebtoken.verify(
-      token,
-      "superdupersecretkeyfromcultureGomergeConflicts9!"
-    );
+    decoded = jsonwebtoken.verify(token, process.env.SECRET_KEY);
   } catch (error) {
     return res.status(403).send({
       message: "Token not valid!",
@@ -85,8 +81,7 @@ app.post("/signup", async (req, res) => {
   }
   const token = jsonwebtoken.sign(
     { id: userData.username },
-    //process.env.SECRET_KEY,
-    "superdupersecretkeyfromcultureGomergeConflicts9!",
+    process.env.SECRET_KEY,
     {
       expiresIn: 86400, // 24 hours
     }
@@ -119,8 +114,7 @@ app.post("/signin", async (req, res) => {
   if (isPasswordValid) {
     const token = jsonwebtoken.sign(
       { id: user.username },
-      //process.env.SECRET_KEY,
-      "superdupersecretkeyfromcultureGomergeConflicts9!",
+      process.env.SECRET_KEY,
       {
         expiresIn: 86400, // 24 hours
       }

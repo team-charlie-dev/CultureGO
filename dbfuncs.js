@@ -3,11 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-//export const supabase = createClient(process.env.DB_URL, process.env.API_KEY);
-export const supabase = createClient(
-  "https://iynsfqmubcvdoqicgqlv.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5bnNmcW11YmN2ZG9xaWNncWx2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE3OTk1MTQsImV4cCI6MTk5NzM3NTUxNH0.N9sUJu0qrIm1TUVMx8vw78GDGw7WTe_Hm3gDIZbEIIc"
-);
+export const supabase = createClient(process.env.DB_URL, process.env.API_KEY);
 
 const BASE_IMG_URL =
   "https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/";
