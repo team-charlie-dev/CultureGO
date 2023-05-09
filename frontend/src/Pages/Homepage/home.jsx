@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Like from "../../Components/icons/Like.svg";
 import Dislike from "../../Components/icons/Dislike.svg";
 import Logo from "../../Components/icons/Logo.svg";
@@ -62,8 +62,8 @@ const Home = ({setIsLoggedin}) => {
   const [sights, setSights] = useState([])
   const [isFetching, setIsFetching] = useState(false)
 
+  const topCardRef = useRef();
 
-  
   useEffect(() => {
     var ignore = false;
     const fetchData = async () => {
@@ -163,17 +163,12 @@ const Home = ({setIsLoggedin}) => {
       var clientY = e.touches[0].clientY;
     }
 
-    // console.log(clientX)
-
     var procent = (-startX + clientX) / window.innerWidth;
 
-
-    console.log(startX)
-
     if (holding) {
-      document.getElementById("upperCard").style.left = -startX + clientX + "px";
-      document.getElementById("upperCard").style.top = 0;
-      document.getElementById("upperCard").style.transform = "rotate(" + 25 * (procent) + "deg)";
+      topCardRef.current.style.left = -startX + clientX + "px";
+      topCardRef.current.style.top = 0;
+      topCardRef.current.style.transform = "rotate(" + 25 * (procent) + "deg)";
     }
   }
 
@@ -217,28 +212,28 @@ const Home = ({setIsLoggedin}) => {
     var movespeedY = yPos / nrofFrames;
 
     var myInterval = setInterval(function () {
-      if(!document.getElementById("upperCard")){
+      if(!topCardRef.current){
         clearInterval(myInterval)
         return
       }
       if (xPos <= 0) {
-        document.getElementById("upperCard").style.left = 0;
+        topCardRef.current.style.left = 0;
       } else {
         xPos = (xPos - movespeedX);
-        document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
+        topCardRef.current.style.left = parseInt(xPos) + "px";
       }
 
       if (yPos <= 0) {
-        document.getElementById("upperCard").style.top = 0;
+        topCardRef.current.style.top = 0;
       } else {
         yPos = (yPos - movespeedY);
-        document.getElementById("upperCard").style.top = parseInt(yPos) + "px";
+        topCardRef.current.style.top = parseInt(yPos) + "px";
       }
 
       if (parseInt(yPos) <= 0 && parseInt(xPos) <= 0) {
-        document.getElementById("upperCard").style.top = 0;
-        document.getElementById("upperCard").style.left = 0;
-        document.getElementById("upperCard").style.transform = "rotate(" + 0 * (0) + "deg)";
+        topCardRef.current.style.top = 0;
+        topCardRef.current.style.left = 0;
+        topCardRef.current.style.transform = "rotate(" + 0 * (0) + "deg)";
         clearInterval(myInterval);
       }
     }, 5);
@@ -257,29 +252,28 @@ const Home = ({setIsLoggedin}) => {
     var myInterval = setInterval(function () {
 
       xPos = (xPos + movespeedX);
-      document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
+      topCardRef.current.style.left = parseInt(xPos) + "px";
 
       yPos = (yPos + movespeedY);
-      document.getElementById("upperCard").style.top = parseInt(yPos) + "px";
-
+      topCardRef.current.style.top = parseInt(yPos) + "px";
 
       if (yPos <= -window.innerHeight || yPos >= window.innerHeight) {
         // document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
         // document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
-        // document.getElementById("upperCard").style.top = 0;
-        // document.getElementById("upperCard").style.left = 0;
+        // topCardRef.current.style.top = 0;
+        // topCardRef.current.style.left = 0;
 
-        // document.getElementById("upperCard").style.transform = "rotate(0deg)";
+        // topCardRef.current.style.transform = "rotate(0deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
       }
       if (xPos <= -window.innerWidth || xPos >= window.innerWidth) {
         // document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
         // document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
-        // document.getElementById("upperCard").style.top = 0;
-        // document.getElementById("upperCard").style.left = 0;
+        // topCardRef.current.style.top = 0;
+        // topCardRef.current.style.left = 0;
 
-        // document.getElementById("upperCard").style.transform = "rotate(" + 0 + "deg)";
+        // topCardRef.current.style.transform = "rotate(" + 0 + "deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
       }
@@ -310,7 +304,6 @@ const Home = ({setIsLoggedin}) => {
     })
   }
 
-  
   const CardHolder = ({sight, firstCard, swipeFuncs: {release, lift, move}, cardClickHandler}) => {
     return (
       <div className="flex flex-col h-[calc(100%-10%-1.5rem)]"
@@ -318,13 +311,12 @@ const Home = ({setIsLoggedin}) => {
         onTouchStart={firstCard && sights.length ? lift : () => {}}
         onTouchMove={firstCard && sights.length ? move : () => {}}
       >
-        <Card mode={firstCard ? "upperCardImage" : "lowerCardImage"} currentImage={currentImage} setCurrentImage={setCurrentImage} 
+        <Card currentImage={currentImage} setCurrentImage={setCurrentImage} 
           itemData={getItemData(sight)} arrowClickHandler={cardClickHandler}/>
         <Buttons disable={firstCard} handleLikeClick={() => sendSwipeMessage(sight.sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sight.sight_id, false)}/>
       </div>
     )
   }
-
 
   return (
     <>
@@ -333,7 +325,8 @@ const Home = ({setIsLoggedin}) => {
         <div id="disable1" className="flex justify-end px-7">
           <CitySelector />
         </div>
-        <div onTouchEnd={sights.length ? release : () => {}} onTouchStart={sights.length ? lift : () => {}} onTouchMove={sights.length ? move : () => {}} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
+        <div onTouchEnd={sights.length ? release : () => {}} onTouchStart={sights.length ? lift : () => {}} 
+        onTouchMove={sights.length ? move : () => {}} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
           <Card mode={"upperCardImage"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
           <Buttons handleLikeClick={() => sendSwipeMessage(sights[0].sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0].sight_id, false)} />
         </div>
@@ -358,7 +351,7 @@ const Home = ({setIsLoggedin}) => {
             <CitySelector />
           </div>
           <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-            <Card mode={"lowerCardImage"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
+            <Card mode={""}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
             <Buttons />
           </div>
         </div>
@@ -367,7 +360,8 @@ const Home = ({setIsLoggedin}) => {
           {
             let isFirst = sights.indexOf(sight) == 0
             return (
-              <div key={Math.random()} id={isFirst ? "upperCard" : ""} className={`rounded-md w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]`}>
+              <div key={Math.random()} id={isFirst ? "upperCard" : ""} ref={isFirst ? topCardRef : undefined} 
+                className={`rounded-md w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]`}>
                 <Header disable={isFirst}/>
                 <div id={isFirst ? "disable1" : ""} className="flex justify-end px-7">
                   <CitySelector/>
