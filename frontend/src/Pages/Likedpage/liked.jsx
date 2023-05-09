@@ -205,7 +205,7 @@ const Liked = ({setIsLoggedin}) => {
     }
 
     return (
-        <div className=" w-full h-screen bg-white overflow-hidden">
+        <div className=" w-full h-full bg-white overflow-hidden">
 
             <div className=" w-screen h-20">
                 {/* top of screen w/ logo */}
@@ -234,7 +234,7 @@ const Liked = ({setIsLoggedin}) => {
                 </button>
             </div>
 
-            <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100vh-var(--navbar-height)-8rem)] overflow-x-hidden" ref={scrollRef}>
+            <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100%-var(--navbar-height)-8rem)] overflow-x-hidden" ref={scrollRef}>
                 {/* container for list */}
                 <deleteContext.Provider value={del}>
                 {
