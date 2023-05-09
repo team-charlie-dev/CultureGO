@@ -85,6 +85,14 @@ export const getOpenHours = async (sightId) => {
   return data ? data[0] : [];
 };
 
+export const getSightAddress = async (addressId) => {
+  const {data, error} = await supabase
+    .from("addresses")
+    .select()
+    .eq("address_id", addressId)
+  return data ? data[0] : {street: "", zip: "", city: ""};
+}
+
 export const getLocation = async (addressId) => {
   const { data, error } = await supabase
     .from("addresses")
@@ -111,12 +119,15 @@ export const getFullInfo = async (sightId, onlyLong) => {
   // const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
   const { data, error } = await supabase
     .from("sights")
-    .select("long_info, price")
+    .select("long_info, price, address_id")
     .eq("sight_id", sightId);
   const open_hours = await getOpenHours(sightId);
+  console.log("address_id ", data[0].address_id)
+  const address = await getSightAddress(data[0].address_id)
+  console.log("address ", address)
   if (error) return error;
 
-  return [data, open_hours];
+  return [data, open_hours, address];
 };
 
 export const addLikes = async (userId, sightId) => {

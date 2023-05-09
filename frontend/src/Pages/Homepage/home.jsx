@@ -308,7 +308,7 @@ const Home = ({setIsLoggedin}) => {
         </div>
         <div onTouchEnd={sights.length ? release : () => {}} onTouchStart={sights.length ? lift : () => {}} onTouchMove={sights.length ? move : () => {}} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
           <Card mode={"upperCardImage"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
-          <Buttons handleLikeClick={() => sendSwipeMessage(sights[0].sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0].sight_id, false)} />
+          <Buttons handleLikeClick={() => sendSwipeMessage(sights[0]?.sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0]?.sight_id, false)} />
         </div>
       </div>
 
