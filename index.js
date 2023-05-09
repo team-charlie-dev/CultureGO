@@ -164,7 +164,7 @@ app.get("/getitem", async (req, res) => {
 });
 
 app.post("/tags", async (req, res) => {
-  updateFilter(req.body, req.query.userId);
+  await updateFilter(req.body, req.query.userId);
   res.status(200).send();
 });
 
@@ -188,26 +188,26 @@ app.post("/addlikes", async (req, res) => {
   res.send(data);
 });
 
-app.delete("/likes", (req, res) => {
+app.delete("/likes", async (req, res) => {
   let userId = req.query.userId;
 
-  removeLikes(userId, req.body);
+  await removeLikes(userId, req.body);
 
   res.status(204).send();
 });
 
-app.post("/swipe", (req, res) => {
+app.post("/swipe", async (req, res) => {
   let userId = req.body.userId;
   let sightId = req.body.sightId;
   let liked = req.body.liked;
 
   if (liked) {
-    addLikes(userId, sightId);
+    await addLikes(userId, sightId);
   } else {
-    addDislikes(userId, sightId);
+    await addDislikes(userId, sightId);
   }
 
-  updateTags(userId, sightId, liked);
+  await updateTags(userId, sightId, liked);
 
   res.status(204);
 });
@@ -245,7 +245,7 @@ app.get("/algorithm", async (req, res) => {
   // gettar sights och massa info om dom
   const sights = await getRandomSights(100, userID);
 
-  const filters = getFilters(userID);
+  const filters = await getFilters(userID);
   // skickar tillbaka 3 random sights
   if (filters.random) res.send([sights[0], sights[1], sights[2], sights[3]]);
   // kallar algon med random sights och usrID
