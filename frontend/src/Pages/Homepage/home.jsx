@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Like from "../../Components/icons/Like.svg";
 import Dislike from "../../Components/icons/Dislike.svg";
 import Logo from "../../Components/icons/Logo.svg";
@@ -44,11 +44,26 @@ const emptyItem = {
   location: "",
 }
 
+const getItemData = (sight) => {
+  if (sight)
+    return {
+      name: sight.name,
+      shortInfo: sight.short_info,
+      images: sight.images,
+      shortPrice: sight.short_price,
+      openHoursToday: getOpenHoursToday(sight.open_hours),
+      location: sight.location
+    }
+  else return emptyItem
+}
+
 const Home = ({setIsLoggedin}) => {
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
   const [isFetching, setIsFetching] = useState(false)
-  
+
+  const topCardRef = useRef();
+
   useEffect(() => {
     var ignore = false;
     const fetchData = async () => {
@@ -65,7 +80,6 @@ const Home = ({setIsLoggedin}) => {
       if (ignore)
         return;
       setSights(data)
-      // console.log(data)
     };
     fetchData();
 
@@ -88,24 +102,13 @@ const Home = ({setIsLoggedin}) => {
     }
 
   function updateSight() {
+    console.log("UPDATING")
+    console.log(sights)
     if (sights.length <= 3 && !isFetching)
       fetchSights()
 
     setSights(arr => arr.slice(1))
     setCurrentImage(0)
-  }
-
-  const getItemData = (sight) => {
-    if (sight)
-      return {
-        name: sight.name,
-        shortInfo: sight.short_info,
-        images: sight.images,
-        shortPrice: sight.short_price,
-        openHoursToday: getOpenHoursToday(sight.open_hours),
-        location: sight.location
-      }
-    else return emptyItem
   }
 
   const sendSwipeMessage = async (sightId, like) => {
@@ -158,12 +161,13 @@ const Home = ({setIsLoggedin}) => {
     } if (e.clientY == NaN || e.clientY == null) {
       var clientY = e.touches[0].clientY;
     }
+
     var procent = (-startX + clientX) / window.innerWidth;
 
     if (holding) {
-      document.getElementById("upperCard").style.left = -startX + clientX + "px";
-      document.getElementById("upperCard").style.top = 0;
-      document.getElementById("upperCard").style.transform = "rotate(" + 25 * (procent) + "deg)";
+      topCardRef.current.style.left = -startX + clientX + "px";
+      topCardRef.current.style.top = 0;
+      topCardRef.current.style.transform = "rotate(" + 25 * (procent) + "deg)";
     }
   }
 
@@ -197,7 +201,6 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const moveHome = (xs, ys) => {
-    // console.log("move home")
     var nrofFrames = 10;
 
     var xPos = xs;
@@ -207,35 +210,34 @@ const Home = ({setIsLoggedin}) => {
     var movespeedY = yPos / nrofFrames;
 
     var myInterval = setInterval(function () {
-      if(!document.getElementById("upperCard")){
+      if(!topCardRef.current){
         clearInterval(myInterval)
         return
       }
       if (xPos <= 0) {
-        document.getElementById("upperCard").style.left = 0;
+        topCardRef.current.style.left = 0;
       } else {
         xPos = (xPos - movespeedX);
-        document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
+        topCardRef.current.style.left = parseInt(xPos) + "px";
       }
 
       if (yPos <= 0) {
-        document.getElementById("upperCard").style.top = 0;
+        topCardRef.current.style.top = 0;
       } else {
         yPos = (yPos - movespeedY);
-        document.getElementById("upperCard").style.top = parseInt(yPos) + "px";
+        topCardRef.current.style.top = parseInt(yPos) + "px";
       }
 
       if (parseInt(yPos) <= 0 && parseInt(xPos) <= 0) {
-        document.getElementById("upperCard").style.top = 0;
-        document.getElementById("upperCard").style.left = 0;
-        document.getElementById("upperCard").style.transform = "rotate(" + 0 * (0) + "deg)";
+        topCardRef.current.style.top = 0;
+        topCardRef.current.style.left = 0;
+        topCardRef.current.style.transform = "rotate(" + 0 * (0) + "deg)";
         clearInterval(myInterval);
       }
     }, 5);
   }
 
   const moveAway = (xs, ys) => {
-    // console.log("moveAway")
     var nrofFrames = 10;
 
     var xPos = xs;
@@ -247,29 +249,18 @@ const Home = ({setIsLoggedin}) => {
     var myInterval = setInterval(function () {
 
       xPos = (xPos + movespeedX);
-      document.getElementById("upperCard").style.left = parseInt(xPos) + "px";
+      topCardRef.current.style.left = parseInt(xPos) + "px";
 
       yPos = (yPos + movespeedY);
-      document.getElementById("upperCard").style.top = parseInt(yPos) + "px";
-
+      topCardRef.current.style.top = parseInt(yPos) + "px";
 
       if (yPos <= -window.innerHeight || yPos >= window.innerHeight) {
-        document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
-        document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
-        document.getElementById("upperCard").style.top = 0;
-        document.getElementById("upperCard").style.left = 0;
 
-        document.getElementById("upperCard").style.transform = "rotate(0deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
       }
       if (xPos <= -window.innerWidth || xPos >= window.innerWidth) {
-        document.getElementById("upperCardImage").src = document.getElementById("lowerCardImage").src
-        document.getElementById("upperCardImage").alt = document.getElementById("lowerCardImage").alt
-        document.getElementById("upperCard").style.top = 0;
-        document.getElementById("upperCard").style.left = 0;
 
-        document.getElementById("upperCard").style.transform = "rotate(" + 0 + "deg)";
         isOut(movespeedX);
         clearInterval(myInterval);
       }
@@ -299,32 +290,58 @@ const Home = ({setIsLoggedin}) => {
     })
   }
 
+  const CardHolder = ({sight, firstCard, swipeFuncs: {release, lift, move}, cardClickHandler}) => {
+    return (
+      <div className="flex flex-col h-[calc(100%-10%-1.5rem)]"
+        onTouchEnd={firstCard && sights.length ? release : () => {}} 
+        onTouchStart={firstCard && sights.length ? lift : () => {}}
+        onTouchMove={firstCard && sights.length ? move : () => {}}
+      >
+        <Card currentImage={currentImage} setCurrentImage={setCurrentImage} 
+          itemData={getItemData(sight)} arrowClickHandler={cardClickHandler}/>
+        <Buttons disable={firstCard} handleLikeClick={() => sendSwipeMessage(sight.sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sight.sight_id, false)}/>
+      </div>
+    )
+  }
+
   return (
     <>
-      <div id="upperCard" className={`rounded-md  z-20 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]`}>
-        <Header />
-        <div id="disable1" className="flex justify-end px-7">
-          <CitySelector />
+      <div className="h-full w-full bg-white">
+      
+        <div className="bg-white w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
+          <Header />
+          <div className="flex justify-end px-7">
+            <CitySelector />
+          </div>
+          <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
+            <Card mode={""}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
+            <Buttons />
+          </div>
         </div>
-        <div onTouchEnd={sights.length ? release : () => {}} onTouchStart={sights.length ? lift : () => {}} onTouchMove={sights.length ? move : () => {}} className=" flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"upperCardImage"} currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[0])} arrowClickHandler={cardClickHandler}/>
-          <Buttons handleLikeClick={() => sendSwipeMessage(sights[0]?.sight_id, true)} handleDislikeClick={() => sendSwipeMessage(sights[0]?.sight_id, false)} />
-        </div>
-      </div>
+      {
+        sights.slice(0).reverse().map(sight => 
+          {
+            let isFirst = sights.indexOf(sight) == 0
+            return (
+              <div key={sight.sight_id} id={isFirst ? "upperCard" : ""} ref={isFirst ? topCardRef : undefined} 
+                className={`rounded-md w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]`}>
+                <Header disable={isFirst}/>
+                <div id={isFirst ? "disable1" : ""} className="flex justify-end px-7">
+                  <CitySelector/>
+                </div>
+                  
+                <CardHolder sight={sight} firstCard={sights.indexOf(sight) == 0} swipeFuncs={{release, lift, move}} cardClickHandler={cardClickHandler}/>
 
-      <div className="bg-white z-10 w-full absolute overflow-hidden h-[calc(100%-var(--navbar-height))]">
-        <Header />
-        <div className="flex justify-end px-7">
-          <CitySelector />
-        </div>
-        <div id="testtestss" className="bg-white flex flex-col h-[calc(100%-10%-1.5rem)]">
-          <Card mode={"lowerCardImage"}currentImage={currentImage} setCurrentImage={setCurrentImage} itemData={getItemData(sights[1])} arrowClickHandler={cardClickHandler}/>
-          <Buttons />
-        </div>
+              </div>
+            )
+          }
+
+          )
+      }
       </div>
       
       { infoCard.show ?
-        <div className="absolute h-full w-full pt-20 z-50">
+        <div className="absolute h-full w-full pt-20 top-0 left-0">
           <FullCard infoState={[infoCard, setInfoCard]}/>
         </div> 
       : <></> }
@@ -332,9 +349,9 @@ const Home = ({setIsLoggedin}) => {
   );
 };
 
-const Buttons = ({ handleLikeClick, handleDislikeClick }) => {
+const Buttons = ({ handleLikeClick, handleDislikeClick, disable }) => {
   return (
-    <div id="disable2" className="h-[15%] flex-col justify-center flex p-5">
+    <div id={disable ? "disable2" : ""} className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
         <div onClick={handleDislikeClick}>
           <img src={Dislike}></img>
@@ -347,9 +364,9 @@ const Buttons = ({ handleLikeClick, handleDislikeClick }) => {
   );
 };
 
-const Header = () => {
+const Header = ({disable}) => {
   return (
-    <header id="disable3" className="p-3 pt-5 h-[10%]">
+    <header id={disable ? "disable3" : ""} className="p-3 pt-5 h-[10%]">
       <img src={Logo}></img>
     </header>
   );
