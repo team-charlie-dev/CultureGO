@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 
 import {
   getFullInfo,
@@ -36,7 +36,11 @@ app.use(express.json());
 app.use((req, res, next) => {
   console.log(req.path);
   //if the request is to signup or signin, we don't need to check for a token
-  if (req.path === "/signup" || req.path === "/signin" || req.path === "/algorithm") {
+  if (
+    req.path === "/signup" ||
+    req.path === "/signin" ||
+    req.path === "/algorithm"
+  ) {
     return next();
   }
   const token = req.headers["x-access-token"];
@@ -193,9 +197,9 @@ app.delete("/likes", (req, res) => {
 });
 
 app.post("/swipe", (req, res) => {
-  let userId = req.body.userId
-  let sightId = req.body.sightId
-  let liked = req.body.liked
+  let userId = req.body.userId;
+  let sightId = req.body.sightId;
+  let liked = req.body.liked;
 
   if (liked)
   {
@@ -238,17 +242,17 @@ app.get("/tagvalues", async (req, res) => {
 app.get("/algorithm", async (req, res) => {
   // tar fram userID
   const userID = req.query.userID;
-  
+
   // gettar sights och massa info om dom
   const sights = await getRandomSights(100, userID)
   
   const filters = getFilters(userID)
   // skickar tillbaka 3 random sights 
   if( filters.random ) res.send([sights[0], sights[1], sights[2], sights[3]])
-  
+ 
   // kallar algon med random sights och usrID
-  else  res.send(await algorithm(userID, sights))
-})
+  else res.send(await algorithm(userID, sights));
+});
 
 app.get("/random", async (req, res) => {
   res.send(await getRandomSights());
@@ -259,5 +263,5 @@ app.listen(port, () => {
 });
 
 app.get("/filter", async (req, res) => {
-  res.send(await getWithFilter(30, '83cebddf-ed75-4069-bbcf-3d198416b354'))
-})
+  res.send(await getWithFilter(30, "83cebddf-ed75-4069-bbcf-3d198416b354"));
+});

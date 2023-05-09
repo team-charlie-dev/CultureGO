@@ -34,6 +34,7 @@ const InfoBox = ( {data} ) => {
                 <br/>
                 <br/>
                 <p>Pris: {moreInfo.price}</p>
+                <p>Address: {moreInfo.address}</p>
                 <br/>
                 <div> {/* make flexboxes and put prices list on the side of opening hours list */}
                     <p>Öppettider: </p>
@@ -81,7 +82,8 @@ export default function FullCard({infoState, setIsLoggedin}) {
     const [moreInfo, setMoreInfo] = useState ({
         longInfo : '',
         price : '',
-        openHours : []
+        openHours : [],
+        address : ''
     })
 
     useEffect(() => {
@@ -93,7 +95,7 @@ export default function FullCard({infoState, setIsLoggedin}) {
             // if true, get TimeInfo and PriceInfo as well
         
             // call getInfo
-            let data = await fetch (`http://${serverURL}:4000/info?sightId=${sigtId}&onlyLong=true`, {
+            let data = await fetch (`${serverURL}/info?sightId=${sigtId}&onlyLong=true`, {
                 method: "GET",
                 headers: {
                   "Content-Type": "application/json",
@@ -120,12 +122,15 @@ export default function FullCard({infoState, setIsLoggedin}) {
             }
 
             let info = data[0];
+
+            let address = data[2];
             
             setMoreInfo (
                 {
                     longInfo: info[0].long_info,
                     price: info[0].price,
-                    openHours: openHours
+                    openHours: openHours,
+                    address: address.street + ", " + address.zip + " " + address.city
                 }
             )
         }

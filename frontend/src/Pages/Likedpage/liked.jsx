@@ -11,7 +11,7 @@ import {deleteContext} from './DeleteContext'
 
 import FullCard from "../../Components/FullCard/FullCard.jsx";
 
-import Address from "../../address";
+import serverUrl from "../../address";
 
 
 const Liked = ({setIsLoggedin}) => {
@@ -92,7 +92,7 @@ const Liked = ({setIsLoggedin}) => {
         let ignore = false
 
         const getData = async () => {
-            let data = await fetch(`http://${Address}:4000/likes?page=${contentPage}&sort=${sortNew?"new":"old"}&userId=${localStorage.getItem('user_id')}`, {
+            let data = await fetch(`${serverUrl}/likes?page=${contentPage}&sort=${sortNew?"new":"old"}&userId=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -156,7 +156,7 @@ const Liked = ({setIsLoggedin}) => {
             map.delete(id)
         }
 
-        const response = fetch(`http://${Address}:4000/likes?userId=${localStorage.getItem('user_id')}`, {
+        const response = fetch(`${serverUrl}/likes?userId=${localStorage.getItem('user_id')}`, {
             method: "DELETE",
             headers: {
                 "Content-Type" : "application/json",
@@ -205,7 +205,7 @@ const Liked = ({setIsLoggedin}) => {
     }
 
     return (
-        <div className=" w-full h-screen bg-white overflow-hidden">
+        <div className=" w-full h-full bg-white overflow-hidden">
 
             <div className=" w-screen h-20">
                 {/* top of screen w/ logo */}
@@ -234,7 +234,7 @@ const Liked = ({setIsLoggedin}) => {
                 </button>
             </div>
 
-            <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100vh-var(--navbar-height)-8rem)] overflow-x-hidden" ref={scrollRef}>
+            <div className=" w-full p-5 pr-8 pl-8 overflow-scroll h-[calc(100%-var(--navbar-height)-8rem)] overflow-x-hidden" ref={scrollRef}>
                 {/* container for list */}
                 <deleteContext.Provider value={del}>
                 {
