@@ -45,7 +45,7 @@ app.use((req, res, next) => {
   }
   const token = req.headers["x-access-token"];
   if (!token) {
-    return resstatus(403).send({
+    return res.status(403).jsonp({
       message: "No token provided!",
     });
   }
@@ -53,7 +53,7 @@ app.use((req, res, next) => {
   try {
     decoded = jsonwebtoken.verify(token, process.env.SECRET_KEY);
   } catch (error) {
-    return resstatus(403).send({
+    return res.status(403).jsonp({
       message: "Token not valid!",
     });
   }
@@ -128,7 +128,7 @@ app.get("/validatetoken", async (req, res) => {
 });
 
 app.get("/charlie", (req, res) => {
-  res.jsonp(
+  res.send(
     '<img src="https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg" style="width:100%"/>'
   );
 });
@@ -143,7 +143,7 @@ app.get("/testDB", async (req, res) => {
 });
 
 app.get("/helloworld", (req, res) => {
-  res.json("Hello World!");
+  res.jsonp("Hello World!");
 });
 
 //api routes
@@ -165,7 +165,7 @@ app.get("/getitem", async (req, res) => {
 
 app.post("/tags", async (req, res) => {
   updateFilter(req.body, req.query.userId);
-  resstatus(200).send();
+  res.status(200).jsonp();
 });
 
 app.get("/getfilters", async (req, res) => {
@@ -193,7 +193,7 @@ app.delete("/likes", (req, res) => {
 
   removeLikes(userId, req.body);
 
-  resstatus(204).send();
+  res.status(204).jsonp();
 });
 
 app.post("/swipe", (req, res) => {
