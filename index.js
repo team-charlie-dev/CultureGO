@@ -37,7 +37,8 @@ app.use((req, res, next) => {
   if (
     req.path === "/signup" ||
     req.path === "/signin" ||
-    req.path === "/algorithm"
+    req.path === "/algorithm" ||
+    req.path === "/env"
   ) {
     return next();
   }
@@ -60,6 +61,11 @@ app.use((req, res, next) => {
     });
   }
   next();
+});
+
+app.get("/env", (req, res) => {
+  console.log(process.env.DB_URL);
+  res.send(process.env.DB_URL);
 });
 
 // tar emot username och password från frontend
