@@ -21,7 +21,7 @@ export const createUser = async (username, password) => {
   }
 
   // set default tag values for new user
-  setDefaultValues(data[0].user_id);
+  await setDefaultValues(data[0].user_id);
   return data;
 };
 
