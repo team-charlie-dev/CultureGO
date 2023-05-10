@@ -1,5 +1,22 @@
 import { getFilters, getLikes, getTagValue } from "./dbfuncs.js";
 
+const placeHolderSight = {
+    sight_id: "placeholder_id",
+    name: "SLUT",
+    short_info: "Du har swipat på alla sights, fler kommer snart",
+    long_info: "Du har swipat på alla sights, fler kommer snart",
+    price: "Gratis",
+    main_tag_id: "123",
+    address_id: "123",
+    images: ["https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg"],
+    short_price: "Gratis",
+    open_hours: [],
+    location: "Stockholm",
+    sub_tag: []
+}
+
+var sentSights = {}
+
 //Hashtable, used for retrieving values for tags
 class HashTable {
   constructor() {
@@ -51,6 +68,24 @@ export const algorithm = async (userId, sights, filters, liked, disliked) => {
   const values = await getTagValue(userId);
   const indoorTagId = "c9eaa966-a8ee-41ca-be9e-4480a368a705";
   const outdoorTagId = "06bce9f7-14fc-4f55-a87b-7748ca990aa6";
+
+  // if we have no record of sending sights to a user
+  if (!sentSights[userId])
+  {
+    Object.assign(sentSights, {[userId]: [undefined, undefined, undefined, undefined, undefined, undefined]}) // init with 5 empty
+  }
+
+  // remove sights which appear in sentSights[userId]
+
+  sentSights[userId].forEach(sightId => {
+    if (!sightId) return;
+    
+    let index = sights.findIndex(sight => sight.sight_id == sightId)
+
+    if (index == -1) return;
+
+    sights.splice(index, 1)
+  })
 
   if (filters.indoor || filters.outdoor || filters.free) {
     const newSights = sights.filter((sight) => {
@@ -121,8 +156,28 @@ export const algorithm = async (userId, sights, filters, liked, disliked) => {
       similarities.push([sights[i], similarity]);
       similarity = 0;
     }
-
+    
     similarities.sort((a, b) => b[1] - a[1]);
-    return [similarities[0][0], similarities[1][0], similarities[2][0]];
+
+    let send = similarities.slice(0, 3).map(v => v[0])
+    // console.log("före")
+    // console.log(sentSights[userId])
+
+    sentSights[userId].splice(0, send.length)
+    // console.log("efter splice")
+    // console.log(sentSights[userId])
+    sentSights[userId] = sentSights[userId].concat(send.map(s => s.sight_id))
+    // console.log("efter concat")
+    // console.log(sentSights[userId])
+
+    // fill with placeholders so it contains at least 3 sights
+    for (let i = send.length; i < 3; i++)
+    {
+      send.push(placeHolderSight)
+    }
+
+    // if(similarities.length < 3)
+    //     return [placeHolderSight, placeHolderSight, placeHolderSight]
+    return send;
   }
 };
