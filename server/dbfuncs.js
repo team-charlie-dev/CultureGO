@@ -401,3 +401,52 @@ const setDefaultValues = async (user_id) => {
 
   if (filterError) console.log(filterError);
 };
+
+export const getAllData = async () => {
+  const allSights = await supabase
+    .from("sights")
+    .select("*, addresses (*), sub_tag (*), open_hours (*)");
+  const data = allSights.data.map(
+    ({
+      sight_id,
+      name,
+      short_info,
+      long_info,
+      price,
+      main_tag_id,
+      address_id,
+      number_of_img,
+      short_price,
+      addresses,
+      sub_tag,
+      open_hours,
+    }) => {
+      const images = []
+      for(let i = 1; i <= number_of_img; i++)
+        images.push(BASE_IMG_URL + "sights/" + sight_id + "/" + i + ".jpg")
+
+      const location = addresses.location
+      
+      return {
+        sight_id,
+        name,
+        short_info,
+        long_info,
+        price,
+        main_tag_id,
+        address_id,
+        images,
+        short_price,
+        open_hours,
+        location,
+        sub_tag
+      }
+
+    }
+  );
+  return data;
+};
+
+const getLikesDislikes = async (userId) => {
+  
+}

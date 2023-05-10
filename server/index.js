@@ -23,6 +23,7 @@ import {
   addDislikes,
   updateTags,
   getFilters,
+  getAllData
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -59,6 +60,9 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+const allSights = await getAllData()
+
 
 // tar emot username och password från frontend
 // krypterar lösenordet
@@ -243,13 +247,13 @@ app.get("/algorithm", async (req, res) => {
   const userID = req.query.userID;
 
   // gettar sights och massa info om dom
-  const sights = await getRandomSights(100, userID);
+  //const sights = await getRandomSights(100, userID);
 
   const filters = await getFilters(userID);
   // skickar tillbaka 3 random sights
-  if (filters.random) res.send([sights[0], sights[1], sights[2], sights[3]]);
+  if (filters.random) res.send([allSights[0], allSights[1], allSights[2], allSights[3]]);
   // kallar algon med random sights och usrID
-  else res.send(await algorithm(userID, sights));
+  else res.send(await algorithm(userID, allSights, filters));
 });
 
 app.get("/random", async (req, res) => {
