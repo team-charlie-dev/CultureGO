@@ -35,6 +35,16 @@ export const getUser = async (username) => {
   return data[0];
 };
 
+export const getUserById = async (userId) => {
+  const { data, error } = await supabase
+    .from("users")
+    .select("username, user_id, password")
+    .eq("user_id", userId);
+  if (error) return { error: error };
+  if (data.length == 0) return { error: "User not found" };
+  return data[0];
+};
+
 export const getItems = async (amount, user) => {
   const { data, error } = await supabase.from("sights").select(); // TODO hämta enbart det man inte har sett
   if (error) return error;
@@ -118,28 +128,33 @@ export const getLikes = async (userId, page, filter, sort) => {
 };
 
 export const getFullInfo = async (sightId, onlyLong) => {
-  // commented version doesnt work on sights that are missing in the opening hours table
-  // const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
-  const { data, error } = await supabase
-    .from("sights")
-    .select("long_info, price, address_id")
-    .eq("sight_id", sightId);
-  const open_hours = await getOpenHours(sightId);
-  console.log("address_id ", data[0].address_id);
-  const address = await getSightAddress(data[0].address_id);
-  console.log("address ", address);
-  if (error) return error;
+  if (sightId != "placeholder_id") {
+    // commented version doesnt work on sights that are missing in the opening hours table
+    // const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
+    const { data, error } = await supabase
+      .from("sights")
+      .select("long_info, price, address_id")
+      .eq("sight_id", sightId);
+    const open_hours = await getOpenHours(sightId);
+    console.log("address_id ", data[0].address_id);
+    const address = await getSightAddress(data[0].address_id);
+    console.log("address ", address);
+    if (error) return error;
 
-  return [data, open_hours, address];
+    return [data, open_hours, address];
+  }
+  return [[{}], {}, {}];
 };
 
 export const addLikes = async (userId, sightId) => {
-  const { data, error } = await supabase
-    .from("liked_sights")
-    .insert([{ user_id: userId, sight_id: sightId }]);
-  if (error) return error;
+  if (sightId != "placeholder_id") {
+    const { data, error } = await supabase
+      .from("liked_sights")
+      .insert([{ user_id: userId, sight_id: sightId }]);
+    if (error) return error;
 
-  return { sightId };
+    return { sightId };
+  }
 };
 
 export const getSubTags = async (sightId) => {
@@ -304,80 +319,84 @@ export const removeLikes = async (userId, sightIds) => {
 };
 
 export const addDislikes = async (userId, sightId) => {
-  const { data: disliked_sights, error } = await supabase
-    .from("disliked_sights")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("sight_id", sightId);
-
-  if (error) return error;
-
-  if (disliked_sights.length === 0) {
-    const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
-      days: "5 days",
-    });
-
-    if (ttlError) return ttlError;
-
-    const { data, error } = await supabase.from("disliked_sights").insert([
-      {
-        user_id: userId,
-        sight_id: sightId,
-        time_to_live: ttl,
-        times_disliked: 1,
-      },
-    ]);
-
-    if (error) return error;
-  } else {
-    const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
-      days: "5 days",
-    });
-    const { error } = await supabase
+  if (sightId != "placeholder_id") {
+    const { data: disliked_sights, error } = await supabase
       .from("disliked_sights")
-      .update({
-        time_to_live: ttl,
-        times_disliked: disliked_sights[0].times_disliked + 1,
-      })
+      .select("*")
       .eq("user_id", userId)
       .eq("sight_id", sightId);
+
+    if (error) return error;
+
+    if (disliked_sights.length === 0) {
+      const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
+        days: "5 days",
+      });
+
+      if (ttlError) return ttlError;
+
+      const { data, error } = await supabase.from("disliked_sights").insert([
+        {
+          user_id: userId,
+          sight_id: sightId,
+          time_to_live: ttl,
+          times_disliked: 1,
+        },
+      ]);
+
+      if (error) return error;
+    } else {
+      const { data: ttl, ttlError } = await supabase.rpc("time_to_live", {
+        days: "5 days",
+      });
+      const { error } = await supabase
+        .from("disliked_sights")
+        .update({
+          time_to_live: ttl,
+          times_disliked: disliked_sights[0].times_disliked + 1,
+        })
+        .eq("user_id", userId)
+        .eq("sight_id", sightId);
+    }
   }
 };
 
 export const updateTags = async (userId, sightId, liked) => {
-  // fetch tag val
-  const tagValues = await getTagValue(userId);
-  const tags = {};
-  tagValues.forEach(({ tag_id, value }) =>
-    Object.assign(tags, { [tag_id]: value })
-  );
-  var updatedValues = [];
+  if (sightId != "placeholder_id") {
+    // fetch tag val
+    const tagValues = await getTagValue(userId);
+    const tags = {};
+    tagValues.forEach(({ tag_id, value }) =>
+      Object.assign(tags, { [tag_id]: value })
+    );
+    var updatedValues = [];
 
-  // fetch sight tags
-  const subTags = await getSubTags(sightId);
+    // fetch sight tags
+    const subTags = await getSubTags(sightId);
 
-  // get main tag (sight)
-  const {
-    data: [{ main_tag_id: mainTag }],
-  } = await supabase
-    .from("sights")
-    .select("main_tag_id")
-    .eq("sight_id", sightId);
+    // get main tag (sight)
+    const {
+      data: [{ main_tag_id: mainTag }],
+    } = await supabase
+      .from("sights")
+      .select("main_tag_id")
+      .eq("sight_id", sightId);
 
-  // update main tag value separately for easier future changing
-  let value = tags[mainTag] * 0.9 + (liked ? 0.1 : 0);
-  updatedValues.push({ tag_id: mainTag, user_id: userId, value });
+    // update main tag value separately for easier future changing
+    let value = tags[mainTag] * 0.9 + (liked ? 0.1 : 0);
+    updatedValues.push({ tag_id: mainTag, user_id: userId, value });
 
-  // update sub-tag values
-  subTags.forEach(({ tag_id }) => {
-    // if we like it, move 10% closer to 1, if we dislike move 10% closer to 0
-    value = tags[tag_id] * 0.9 + (liked ? 0.1 : 0);
-    updatedValues.push({ tag_id, user_id: userId, value });
-  });
+    // update sub-tag values
+    subTags.forEach(({ tag_id }) => {
+      // if we like it, move 10% closer to 1, if we dislike move 10% closer to 0
+      value = tags[tag_id] * 0.9 + (liked ? 0.1 : 0);
+      updatedValues.push({ tag_id, user_id: userId, value });
+    });
 
-  // push to db
-  const { error } = await supabase.from("tag_values").upsert(updatedValues);
-  if (error) console.log(error);
+    // push to db
+    const { error } = await supabase.from("tag_values").upsert(updatedValues);
+    if (error) console.log(error);
+  }
 };
 
 const setDefaultValues = async (user_id) => {

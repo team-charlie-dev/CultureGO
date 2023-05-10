@@ -1,5 +1,22 @@
 import { getFilters, getLikes, getTagValue } from "./dbfuncs.js";
 
+const placeHolderSight = {
+  sight_id: "placeholder_id",
+  name: "SLUT",
+  short_info: "Du har swipat på alla sights, fler kommer snart",
+  long_info: "Du har swipat på alla sights, fler kommer snart",
+  price: "Gratis",
+  main_tag_id: "123",
+  address_id: "123",
+  images: [
+    "https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg",
+  ],
+  short_price: "Gratis",
+  open_hours: [],
+  location: "Stockholm",
+  sub_tag: [],
+};
+
 //Hashtable, used for retrieving values for tags
 class HashTable {
   constructor() {
@@ -120,6 +137,8 @@ export const algorithm = async (userId, sights, filters, liked, disliked) => {
     }
 
     similarities.sort((a, b) => b[1] - a[1]);
+    if (similarities.length < 3)
+      return [placeHolderSight, placeHolderSight, placeHolderSight];
     return [similarities[0][0], similarities[1][0], similarities[2][0]];
   }
 };

@@ -25,6 +25,7 @@ import {
   getFilters,
   getAllData,
   getLikesDislikes,
+  getUserById,
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -127,8 +128,13 @@ app.post("/signin", async (req, res) => {
   res.send(data);
 });
 
-app.get("/validatetoken", async (req, res) => {
-  return res.send({ message: "Token valid" });
+app.get("/validateuser", async (req, res) => {
+  const userId = req.query.userId;
+  const user = await getUserById(userId);
+  if (user.error) {
+    return res.send({ message: "User not valid" });
+  }
+  return res.send({ message: "User valid" });
 });
 
 app.get("/charlie", (req, res) => {
