@@ -90,7 +90,7 @@ const Home = ({setIsLoggedin, setIsLoading}) => {
   
   const fetchSights = async () => {
     setIsFetching(true)
-    setIsLoading(true)
+    // setIsLoading(true)
     fetch(`${serverUrl}/algorithm?userID=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
@@ -110,6 +110,9 @@ const Home = ({setIsLoggedin, setIsLoading}) => {
     console.log(sights)
     if (sights.length <= 3 && !isFetching)
       fetchSights()
+
+    if (sights.length <= 1)
+      setIsLoading(true)
 
     setSights(arr => arr.slice(1))
     setCurrentImage(0)
