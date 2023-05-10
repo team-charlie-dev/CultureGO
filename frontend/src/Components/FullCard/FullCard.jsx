@@ -76,7 +76,7 @@ const InfoBox = ( {data} ) => {
     );
 };
 
-export default function FullCard({infoState, setIsLoggedin}) {
+export default function FullCard({infoState, setIsLoading}) {
 
     const [infoCard, setInfoCard] = infoState;
     const [moreInfo, setMoreInfo] = useState ({
@@ -91,6 +91,7 @@ export default function FullCard({infoState, setIsLoggedin}) {
         // fetches the missing info for extended info page
 
         const getMoreInfo = async () => {
+            setIsLoading(true)
             var sigtId = infoCard.id
             // if true, get TimeInfo and PriceInfo as well
         
@@ -102,9 +103,6 @@ export default function FullCard({infoState, setIsLoggedin}) {
                   "x-access-token": localStorage.getItem('token')
                 }})
             .then(res => {
-                if(res.status == 403){
-                    setIsLoggedin(false)
-                }
                 let json = res.json ();
                 return json
             })
@@ -133,6 +131,7 @@ export default function FullCard({infoState, setIsLoggedin}) {
                     address: address.street + ", " + address.zip + " " + address.city
                 }
             )
+            setIsLoading(false)
         }
 
         getMoreInfo ()

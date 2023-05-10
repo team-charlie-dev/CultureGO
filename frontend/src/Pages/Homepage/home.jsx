@@ -57,7 +57,7 @@ const getItemData = (sight) => {
   else return emptyItem
 }
 
-const Home = ({setIsLoggedin}) => {
+const Home = ({setIsLoggedin, setIsLoading}) => {
   const [currentImage, setCurrentImage] = useState(0)
   const [sights, setSights] = useState([])
   const [isFetching, setIsFetching] = useState(false)
@@ -67,6 +67,7 @@ const Home = ({setIsLoggedin}) => {
   useEffect(() => {
     var ignore = false;
     const fetchData = async () => {
+      setIsLoading(true)
       const response = await fetch(`${serverUrl}/algorithm?userID=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
@@ -80,6 +81,7 @@ const Home = ({setIsLoggedin}) => {
       if (ignore)
         return;
       setSights(data)
+      setIsLoading(false)
     };
     fetchData();
 
@@ -88,6 +90,7 @@ const Home = ({setIsLoggedin}) => {
   
   const fetchSights = async () => {
     setIsFetching(true)
+    setIsLoading(true)
     fetch(`${serverUrl}/algorithm?userID=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
@@ -98,6 +101,7 @@ const Home = ({setIsLoggedin}) => {
       .then(json => {
         setSights(arr => arr.concat(json))
         setIsFetching(false)
+        setIsLoading(false)
       })
     }
 
@@ -112,7 +116,7 @@ const Home = ({setIsLoggedin}) => {
   }
 
   const sendSwipeMessage = async (sightId, like) => {
-    const response = await fetch(`${serverUrl}/swipe`, {
+    const response = fetch(`${serverUrl}/swipe`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -124,10 +128,6 @@ const Home = ({setIsLoggedin}) => {
         liked: like
       }),
     })
-
-    if (response.status == 403) {
-      setIsLoggedin(false)
-    }
 
     updateSight()
   }
@@ -342,7 +342,7 @@ const Home = ({setIsLoggedin}) => {
       
       { infoCard.show ?
         <div className="absolute h-full w-full pt-20 top-0 left-0">
-          <FullCard infoState={[infoCard, setInfoCard]}/>
+          <FullCard infoState={[infoCard, setInfoCard]} setIsLoading={setIsLoading}/>
         </div> 
       : <></> }
       </>
