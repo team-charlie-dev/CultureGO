@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import LogoLarge from "../../Components/icons/LogoLarge";
 import serverUrl from "../../address";
 
-export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
+export default function Login({ loginState: [isLoggedin, setIsLoggedin], setIsLoading }) {
   const [inputUsername, setInputUsername] = useState("");
   const [inputPassword, setInputPassword] = useState("");
   const [isCredentialsValid, setIsCredentialsValid] = useState({
@@ -45,6 +45,7 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
   }
 
   const handleLogin = async () => {
+    setIsLoading(true);
     const res = await fetch(`${serverUrl}/signin`, {
       method: "POST",
       headers: {
@@ -69,8 +70,10 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
       localStorage.setItem("username", resJson.userData.username);
       setIsLoggedin(true);
     }
+    setIsLoading(false);
   };
   const handleCreateAccount = async () => {
+    setIsLoading(true);
     const res = await fetch(`${serverUrl}/signup`, {
       method: "POST",
       headers: {
@@ -95,6 +98,7 @@ export default function Login({ loginState: [isLoggedin, setIsLoggedin] }) {
       localStorage.setItem("username", resJson.userData.username);
       setIsLoggedin(true);
     }
+    setIsLoading(false);
   };
 
 

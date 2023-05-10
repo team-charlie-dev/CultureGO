@@ -6,7 +6,7 @@ import Random from '../../Components/icons/tag-page-icons/Random.jpg'
 import TagCard from './TagCard'
 import serverUrl from '../../address'
 
-export default function Tags({ changeScreen, setIsLoggedin }) {
+export default function Tags({ changeScreen, setIsLoggedin, setIsLoading }) {
   //Outdoor = 0, Indoor = 1, Free = 2, Random = 3
 
   const [clicked, changeClicked] = useState(new Array(4))
@@ -15,6 +15,7 @@ export default function Tags({ changeScreen, setIsLoggedin }) {
 
   useEffect(() => {
     const getFilters = async () => {
+      setIsLoading(true)
       const response = await fetch(`${serverUrl}/getfilters?userId=${localStorage.getItem('user_id')}`, {
         method: "GET",
         headers: {
@@ -26,6 +27,7 @@ export default function Tags({ changeScreen, setIsLoggedin }) {
       console.log(data)
       changeClicked([data.outdoor, data.indoor, data.free, data.random])
       prevState = [data.outdoor, data.indoor, data.free, data.random]
+      setIsLoading(false)
     }
     getFilters();
   }, [])
