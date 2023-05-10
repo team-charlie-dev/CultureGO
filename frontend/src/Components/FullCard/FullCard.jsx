@@ -7,8 +7,8 @@ import serverURL from "../../address";
 import { useEffect, useState } from "react";
 
 const Image = ( {data} ) => {
-    const imgPlaceholder = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg"
     const [id, pics] = data;
+    const imgPlaceholder = id != "placeholder_id" ? "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg" : "https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/charlie.jpg"
     console.log(pics)
     let img = pics==0 ? imgPlaceholder :  
     `https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${id}/1.jpg`;
@@ -133,12 +133,12 @@ export default function FullCard({infoState, setIsLoading}) {
             )
             setIsLoading(false)
         }
-
-        getMoreInfo ()
+        if(infoCard.id != "placeholder_id")
+            getMoreInfo ()
     }, [])
 
     var id = infoCard.id
-    var pics = infoCard.nmbrOfPics
+    var pics = infoCard.id != "placeholder_id" ? infoCard.nmbrOfPics : 0
     var name = infoCard.name
 
     return (
