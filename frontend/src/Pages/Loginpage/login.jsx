@@ -73,7 +73,11 @@ export default function Login({
     }
     const resJson = await res.json();
     if (resJson?.error) {
-      setIsCredentialsValid({ username: false, password: false });
+      if (resJson.error === "Password incorrect") {
+        setIsCredentialsValid({ ...isCredentialsValid, password: false });
+      } else if (resJson.error === "User not found") {
+        setIsCredentialsValid({ ...isCredentialsValid, username: false });
+      }
       setErrorMsg(resJson.error);
     } else {
       localStorage.setItem("token", resJson.userData.token);
@@ -100,7 +104,9 @@ export default function Login({
     }
     const resJson = await res.json();
     if (resJson?.error) {
-      setIsCredentialsValid({ username: false, password: false });
+      if (resJson.error === "User already exists") {
+        setIsCredentialsValid({ ...isCredentialsValid, username: false });
+      }
       setErrorMsg(resJson.error);
     } else {
       localStorage.setItem("token", resJson.userData.token);
@@ -122,7 +128,7 @@ export default function Login({
       </div>
 
       <div
-        className={`h-1/6 flex flex-col justify-end ${
+        className={`h-1/6 flex flex-col justify-center ${
           isCredentialsValid.password && isCredentialsValid.username
             ? "opacity-0"
             : "opacity-100"
