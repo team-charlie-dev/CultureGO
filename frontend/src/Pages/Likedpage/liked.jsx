@@ -14,7 +14,7 @@ import FullCard from "../../Components/FullCard/FullCard.jsx";
 import serverUrl from "../../address";
 
 
-const Liked = ({setIsLoggedin}) => {
+const Liked = ({setIsLoggedin, setIsLoading}) => {
 
     const imgPlaceholder = "https://upload.wikimedia.org/wikipedia/commons/3/3f/Placeholder_view_vector.svg"
 
@@ -92,6 +92,7 @@ const Liked = ({setIsLoggedin}) => {
         let ignore = false
 
         const getData = async () => {
+            setIsLoading(true)
             let data = await fetch(`${serverUrl}/likes?page=${contentPage}&sort=${sortNew?"new":"old"}&userId=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
@@ -133,6 +134,7 @@ const Liked = ({setIsLoggedin}) => {
                     return rm
                 })
             }
+            setIsLoading(false)
         }
 
         getData()
@@ -219,7 +221,7 @@ const Liked = ({setIsLoggedin}) => {
                 infoCard.show === true ?
                 /* full info card */
                 <div className=" w-full h-full bg-opacity-0 ">
-                    <FullCard infoState={[infoCard, setInfoCard]} setIsLoggedin={setIsLoggedin} />
+                    <FullCard infoState={[infoCard, setInfoCard]} setIsLoading={setIsLoading} />
                 </div> : ""
             }
 
