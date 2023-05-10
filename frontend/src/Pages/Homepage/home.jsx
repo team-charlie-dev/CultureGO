@@ -354,10 +354,10 @@ const Buttons = ({ handleLikeClick, handleDislikeClick, disable }) => {
     <div id={disable ? "disable2" : ""} className="h-[15%] flex-col justify-center flex p-5">
       <div className="flex flex-row gap-[30%] justify-center h-32 w-full">
         <div onClick={handleDislikeClick}>
-          <img src={Dislike}></img>
+          <img src={Dislike} className=" rounded-full animate-glowDislike"></img>
         </div>
         <div onClick={handleLikeClick}>
-          <img src={Like}></img>
+          <img src={Like} className=" rounded-full animate-glow"></img>
         </div>
       </div>
     </div>
