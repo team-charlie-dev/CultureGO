@@ -421,12 +421,12 @@ export const getAllData = async () => {
       sub_tag,
       open_hours,
     }) => {
-      const images = []
-      for(let i = 1; i <= number_of_img; i++)
-        images.push(BASE_IMG_URL + "sights/" + sight_id + "/" + i + ".jpg")
+      const images = [];
+      for (let i = 1; i <= number_of_img; i++)
+        images.push(BASE_IMG_URL + "sights/" + sight_id + "/" + i + ".jpg");
 
-      const location = addresses.location
-      
+      const location = addresses.location;
+
       return {
         sight_id,
         name,
@@ -439,14 +439,24 @@ export const getAllData = async () => {
         short_price,
         open_hours,
         location,
-        sub_tag
-      }
-
+        sub_tag,
+      };
     }
   );
   return data;
 };
 
-const getLikesDislikes = async (userId) => {
-  
-}
+export const getLikesDislikes = async (userId) => {
+  const { data: liked, error: likedError } = await supabase
+    .from("liked_sights")
+    .select("sight_id")
+    .eq("user_id", userId);
+
+  const { data: disliked, error: dislikedError } = await supabase
+    .from("disliked_sights")
+    .select("sight_id, time_to_live")
+    .eq("user_id", userId);
+
+
+    return {liked: liked, disliked: disliked}
+};

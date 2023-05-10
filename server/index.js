@@ -23,7 +23,8 @@ import {
   addDislikes,
   updateTags,
   getFilters,
-  getAllData
+  getAllData,
+  getLikesDislikes
 } from "./dbfuncs.js";
 import { algorithm } from "./algorithm.js";
 
@@ -249,11 +250,11 @@ app.get("/algorithm", async (req, res) => {
   // gettar sights och massa info om dom
   //const sights = await getRandomSights(100, userID);
 
+  const {liked, disliked} = await getLikesDislikes(userID)
+
   const filters = await getFilters(userID);
-  // skickar tillbaka 3 random sights
-  if (filters.random) res.send([allSights[0], allSights[1], allSights[2], allSights[3]]);
   // kallar algon med random sights och usrID
-  else res.send(await algorithm(userID, allSights, filters));
+  res.send(await algorithm(userID, allSights, filters, liked, disliked));
 });
 
 app.get("/random", async (req, res) => {
