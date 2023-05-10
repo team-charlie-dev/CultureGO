@@ -76,15 +76,14 @@ export const algorithm = async (userId, sights, filters, liked, disliked) => {
   }
 
   // remove sights which appear in sentSights[userId]
-
   sentSights[userId].forEach(sightId => {
     if (!sightId) return;
     
     let index = sights.findIndex(sight => sight.sight_id == sightId)
 
-    if (index == -1) return;
+    if (index == -1) return; // we didn't find it
 
-    sights.splice(index, 1)
+    sights.splice(index, 1) // otherwise remove 1 element starting at the found index
   })
 
   if (filters.indoor || filters.outdoor || filters.free) {
@@ -160,15 +159,9 @@ export const algorithm = async (userId, sights, filters, liked, disliked) => {
     similarities.sort((a, b) => b[1] - a[1]);
 
     let send = similarities.slice(0, 3).map(v => v[0])
-    // console.log("före")
-    // console.log(sentSights[userId])
 
     sentSights[userId].splice(0, send.length)
-    // console.log("efter splice")
-    // console.log(sentSights[userId])
     sentSights[userId] = sentSights[userId].concat(send.map(s => s.sight_id))
-    // console.log("efter concat")
-    // console.log(sentSights[userId])
 
     // fill with placeholders so it contains at least 3 sights
     for (let i = send.length; i < 3; i++)
@@ -176,8 +169,6 @@ export const algorithm = async (userId, sights, filters, liked, disliked) => {
       send.push(placeHolderSight)
     }
 
-    // if(similarities.length < 3)
-    //     return [placeHolderSight, placeHolderSight, placeHolderSight]
     return send;
   }
 };
