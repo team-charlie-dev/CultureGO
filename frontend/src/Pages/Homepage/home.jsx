@@ -90,7 +90,6 @@ const Home = ({setIsLoggedin, setIsLoading}) => {
   
   const fetchSights = async () => {
     setIsFetching(true)
-    // setIsLoading(true)
     fetch(`${serverUrl}/algorithm?userID=${localStorage.getItem('user_id')}`, {
       method: "GET",
       headers: {
