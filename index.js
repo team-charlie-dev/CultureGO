@@ -259,7 +259,9 @@ app.get("/algorithm", async (req, res) => {
 
   const filters = await getFilters(userID);
   // kallar algon med random sights och usrID
-  res.send(await algorithm(userID, allSights, filters, liked, disliked));
+  res.send(
+    await algorithm(userID, allSights.slice(), filters, liked, disliked)
+  );
 });
 
 app.get("/random", async (req, res) => {
