@@ -66,7 +66,12 @@ function App() {
   };
 
   return (
-    <div className="w-screen h-full bg-primary font-inriaSans overflow-hidden fixed">
+    <div
+      className="w-screen h-full font-inriaSans overflow-hidden fixed"
+      style={{
+        backgroundImage: "url(/BackgroundImage.svg)",
+      }}
+    >
       <div className="h-full m-auto w-screen max-w-md relative">
         {isLoading ? <LoadingScreen /> : ""}
         <Navbar state={[currentPage, setCurrentPage]}>
