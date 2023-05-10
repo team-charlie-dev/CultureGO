@@ -16,18 +16,21 @@ function App() {
   useEffect(() => {
     setIsLoading(true);
     const validateResponse = async () => {
-      const res = await fetch(`${serverUrl}/validatetoken`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": localStorage.getItem("token"),
-        },
-      });
+      const res = await fetch(
+        `${serverUrl}/validateuser?userId=${localStorage.getItem("user_id")}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("token"),
+          },
+        }
+      );
       return await res.json();
     };
     validateResponse().then((res) => {
       setIsLoading(false);
-      if (res.message === "Token valid") setIsLoggedin(true);
+      if (res.message === "User valid") setIsLoggedin(true);
     });
   }, []);
 

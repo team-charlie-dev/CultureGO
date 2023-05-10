@@ -35,6 +35,16 @@ export const getUser = async (username) => {
   return data[0];
 };
 
+export const getUserById = async (userId) => {
+  const { data, error } = await supabase
+    .from("users")
+    .select("username, user_id, password")
+    .eq("user_id", userId);
+  if (error) return { error: error };
+  if (data.length == 0) return { error: "User not found" };
+  return data[0];
+};
+
 export const getItems = async (amount, user) => {
   const { data, error } = await supabase.from("sights").select(); // TODO hämta enbart det man inte har sett
   if (error) return error;
@@ -118,22 +128,22 @@ export const getLikes = async (userId, page, filter, sort) => {
 };
 
 export const getFullInfo = async (sightId, onlyLong) => {
-  if(sightId != "placeholder_id") {
-  // commented version doesnt work on sights that are missing in the opening hours table
-  // const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
-  const { data, error } = await supabase
-    .from("sights")
-    .select("long_info, price, address_id")
-    .eq("sight_id", sightId);
-  const open_hours = await getOpenHours(sightId);
-  console.log("address_id ", data[0].address_id);
-  const address = await getSightAddress(data[0].address_id);
-  console.log("address ", address);
-  if (error) return error;
+  if (sightId != "placeholder_id") {
+    // commented version doesnt work on sights that are missing in the opening hours table
+    // const {data, error} = await supabase.from('open_hours').select('sights ( long_info )').eq('sight_id', sightId)
+    const { data, error } = await supabase
+      .from("sights")
+      .select("long_info, price, address_id")
+      .eq("sight_id", sightId);
+    const open_hours = await getOpenHours(sightId);
+    console.log("address_id ", data[0].address_id);
+    const address = await getSightAddress(data[0].address_id);
+    console.log("address ", address);
+    if (error) return error;
 
-  return [data, open_hours, address];
+    return [data, open_hours, address];
   }
-  return [[{}], {}, {}]
+  return [[{}], {}, {}];
 };
 
 export const addLikes = async (userId, sightId) => {
