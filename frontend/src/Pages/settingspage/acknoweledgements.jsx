@@ -328,6 +328,29 @@ Banquet 2005 cropped.jpg" /> av Holger.Ellgaard CC-BY-SA-3.0</p>
 <p><Link link="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Fotografiska_museet_Stockholm_2016_01.jpg/800px-Fotografiska_museet_Stockholm_2016_01.jpg" title="Fotografiska museet Stockholm 2016 01.jpg" /> av Julian Herzog CC-BY-4.0</p>
 <p><Link link="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/MODERN_MUSEUM_MODERNA_MUSEET_STOCKHOLM_%2819%29.jpg/480px-MODERN_MUSEUM_MODERNA_MUSEET_STOCKHOLM_%2819%29.jpg" title="MODERN MUSEUM MODERNA MUSEET STOCKHOLM (19).jpg" /> av Emmawickstrm CC-BY-SA-4.0</p>
 <p><Link link="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Ansikte_mot_Ansikte.jpg/450px-Ansikte_mot_Ansikte.jpg" title="Ansikte mot Ansikte.jpg" /> av Burvallteran CC-BY-SA-4.0</p>
+<p><Link link="https://www.flickr.com/photos/ulfbodin/34247883006" title="no title" /> av Ulf Bodin CC-BY-NC-SA-2.0</p>
+<p><Link link="https://www.flickr.com/photos/nordelch/4322621434" title="no title" /> av Udo Schröter CC-BY-SA-2.0</p>
+<p><Link link="https://www.flickr.com/photos/nationalmuseum_stockholm/5096388616" title="Kina slott - Spegelsalen" /> av Nationalmuseum Stockholm CC-BY-SA-2.0</p>
+<p><Link link="https://www.flickr.com/photos/84554176@N00/49685561486/" title="no title" /> av Guillaume Baviere CC-BY-SA-2.0</p>
+<p><Link link="https://www.flickr.com/photos/erke86joc/6970519111" title="2011.11.11.108 - STOCKHOLM - Globentorget - Globen (Ericsson Globe)" /> av Joaquín O.C. CC-BY-NC-2.0</p>
+<p><Link link="https://sv.wikipedia.org/wiki/Riksbankshuset,_Stockholm#/media/Fil:Riksbankshuset_April_2015.jpg" title="Riksbankshuset April 2015.jpg" /> av Arild Vågen CC-BY-SA-4.0</p>
+<p><Link link="https://sv.wikipedia.org/wiki/Stureparken#/media/Fil:Stureparken_Stockholm_20060509.jpg" title="Stureparken i maj 2006" /> av FriskoKry~commonswiki CC-BY-SA-2.5</p>
+<p><Link link="https://www.flickr.com/photos/brostad/8389211150" title="Gondolen and Katarinahissen" /> av Bernt Rostad CC-BY-2.0</p>
+<p><Link link="https://www.flickr.com/photos/andreagerak1/4519428630/" title="Mynttorget by night, Stockholm - 1" /> av Andrea Gerak CC-BY-NC-ND-2.0</p>
+<p><Link link="https://www.flickr.com/photos/barracuda666/6271371597" title="Sergels torg, Stockholm" /> av Anders Bengtsson CC-BY-SA-2.0</p>
+<p><Link link="https://www.flickr.com/photos/mariaeklind/48297506687" title="Exibitions at Fotografiska"/> av Maria Eklind CC-BY-SA-2.0</p>
+<p><Link link="https://live.staticflickr.com/6147/5979589066_09127b8b35_b.jpg" title="Inuti Vasaskeppet"/> av Fredrik Wass CC-BY-NC-SA-2.0</p>
+<p><Link link="https://live.staticflickr.com/8016/7670414922_4b055498f3_b.jpg" title="Nordiska museet"/> av Martin Isaksson CC-BY-NC-SA-2.0</p>
+<p><Link link="https://live.staticflickr.com/65535/46926819655_f8fa61f9da_b.jpg" title="Nordiska Museet EM1B1476"/> av Bengt Nyman CC-BY-2.0</p>
+<p><Link link="http://mediabank.visitstockholm.com/detail/2087" title="Djurgården"/> av Julia Donka, FLB Europa / mediabank.visitstockholm.com</p>
+<p><Link link="https://www.flickr.com/photos/teresa_grau_ros/37357755566" title="Stockholms Stadsbibliotek"/> av Teresa Grau Ros CC-BY-SA-2.0</p>
+<p><Link link="https://sv.wikipedia.org/wiki/J%C3%A4rnv%C3%A4gsbron,_S%C3%B6dert%C3%A4lje_kanal#/media/Fil:J%C3%A4rnv%C3%A4gsbron,_E4-bron,_Saltsj%C3%B6bron,_2017.jpg" title="Järnvägsbron (närmast), E4-bron, Saltsjöbron"/> av Holger.Ellgaard CC-BY-SA-4.0</p>
+<p><Link link="https://live.staticflickr.com/7172/6741876593_e14e6b9c7c_k.jpg" title="2011.11.10.482 - STOCKHOLM - Historiska museet"/> av Joaquín O.C. CC-BY-NC-2.0</p>
+<p><Link link="https://images.squarespace-cdn.com/content/v1/600956dc9c2d8f3e51633193/1615219641370-NCPV3P88S4ITKXGD4YVR/EKM_DIG39484.jpg?format=2500w" title="Ekonomiska museet — Jenny Marchi Grafisk formgivare"/> av Jens Mohr CC-BY-4.0</p>
+<p><Link link="https://live.staticflickr.com/65535/52808435505_3274ef1d2c_b.jpg" title="Stockholm: Stortorget"/> av Jorge Franganillo CC-BY-2.0</p>
+<p><Link link="https://live.staticflickr.com/65535/49883090687_97548e6f93_b.jpg" title="Stockholm 2019"/> av Priit Tammets CC-BY-SA-2.0</p>
+<p><Link link="https://live.staticflickr.com/7115/7670585222_a3811eca4d_b.jpg" title="Nationalmuseum, Stockholm"/> av Dimitry B. CC-BY-2.0</p>
+
 
      <div className='flex justify-center mt-3 mb-5'>
       <div className='flex-col'>
@@ -336,6 +359,10 @@ Banquet 2005 cropped.jpg" /> av Holger.Ellgaard CC-BY-SA-3.0</p>
       <p><Link link="https://creativecommons.org/licenses/by/4.0/legalcode" title="CC-BY-4.0" /></p>
       <p><Link link="https://creativecommons.org/licenses/by-sa/3.0/legalcode" title="CC-BY-SA-3.0" /></p>
       <p><Link link="https://creativecommons.org/licenses/by/3.0/legalcode" title="CC-BY-3.0" /></p>
+      <p><Link link="https://creativecommons.org/licenses/by-sa/2.5/legalcode" title="CC-BY-SA-2.5" /></p>
+      <p><Link link="https://creativecommons.org/licenses/by-nc-nd/2.0/legalcode" title="CC-BY-NC-ND-2.0" /></p>
+      <p><Link link="https://creativecommons.org/licenses/by-nc-sa/2.0/legalcode" title="CC-BY-NC-SA-2.0" /></p>
+      <p><Link link="https://creativecommons.org/licenses/by-nc/2.0/legalcode" title="CC-BY-NC-2.0" /></p>
       <p><Link link="https://creativecommons.org/licenses/by-sa/2.0/legalcode" title="CC-BY-SA-2.0" /></p>
       <p><Link link="https://creativecommons.org/licenses/by/2.0/legalcode" title="CC-BY-2.0" /></p>
       </div>
