@@ -34,10 +34,10 @@ export default function Login({
 
   const validatePassowrd = (password) => {
     if (password.length === 0) {
-      setErrorMsg("Password cannot be empty");
+      setErrorMsg("Lösenordet får inte vara tomt");
       setIsCredentialsValid({ ...isCredentialsValid, password: false });
     } else if (password.length < 5) {
-      setErrorMsg("Password must be at least 5 characters long");
+      setErrorMsg("Lösenordet måste vara minst 5 tecken långt");
       setIsCredentialsValid({ ...isCredentialsValid, password: false });
     } else if (password.includes(" ")) {
       // Lösenordet får inte innehålla mellanslag
@@ -53,10 +53,10 @@ export default function Login({
 
   const validateUsername = (username) => {
     if (username.length === 0) {
-      setErrorMsg("Username cannot be empty");
+      setErrorMsg("Användarnamnet får inte vara tomt");
       setIsCredentialsValid({ ...isCredentialsValid, username: false });
     } else if (username.length > 15) {
-      setErrorMsg("Username cannot be longer than 15 characters long");
+      setErrorMsg("Användarnamnet får inte vara längre än 15 tecken");
       setIsCredentialsValid({ ...isCredentialsValid, username: false });
     } else if (username.includes(" ")) {
       setErrorMsg("Användarnamnet får inte innehålla mellanslag");
@@ -164,8 +164,10 @@ export default function Login({
               <div className=" text-secondaryDark my-2">{errorMsg}</div>
             </div>
             <div className="mb-5">
-              <label className="w-full text-center flex border-4 border-primaryDark rounded-lg mb-5">
-                <p className="bg-primaryDark text-white p-2 w-28">Username:</p>
+              <label className="w-full text-center flex border-4 border-primaryDark rounded-lg mb-5 text-sm">
+                <p className="bg-primaryDark text-white p-2 w-40">
+                  Användarnamn:
+                </p>
                 <input
                   className={`w-full p-2 outline-none ${
                     showInvalidIndicator.username &&
@@ -177,8 +179,8 @@ export default function Login({
                   onChange={(e) => validateUsername(e.target.value)}
                 />
               </label>
-              <label className="w-full text-center flex border-4 border-primaryDark rounded-lg">
-                <p className="bg-primaryDark text-white p-2 w-28">Password: </p>
+              <label className="w-full text-center flex border-4 border-primaryDark rounded-lg text-sm">
+                <p className="bg-primaryDark text-white p-2 w-40">Lösenord: </p>
                 <input
                   className={`w-full p-2 outline-none ${
                     showInvalidIndicator.password &&
@@ -224,7 +226,7 @@ export default function Login({
         </div>
       </div>
       <div className="text-center mb-10">
-        <h1>OR</h1>
+        <h1>Eller</h1>
       </div>
       <div className="text-center">
         <button
@@ -238,7 +240,7 @@ export default function Login({
           }}
           onClick={() => handleCreateAccount({ guest: true })}
         >
-          Login as guest
+          Logga in som gäst
         </button>
       </div>
     </div>
