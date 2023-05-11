@@ -106,10 +106,12 @@ export default function Login({
   };
   const handleCreateAccount = async ({ guest }) => {
     setIsLoading(true);
-    validatePassowrd(inputPassword);
-    validateUsername(inputUsername);
-    setShowInvalidIndicator({ username: true, password: true });
-    if (isCredentialsValid.username && isCredentialsValid.password) {
+    if (!guest) {
+      validatePassowrd(inputPassword);
+      validateUsername(inputUsername);
+      setShowInvalidIndicator({ username: true, password: true });
+    }
+    if (guest || (isCredentialsValid.username && isCredentialsValid.password)) {
       const res = await fetch(`${serverUrl}/signup`, {
         method: "POST",
         headers: {
