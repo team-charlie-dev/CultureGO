@@ -279,6 +279,7 @@ const Home = ({setIsLoggedin, setIsLoading}) => {
         show: false, 
         id: '5949257c-2cfa-4380-a609-6075a503e5fa',
         name: 'Kiungsträdgården',
+        location: 'Kungsan',
         nmbrOfPics: 1
     }
   );
@@ -288,6 +289,7 @@ const Home = ({setIsLoggedin, setIsLoading}) => {
       show: !infoCard.show,
       id: sights[0]?.sight_id,
       name: sights[0]?.name,
+      location: sights[0]?.location,
       nmbrOfPics: sights[0]?.images.length==0 ? 0 : 1
     })
   }

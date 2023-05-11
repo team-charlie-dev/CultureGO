@@ -37,6 +37,7 @@ const Liked = ({setIsLoggedin, setIsLoading}) => {
             show: false, 
             id: 'null',
             name: 'null',
+            location: 'null',
             nmbrOfPics: 1
         }
     );
@@ -48,7 +49,8 @@ const Liked = ({setIsLoggedin, setIsLoading}) => {
                 show: true, 
                 id: sight.sights.sight_id,
                 name: sight.sights.name,
-                nmbrOfPics: sight.sights.number_of_img==0 ? 0 : 1
+                location: sight.sights.addresses.location,
+                nmbrOfPics: sight.sights.number_of_img === 0 ? 0 : 1
             })
             
         }
@@ -59,6 +61,7 @@ const Liked = ({setIsLoggedin, setIsLoading}) => {
                 show: false, 
                 id: 'null',
                 name: 'null',
+                location: '',
                 nmbrOfPics: 1
             })
             
@@ -99,7 +102,7 @@ const Liked = ({setIsLoggedin, setIsLoading}) => {
         "Content-Type": "application/json",
         "x-access-token": localStorage.getItem('token')
       }}).then(res => {
-                if(res.status == 403){
+                if(res.status === 403){
                     setIsLoggedin(false)
                 }
                     let json = res.json();
@@ -115,12 +118,13 @@ const Liked = ({setIsLoggedin, setIsLoading}) => {
             }
             for (let sight of data)
             {
+                console.log (sight.sights.addresses.location)
                 let card = <div 
                 className=" cursor-pointer" 
                 onClick={() => handleInfoCard (sight)}
                 key={sight.sights.sight_id}>
-                    <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location='Stockholm' callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
-                    img={sight.sights.number_of_img==0 ? imgPlaceholder : `https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
+                    <LikedCard key={sight.sights.sight_id} name={sight.sights.name} location={sight.sights.addresses.location} callbackFunc={(value) => {fn(sight.sights.sight_id, value)}}
+                    img={sight.sights.number_of_img === 0 ? imgPlaceholder : `https://iynsfqmubcvdoqicgqlv.supabase.co/storage/v1/object/public/team-charlie-storage/sights/${sight.sights.sight_id}/1.jpg`}/>
                 </div>
                                 
                 setList(ls => {
@@ -166,7 +170,7 @@ const Liked = ({setIsLoggedin, setIsLoading}) => {
             },
             body: JSON.stringify(remove)
         })
-        if(response.status == 403){
+        if(response.status === 403){
             setIsLoggedin(false)
         }
 
