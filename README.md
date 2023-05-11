@@ -1,7 +1,6 @@
-# team-charlie
+# CultureGO
 
-This is team charlie's application.
-Further information will come shortly.
+This is a webapp that recommends cultural sights in Stockholm. The project was created in the II1305 Project Course in Information and Communication Technology at KTH.
 
 Team members:
 Reza Hosseini
