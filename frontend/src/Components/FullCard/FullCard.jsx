@@ -20,7 +20,7 @@ const Image = ( {data} ) => {
 };
 
 const InfoBox = ( {data} ) => {
-    const [name, moreInfo] = data
+    const [name, location, moreInfo] = data
 
     
     var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -58,7 +58,7 @@ const InfoBox = ( {data} ) => {
                 
                 <div className=" flex flex-row ">
                     <LocationIcon />
-                    <p className="ml-0">Stockholm</p>
+                    <p className="ml-0">{location}</p>
                 </div>
 
                 {/* <div className=" flex flex-row ">
@@ -138,6 +138,7 @@ export default function FullCard({infoState, setIsLoading}) {
     }, [])
 
     var id = infoCard.id
+    var location = infoCard.location
     var pics = infoCard.id != "placeholder_id" ? infoCard.nmbrOfPics : 0
     var name = infoCard.name
 
@@ -147,7 +148,7 @@ export default function FullCard({infoState, setIsLoading}) {
             <div className=" relative h-[calc(100vh-var(--navbar-height)-5rem)] ">
                 <Image data={[id, pics]} />
                 <div className="items-center mx-3 rounded-[30px] p-3 text-white bg-infoColor backdrop-blur-[2px] bg-opacity-30 absolute bottom-6 left-0 right-0 max-h-[60%] overflow-scroll overflow-x-hidden ">
-                    <InfoBox data={[name, moreInfo]}/>
+                    <InfoBox data={[name, location, moreInfo]}/>
                 </div>
             </div>           
             
