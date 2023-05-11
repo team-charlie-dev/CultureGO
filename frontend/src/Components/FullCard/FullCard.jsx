@@ -172,7 +172,7 @@ export default function FullCard({ infoState, setIsLoading }) {
   return (
     /* Card body */
     <div className=" z-30 w-full h-full bg-opacity-0 font-inriaSans ">
-      <div className=" relative h-[calc(100%-var(--navbar-height)-5rem)] ">
+      <div className=" relative h-[calc(100%-var(--navbar-height))] ">
         <Image data={[id, pics]} />
         <div className="items-center mx-3 rounded-[30px] p-3 text-white bg-infoColor backdrop-blur-[2px] bg-opacity-30 absolute bottom-6 left-0 right-0 max-h-[60%] overflow-scroll overflow-x-hidden ">
           <InfoBox data={[name, location, moreInfo]} />
