@@ -12,6 +12,10 @@ export default function Login({
     username: false,
     password: false,
   });
+  const [showInvalidIndicator, setShowInvalidIndicator] = useState({
+    username: false,
+    password: false,
+  });
 
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -29,7 +33,10 @@ export default function Login({
   }
 
   const validatePassowrd = (password) => {
-    if (password.length < 5) {
+    if (password.length === 0) {
+      setErrorMsg("Password cannot be empty");
+      setIsCredentialsValid({ ...isCredentialsValid, password: false });
+    } else if (password.length < 5) {
       setErrorMsg("Password must be at least 5 characters long");
       setIsCredentialsValid({ ...isCredentialsValid, password: false });
     } else if (password.includes(" ")) {
@@ -39,11 +46,15 @@ export default function Login({
       setErrorMsg("");
       setIsCredentialsValid({ ...isCredentialsValid, password: true });
     }
+    setShowInvalidIndicator({ ...showInvalidIndicator, password: true });
     setInputPassword(password);
   };
 
   const validateUsername = (username) => {
-    if (username.length > 15) {
+    if (username.length === 0) {
+      setErrorMsg("Username cannot be empty");
+      setIsCredentialsValid({ ...isCredentialsValid, username: false });
+    } else if (username.length > 15) {
       setErrorMsg("Username cannot be longer than 15 characters long");
       setIsCredentialsValid({ ...isCredentialsValid, username: false });
     } else if (username.includes(" ")) {
@@ -53,66 +64,77 @@ export default function Login({
       setErrorMsg("");
       setIsCredentialsValid({ ...isCredentialsValid, username: true });
     }
+    setShowInvalidIndicator({ ...showInvalidIndicator, username: true });
     setInputUsername(username);
   };
 
   const handleLogin = async () => {
     setIsLoading(true);
-    const res = await fetch(`${serverUrl}/signin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: inputUsername,
-        password: inputPassword,
-      }),
-    });
-    if (res.status == 403) {
-      setIsLoggedin(false);
-    }
-    const resJson = await res.json();
-    if (resJson?.error) {
-      if (resJson.error === "Password incorrect") {
-        setIsCredentialsValid({ ...isCredentialsValid, password: false });
-      } else if (resJson.error === "User not found") {
-        setIsCredentialsValid({ ...isCredentialsValid, username: false });
+    validatePassowrd(inputPassword);
+    validateUsername(inputUsername);
+    setShowInvalidIndicator({ username: true, password: true });
+    if (isCredentialsValid.username && isCredentialsValid.password) {
+      const res = await fetch(`${serverUrl}/signin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: inputUsername,
+          password: inputPassword,
+        }),
+      });
+      if (res.status == 403) {
+        setIsLoggedin(false);
       }
-      setErrorMsg(resJson.error);
-    } else {
-      localStorage.setItem("token", resJson.userData.token);
-      localStorage.setItem("user_id", resJson.userData.user_id);
-      localStorage.setItem("username", resJson.userData.username);
-      setIsLoggedin(true);
+      const resJson = await res.json();
+      if (resJson?.error) {
+        if (resJson.error === "Password incorrect") {
+          setIsCredentialsValid({ ...isCredentialsValid, password: false });
+        } else if (resJson.error === "User not found") {
+          setIsCredentialsValid({ ...isCredentialsValid, username: false });
+        }
+        setErrorMsg(resJson.error);
+      } else {
+        localStorage.setItem("token", resJson.userData.token);
+        localStorage.setItem("user_id", resJson.userData.user_id);
+        localStorage.setItem("username", resJson.userData.username);
+        setIsLoggedin(true);
+      }
     }
     setIsLoading(false);
   };
   const handleCreateAccount = async ({ guest }) => {
     setIsLoading(true);
-    const res = await fetch(`${serverUrl}/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: guest ? generateRandom(10) : inputUsername,
-        password: guest ? generateRandom(15) : inputPassword,
-      }),
-    });
-    if (res.status == 403) {
-      setIsLoggedin(false);
-    }
-    const resJson = await res.json();
-    if (resJson?.error) {
-      if (resJson.error === "User already exists") {
-        setIsCredentialsValid({ ...isCredentialsValid, username: false });
+    validatePassowrd(inputPassword);
+    validateUsername(inputUsername);
+    setShowInvalidIndicator({ username: true, password: true });
+    if (isCredentialsValid.username && isCredentialsValid.password) {
+      const res = await fetch(`${serverUrl}/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: guest ? generateRandom(10) : inputUsername,
+          password: guest ? generateRandom(15) : inputPassword,
+        }),
+      });
+      if (res.status == 403) {
+        setIsLoggedin(false);
       }
-      setErrorMsg(resJson.error);
-    } else {
-      localStorage.setItem("token", resJson.userData.token);
-      localStorage.setItem("user_id", resJson.userData.user_id);
-      localStorage.setItem("username", resJson.userData.username);
-      setIsLoggedin(true);
+      const resJson = await res.json();
+      if (resJson?.error) {
+        if (resJson.error === "User already exists") {
+          setIsCredentialsValid({ ...isCredentialsValid, username: false });
+        }
+        setErrorMsg(resJson.error);
+      } else {
+        localStorage.setItem("token", resJson.userData.token);
+        localStorage.setItem("user_id", resJson.userData.user_id);
+        localStorage.setItem("username", resJson.userData.username);
+        setIsLoggedin(true);
+      }
     }
     setIsLoading(false);
   };
@@ -161,7 +183,12 @@ export default function Login({
               <label className="w-full text-center flex border-4 border-primaryDark rounded-lg mb-5">
                 <p className="bg-primaryDark text-white p-2">Username:</p>
                 <input
-                  className="w-full p-2 outline-none"
+                  className={`w-full p-2 outline-none ${
+                    showInvalidIndicator.username &&
+                    (isCredentialsValid.username
+                      ? "shadow-[inset_0_0_8px_0px_rgba(145,132,80,1)]"
+                      : "shadow-[inset_0_0_8px_0px_rgba(164,22,35,1)]")
+                  }`}
                   type="text"
                   onChange={(e) => validateUsername(e.target.value)}
                 />
@@ -169,7 +196,12 @@ export default function Login({
               <label className="w-full text-center flex border-4 border-primaryDark rounded-lg">
                 <p className="bg-primaryDark text-white p-2">Password: </p>
                 <input
-                  className="w-full p-2 outline-none"
+                  className={`w-full p-2 outline-none ${
+                    showInvalidIndicator.password &&
+                    (isCredentialsValid.password
+                      ? "shadow-[inset_0_0_8px_0px_rgba(145,132,80,1)]"
+                      : "shadow-[inset_0_0_8px_0px_rgba(164,22,35,1)]")
+                  }`}
                   type="password"
                   onChange={(e) => validatePassowrd(e.target.value)}
                 />
@@ -177,9 +209,6 @@ export default function Login({
             </div>
             <div className="w-full text-center flex justify-around">
               <button
-                disabled={
-                  !isCredentialsValid.password || !isCredentialsValid.username
-                }
                 className={`bg-primaryDark text-white rounded-md`}
                 style={{
                   border: "none",
@@ -194,9 +223,6 @@ export default function Login({
               </button>
 
               <button
-                disabled={
-                  !isCredentialsValid.password || !isCredentialsValid.username
-                }
                 className=" bg-primaryDark text-white rounded-md"
                 style={{
                   border: "none",
