@@ -227,21 +227,6 @@ const Liked = ({ setIsLoggedin, setIsLoading }) => {
         </div>
       </div>
 
-      {
-        /* if show true show card else nothing */
-        infoCard.show === true ? (
-          /* full info card */
-          <div className=" w-full h-full bg-opacity-0 ">
-            <FullCard
-              infoState={[infoCard, setInfoCard]}
-              setIsLoading={setIsLoading}
-            />
-          </div>
-        ) : (
-          ""
-        )
-      }
-
       <div className="w-full pl-3 pr-3 relative flex justify-normal h-12">
         {/* options bar */}
         <p className="pt-3 text-xl text p-2 flex-grow">
@@ -276,6 +261,17 @@ const Liked = ({ setIsLoggedin, setIsLoading }) => {
           Ta bort
         </button>
       </div>
+      
+      
+        {   
+      /* if show true show card else nothing */
+      infoCard.show === true ?
+      /* full info card */
+      <div className="absolute h-full w-full pt-20 top-0 left-0">
+          <FullCard infoState={[infoCard, setInfoCard]} setIsLoading={setIsLoading} />
+      </div> : ""
+  }
+      
     </div>
   );
 };
