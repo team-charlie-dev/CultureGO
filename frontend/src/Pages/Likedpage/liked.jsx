@@ -231,7 +231,7 @@ const Liked = ({setIsLoggedin, setIsLoading}) => {
 
             <div className="w-full pl-3 pr-3 relative flex justify-normal h-12">
                 {/* options bar */}
-                <p className="pt-3 text-xl text p-2 flex-grow">Your liked items: </p>
+                <p className="pt-3 text-xl text p-2 flex-grow"> Mina gillade platser: </p>
                 <button onClick={clickHandlerTrash}>
                     <Trash />
                 </button>
@@ -252,7 +252,7 @@ const Liked = ({setIsLoggedin, setIsLoading}) => {
             <div className="absolute w-full bottom-0 flex justify-around">
                 <button onClick={performRemove} className="bg-secondaryDark p-2 rounded-md text-white" 
                     style={{transform: `translate(0, ${del ? -5 : 0}rem)`, transition: "transform 300ms ease-in-out"}}>
-                    REMOVE
+                    Ta bort
                 </button>
             </div>
             

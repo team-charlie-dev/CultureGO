@@ -40,7 +40,8 @@ export default function Login({
       setErrorMsg("Password must be at least 5 characters long");
       setIsCredentialsValid({ ...isCredentialsValid, password: false });
     } else if (password.includes(" ")) {
-      setErrorMsg("Password must not include spaces");
+      // Lösenordet får inte innehålla mellanslag
+      setErrorMsg("Lösenordet får inte innehålla mellanslag");
       setIsCredentialsValid({ ...isCredentialsValid, password: false });
     } else {
       setErrorMsg("");
@@ -58,7 +59,7 @@ export default function Login({
       setErrorMsg("Username cannot be longer than 15 characters long");
       setIsCredentialsValid({ ...isCredentialsValid, username: false });
     } else if (username.includes(" ")) {
-      setErrorMsg("Username must not include spaces");
+      setErrorMsg("Användarnamnet får inte innehålla mellanslag");
       setIsCredentialsValid({ ...isCredentialsValid, username: false });
     } else {
       setErrorMsg("");
@@ -202,7 +203,7 @@ export default function Login({
                 }}
                 onClick={() => handleLogin()}
               >
-                Login
+                Logga in
               </button>
 
               <button
@@ -216,7 +217,7 @@ export default function Login({
                 }}
                 onClick={() => handleCreateAccount({ guest: false })}
               >
-                Signup
+                Registrera
               </button>
             </div>
           </div>
