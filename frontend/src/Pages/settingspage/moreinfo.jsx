@@ -1,6 +1,6 @@
 import React from 'react'
 import About from './about'
-import Achievements from './achievements'
+import Achievements from './acknoweledgements'
 import Terms from './terms'
 import ArrowDownIcon from '../../Components/icons/ArrowDownIcon'
 
@@ -20,8 +20,8 @@ export default function Moreinfo({dataState}) {
             {
                 data.type === 'about' ? 
                     <About info={{username: data.info.username, user_id:data.info.user_id}} />: 
-                    (data.type === 'achievements'?
-                    <Achievements info={'Lots of achievements'}/>:
+                    (data.type === 'Acknowledgements'?
+                    <Achievements info={'Acknowledgements here'}/>:
                         (data.type === 'terms'?
                          <Terms info='aslfdjlaksjf' />: <div></div>)
                     )
