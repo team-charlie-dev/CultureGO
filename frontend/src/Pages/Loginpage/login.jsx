@@ -150,40 +150,21 @@ export default function Login({
           </div>
         </div>
       </div>
-
-      <div
-        className={`h-1/6 flex flex-col justify-center ${
-          isCredentialsValid.password && isCredentialsValid.username
-            ? "opacity-0"
-            : "opacity-100"
-        }`}
-      >
-        <div className="text-center text-xl ">{errorMsg}</div>
-      </div>
-      <div className="text-center">
-        <button
-          className={`bg-secondaryLight text-white rounded-md`}
-          style={{
-            border: "none",
-            padding: "8px 50px",
-            textAlign: "center",
-            textDecoration: "none",
-            display: "inline-block",
-          }}
-          onClick={() => handleCreateAccount({ guest: true })}
-        >
-          Login as guest
-        </button>
-      </div>
-      <div className="text-center mt-5">
-        <h1>OR</h1>
-      </div>
-      <div className="h-1/3 flex">
+      <div className="h-1/2 flex">
         <div className="w-full flex items-center justify-center">
           <div className="w-5/6">
-            <div className="mb-10">
+            <div
+              className={`h-24  flex flex-col justify-end ${
+                isCredentialsValid.password && isCredentialsValid.username
+                  ? "opacity-0"
+                  : "opacity-100"
+              }`}
+            >
+              <div className=" text-secondaryDark my-2">{errorMsg}</div>
+            </div>
+            <div className="mb-5">
               <label className="w-full text-center flex border-4 border-primaryDark rounded-lg mb-5">
-                <p className="bg-primaryDark text-white p-2">Username:</p>
+                <p className="bg-primaryDark text-white p-2 w-28">Username:</p>
                 <input
                   className={`w-full p-2 outline-none ${
                     showInvalidIndicator.username &&
@@ -196,7 +177,7 @@ export default function Login({
                 />
               </label>
               <label className="w-full text-center flex border-4 border-primaryDark rounded-lg">
-                <p className="bg-primaryDark text-white p-2">Password: </p>
+                <p className="bg-primaryDark text-white p-2 w-28">Password: </p>
                 <input
                   className={`w-full p-2 outline-none ${
                     showInvalidIndicator.password &&
@@ -240,6 +221,24 @@ export default function Login({
             </div>
           </div>
         </div>
+      </div>
+      <div className="text-center mb-10">
+        <h1>OR</h1>
+      </div>
+      <div className="text-center">
+        <button
+          className={`bg-secondaryLight text-white rounded-md`}
+          style={{
+            border: "none",
+            padding: "8px 50px",
+            textAlign: "center",
+            textDecoration: "none",
+            display: "inline-block",
+          }}
+          onClick={() => handleCreateAccount({ guest: true })}
+        >
+          Login as guest
+        </button>
       </div>
     </div>
   );
