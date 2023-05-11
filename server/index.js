@@ -39,16 +39,12 @@ app.use(express.json());
 app.use((req, res, next) => {
   console.log(req.path);
   //if the request is to signup or signin, we don't need to check for a token
-  if (
-    req.path === "/signup" ||
-    req.path === "/signin" ||
-    req.path === "/algorithm"
-  ) {
+  if (req.path === "/signup" || req.path === "/signin") {
     return next();
   }
   const token = req.headers["x-access-token"];
   if (!token) {
-    return res.status(403).send({
+    return res.status(202).send({
       message: "No token provided!",
     });
   }
@@ -56,7 +52,7 @@ app.use((req, res, next) => {
   try {
     decoded = jsonwebtoken.verify(token, process.env.SECRET_KEY);
   } catch (error) {
-    return res.status(403).send({
+    return res.status(202).send({
       message: "Token not valid!",
     });
   }
@@ -188,6 +184,7 @@ app.get("/likes", async (req, res) => {
   let filter = req.query.filter || "none";
   let sort = req.query.sort || "new";
 
+  console.log("yesyes");
   res.send(await getLikes(userId, page, filter, sort));
 });
 
@@ -259,7 +256,9 @@ app.get("/algorithm", async (req, res) => {
 
   const filters = await getFilters(userID);
   // kallar algon med random sights och usrID
-  res.send(await algorithm(userID, allSights.slice(), filters, liked, disliked));
+  res.send(
+    await algorithm(userID, allSights.slice(), filters, liked, disliked)
+  );
 });
 
 app.get("/random", async (req, res) => {
