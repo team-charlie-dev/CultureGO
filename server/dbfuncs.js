@@ -115,14 +115,17 @@ export const getLocation = async (addressId) => {
 };
 
 export const getLikes = async (userId, page, filter, sort) => {
+  console.log("hi 1")
   const { data, error } = await supabase
     .from("liked_sights")
-    .select("user_id, liked_at, sights (sight_id, name, number_of_img)")
+    .select("user_id, liked_at, sights (sight_id, name, number_of_img, addresses (location))")
     .order("liked_at", { ascending: sort === "old" })
     .eq("user_id", userId)
     .range(page * 10, page * 10 + 9);
 
   if (error) return error;
+  console.log("hi 2")
+  console.log(data)
 
   return data;
 };

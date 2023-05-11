@@ -12,6 +12,10 @@ export default function Login({
     username: false,
     password: false,
   });
+  const [showInvalidIndicator, setShowInvalidIndicator] = useState({
+    username: false,
+    password: false,
+  });
 
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -29,90 +33,111 @@ export default function Login({
   }
 
   const validatePassowrd = (password) => {
-    if (password.length < 5) {
-      setErrorMsg("Password must be at least 5 characters long");
+    if (password.length === 0) {
+      setErrorMsg("Lösenordet får inte vara tomt");
+      setIsCredentialsValid({ ...isCredentialsValid, password: false });
+    } else if (password.length < 5) {
+      setErrorMsg("Lösenordet måste vara minst 5 tecken långt");
       setIsCredentialsValid({ ...isCredentialsValid, password: false });
     } else if (password.includes(" ")) {
-      setErrorMsg("Password must not include spaces");
+      // Lösenordet får inte innehålla mellanslag
+      setErrorMsg("Lösenordet får inte innehålla mellanslag");
       setIsCredentialsValid({ ...isCredentialsValid, password: false });
     } else {
       setErrorMsg("");
       setIsCredentialsValid({ ...isCredentialsValid, password: true });
     }
+    setShowInvalidIndicator({ ...showInvalidIndicator, password: true });
     setInputPassword(password);
   };
 
   const validateUsername = (username) => {
-    if (username.length > 15) {
-      setErrorMsg("Username cannot be longer than 15 characters long");
+    if (username.length === 0) {
+      setErrorMsg("Användarnamnet får inte vara tomt");
+      setIsCredentialsValid({ ...isCredentialsValid, username: false });
+    } else if (username.length > 15) {
+      setErrorMsg("Användarnamnet får inte vara längre än 15 tecken");
       setIsCredentialsValid({ ...isCredentialsValid, username: false });
     } else if (username.includes(" ")) {
-      setErrorMsg("Username must not include spaces");
+      setErrorMsg("Användarnamnet får inte innehålla mellanslag");
       setIsCredentialsValid({ ...isCredentialsValid, username: false });
     } else {
       setErrorMsg("");
       setIsCredentialsValid({ ...isCredentialsValid, username: true });
     }
+    setShowInvalidIndicator({ ...showInvalidIndicator, username: true });
     setInputUsername(username);
   };
 
   const handleLogin = async () => {
     setIsLoading(true);
-    const res = await fetch(`${serverUrl}/signin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: inputUsername,
-        password: inputPassword,
-      }),
-    });
-    if (res.status == 403) {
-      setIsLoggedin(false);
-    }
-    const resJson = await res.json();
-    if (resJson?.error) {
-      if (resJson.error === "Password incorrect") {
-        setIsCredentialsValid({ ...isCredentialsValid, password: false });
-      } else if (resJson.error === "User not found") {
-        setIsCredentialsValid({ ...isCredentialsValid, username: false });
+    validatePassowrd(inputPassword);
+    validateUsername(inputUsername);
+    setShowInvalidIndicator({ username: true, password: true });
+    if (isCredentialsValid.username && isCredentialsValid.password) {
+      const res = await fetch(`${serverUrl}/signin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: inputUsername,
+          password: inputPassword,
+        }),
+      });
+      if (res.status == 403) {
+        setIsLoggedin(false);
       }
-      setErrorMsg(resJson.error);
-    } else {
-      localStorage.setItem("token", resJson.userData.token);
-      localStorage.setItem("user_id", resJson.userData.user_id);
-      localStorage.setItem("username", resJson.userData.username);
-      setIsLoggedin(true);
+      const resJson = await res.json();
+      if (resJson?.error) {
+        if (resJson.error === "Password incorrect") {
+          setIsCredentialsValid({ ...isCredentialsValid, password: false });
+        } else if (resJson.error === "User not found") {
+          setIsCredentialsValid({ ...isCredentialsValid, username: false });
+        }
+        setErrorMsg(resJson.error);
+      } else {
+        localStorage.setItem("token", resJson.userData.token);
+        localStorage.setItem("user_id", resJson.userData.user_id);
+        localStorage.setItem("username", resJson.userData.username);
+        setIsLoggedin(true);
+      }
     }
     setIsLoading(false);
   };
   const handleCreateAccount = async ({ guest }) => {
     setIsLoading(true);
-    const res = await fetch(`${serverUrl}/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: guest ? generateRandom(10) : inputUsername,
-        password: guest ? generateRandom(15) : inputPassword,
-      }),
-    });
-    if (res.status == 403) {
-      setIsLoggedin(false);
+    if (!guest) {
+      validatePassowrd(inputPassword);
+      validateUsername(inputUsername);
+      setShowInvalidIndicator({ username: true, password: true });
     }
-    const resJson = await res.json();
-    if (resJson?.error) {
-      if (resJson.error === "User already exists") {
-        setIsCredentialsValid({ ...isCredentialsValid, username: false });
+    if (guest || (isCredentialsValid.username && isCredentialsValid.password)) {
+      const res = await fetch(`${serverUrl}/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: guest ? generateRandom(10) : inputUsername,
+          password: guest ? generateRandom(15) : inputPassword,
+        }),
+      });
+      if (res.status == 403) {
+        setIsLoggedin(false);
       }
-      setErrorMsg(resJson.error);
-    } else {
-      localStorage.setItem("token", resJson.userData.token);
-      localStorage.setItem("user_id", resJson.userData.user_id);
-      localStorage.setItem("username", resJson.userData.username);
-      setIsLoggedin(true);
+      const resJson = await res.json();
+      if (resJson?.error) {
+        if (resJson.error === "User already exists") {
+          setIsCredentialsValid({ ...isCredentialsValid, username: false });
+        }
+        setErrorMsg(resJson.error);
+      } else {
+        localStorage.setItem("token", resJson.userData.token);
+        localStorage.setItem("user_id", resJson.userData.user_id);
+        localStorage.setItem("username", resJson.userData.username);
+        setIsLoggedin(true);
+      }
     }
     setIsLoading(false);
   };
@@ -126,15 +151,82 @@ export default function Login({
           </div>
         </div>
       </div>
+      <div className="h-1/2 flex">
+        <div className="w-full flex items-center justify-center">
+          <div className="w-5/6">
+            <div
+              className={`h-24  flex flex-col justify-end ${
+                isCredentialsValid.password && isCredentialsValid.username
+                  ? "opacity-0"
+                  : "opacity-100"
+              }`}
+            >
+              <div className=" text-secondaryDark my-2">{errorMsg}</div>
+            </div>
+            <div className="mb-5">
+              <label className="w-full text-center flex border-4 border-primaryDark rounded-lg mb-5 text-sm">
+                <p className="bg-primaryDark text-white p-2 w-40">
+                  Användarnamn:
+                </p>
+                <input
+                  className={`w-full p-2 outline-none ${
+                    showInvalidIndicator.username &&
+                    (isCredentialsValid.username
+                      ? "shadow-[inset_0_0_8px_0px_rgba(145,132,80,1)]"
+                      : "shadow-[inset_0_0_8px_0px_rgba(164,22,35,1)]")
+                  }`}
+                  type="text"
+                  onChange={(e) => validateUsername(e.target.value)}
+                />
+              </label>
+              <label className="w-full text-center flex border-4 border-primaryDark rounded-lg text-sm">
+                <p className="bg-primaryDark text-white p-2 w-40">Lösenord: </p>
+                <input
+                  className={`w-full p-2 outline-none ${
+                    showInvalidIndicator.password &&
+                    (isCredentialsValid.password
+                      ? "shadow-[inset_0_0_8px_0px_rgba(145,132,80,1)]"
+                      : "shadow-[inset_0_0_8px_0px_rgba(164,22,35,1)]")
+                  }`}
+                  type="password"
+                  onChange={(e) => validatePassowrd(e.target.value)}
+                />
+              </label>
+            </div>
+            <div className="w-full text-center flex justify-around">
+              <button
+                className={`bg-primaryDark text-white rounded-md`}
+                style={{
+                  border: "none",
+                  padding: "15px 32px",
+                  textAlign: "center",
+                  textDecoration: "none",
+                  display: "inline-block",
+                }}
+                onClick={() => handleLogin()}
+              >
+                Logga in
+              </button>
 
-      <div
-        className={`h-1/6 flex flex-col justify-center ${
-          isCredentialsValid.password && isCredentialsValid.username
-            ? "opacity-0"
-            : "opacity-100"
-        }`}
-      >
-        <div className="text-center text-xl ">{errorMsg}</div>
+              <button
+                className=" bg-primaryDark text-white rounded-md"
+                style={{
+                  border: "none",
+                  padding: "15px 32px",
+                  textAlign: "center",
+                  textDecoration: "none",
+                  display: "inline-block",
+                }}
+                onClick={() => handleCreateAccount({ guest: false })}
+              >
+                Registrera
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="text-center mb-10">
+        <h1>Eller</h1>
       </div>
       <div className="text-center">
         <button
@@ -148,70 +240,8 @@ export default function Login({
           }}
           onClick={() => handleCreateAccount({ guest: true })}
         >
-          Login as guest
+          Logga in som gäst
         </button>
-      </div>
-      <div className="text-center mt-5">
-        <h1>OR</h1>
-      </div>
-      <div className="h-1/3 flex">
-        <div className="w-full flex items-center justify-center">
-          <div className="w-5/6">
-            <div className="mb-10">
-              <label className="w-full text-center flex border-4 border-primaryDark rounded-lg mb-5">
-                <p className="bg-primaryDark text-white p-2">Username:</p>
-                <input
-                  className="w-full p-2 outline-none"
-                  type="text"
-                  onChange={(e) => validateUsername(e.target.value)}
-                />
-              </label>
-              <label className="w-full text-center flex border-4 border-primaryDark rounded-lg">
-                <p className="bg-primaryDark text-white p-2">Password: </p>
-                <input
-                  className="w-full p-2 outline-none"
-                  type="password"
-                  onChange={(e) => validatePassowrd(e.target.value)}
-                />
-              </label>
-            </div>
-            <div className="w-full text-center flex justify-around">
-              <button
-                disabled={
-                  !isCredentialsValid.password || !isCredentialsValid.username
-                }
-                className={`bg-primaryDark text-white rounded-md`}
-                style={{
-                  border: "none",
-                  padding: "15px 32px",
-                  textAlign: "center",
-                  textDecoration: "none",
-                  display: "inline-block",
-                }}
-                onClick={() => handleLogin()}
-              >
-                Login
-              </button>
-
-              <button
-                disabled={
-                  !isCredentialsValid.password || !isCredentialsValid.username
-                }
-                className=" bg-primaryDark text-white rounded-md"
-                style={{
-                  border: "none",
-                  padding: "15px 32px",
-                  textAlign: "center",
-                  textDecoration: "none",
-                  display: "inline-block",
-                }}
-                onClick={() => handleCreateAccount({ guest: false })}
-              >
-                Signup
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
