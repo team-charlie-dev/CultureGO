@@ -26,8 +26,8 @@ export default function Settings({loginState: [isLoggedin, setIsLoggedin]}) {
     if(type === 'about'){
       setData({showMoreInfo: true, info: {username: localStorage.getItem('username'), user_id: localStorage.getItem('user_id')}, type: type})
     }
-    else if(type === 'achievements'){
-      setData({showMoreInfo: true, info: 'achievements info', type: type})
+    else if(type === 'Acknowledgements'){
+      setData({showMoreInfo: true, info: 'Acknowledgements info', type: type})
     }
     else if(type === 'terms'){
       setData({showMoreInfo: true, info: 'user terms info', type: type})
@@ -48,7 +48,7 @@ export default function Settings({loginState: [isLoggedin, setIsLoggedin]}) {
         <Moreinfo dataState={[data, setData]} />
         <div className='items-center flex flex-col h-1/2 justify-between relative' style={{opacity: data.showMoreInfo? 0:1 ,transition: 'all 0.2s ease-in-out'}}>
           <Button clickHandler={async()=>handleClick('about')} text="About Me" icon={ProfileIcon} size="large"></Button>
-          <Button clickHandler={()=>setData({showMoreInfo: true, info: 'achievements info', type:'achievements'})} text="Achievements" icon={AchievementsIcon} size="large"></Button>
+          <Button clickHandler={()=>setData({showMoreInfo: true, info: 'Acknowledgements info', type:'Acknowledgements'})} text="Attributioner" icon={AchievementsIcon} size="large"></Button>
           <Button clickHandler={()=>setData({showMoreInfo: true, info: 'user terms info', type:'terms'})} text="User Terms" icon={UserTermsIcon} size="large"></Button>
           <Button text="Logout" icon={LogoutIcon} size="large" clickHandler={()=>handleLogout()}></Button>
           
