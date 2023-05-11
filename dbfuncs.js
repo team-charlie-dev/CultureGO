@@ -115,7 +115,6 @@ export const getLocation = async (addressId) => {
 };
 
 export const getLikes = async (userId, page, filter, sort) => {
-  console.log("hi 1");
   const { data, error } = await supabase
     .from("liked_sights")
     .select(
@@ -126,8 +125,6 @@ export const getLikes = async (userId, page, filter, sort) => {
     .range(page * 10, page * 10 + 9);
 
   if (error) return error;
-  console.log("hi 2");
-  console.log(data);
 
   return data;
 };

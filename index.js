@@ -184,7 +184,6 @@ app.get("/likes", async (req, res) => {
   let filter = req.query.filter || "none";
   let sort = req.query.sort || "new";
 
-  console.log("yesyes");
   res.send(await getLikes(userId, page, filter, sort));
 });
 
