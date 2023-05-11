@@ -4,15 +4,15 @@ import ProfileIcon from '../../Components/icons/ProfileIcon'
 export default function About({info}) {
   return (
     <div className='w-full h-full flex flex-col text-white text-l font-bold p-7'>
-        <div className='text-center text-xl'>About Me</div>
+        <div className='text-center text-xl'> Om mig </div>
         <div>
             <ProfileIcon/>
         </div>
         <div>
-            Username: {info.username}
+            Användarnamn: {info.username}
         </div>
         <div>
-            User ID: {info.user_id}
+            Användar-id: {info.user_id}
         </div>
     </div>
   )

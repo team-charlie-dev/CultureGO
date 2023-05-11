@@ -30,10 +30,12 @@ export default function Login({
 
   const validatePassowrd = (password) => {
     if (password.length < 5) {
-      setErrorMsg("Password must be at least 5 characters long");
+      // Lösenordet måste vara minst 5 tecken långt
+      setErrorMsg("Lösenordet måste vara minst 5 tecken långt");
       setIsCredentialsValid({ ...isCredentialsValid, password: false });
     } else if (password.includes(" ")) {
-      setErrorMsg("Password must not include spaces");
+      // Lösenordet får inte innehålla mellanslag
+      setErrorMsg("Lösenordet får inte innehålla mellanslag");
       setIsCredentialsValid({ ...isCredentialsValid, password: false });
     } else {
       setErrorMsg("");
@@ -44,10 +46,11 @@ export default function Login({
 
   const validateUsername = (username) => {
     if (username.length > 15) {
-      setErrorMsg("Username cannot be longer than 15 characters long");
+      // Användarnamnet får inte vara längre än 15 tecken
+      setErrorMsg("Användarnamnet får inte vara längre än 15 tecken");
       setIsCredentialsValid({ ...isCredentialsValid, username: false });
     } else if (username.includes(" ")) {
-      setErrorMsg("Username must not include spaces");
+      setErrorMsg("Användarnamnet får inte innehålla mellanslag");
       setIsCredentialsValid({ ...isCredentialsValid, username: false });
     } else {
       setErrorMsg("");
@@ -148,18 +151,18 @@ export default function Login({
           }}
           onClick={() => handleCreateAccount({ guest: true })}
         >
-          Login as guest
+          Logga in som gäst
         </button>
       </div>
       <div className="text-center mt-5">
-        <h1>OR</h1>
+        <h1>ELLER </h1>
       </div>
       <div className="h-1/3 flex">
         <div className="w-full flex items-center justify-center">
           <div className="w-5/6">
             <div className="mb-10">
               <label className="w-full text-center flex border-4 border-primaryDark rounded-lg mb-5">
-                <p className="bg-primaryDark text-white p-2">Username:</p>
+                <p className="bg-primaryDark text-white p-2">Användarnamn:</p>
                 <input
                   className="w-full p-2 outline-none"
                   type="text"
@@ -167,7 +170,7 @@ export default function Login({
                 />
               </label>
               <label className="w-full text-center flex border-4 border-primaryDark rounded-lg">
-                <p className="bg-primaryDark text-white p-2">Password: </p>
+                <p className="bg-primaryDark text-white p-2">Lösenord: </p>
                 <input
                   className="w-full p-2 outline-none"
                   type="password"
@@ -190,7 +193,7 @@ export default function Login({
                 }}
                 onClick={() => handleLogin()}
               >
-                Login
+                Logga in
               </button>
 
               <button
@@ -207,7 +210,7 @@ export default function Login({
                 }}
                 onClick={() => handleCreateAccount({ guest: false })}
               >
-                Signup
+                Registrera
               </button>
             </div>
           </div>

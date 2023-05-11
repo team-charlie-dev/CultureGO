@@ -67,13 +67,13 @@ export default function Tags({ changeScreen, setIsLoggedin, setIsLoading }) {
   return (
     <div className='h-[calc(100%-var(--navbar-height))]'>
       <div className='grid grid-cols-2 h-full bg-black'>
-        <TagCard image={Outdoor} text="Outdoor" xPosition='center' yPosition='bottom' clicked={clicked[0]} handleClick={() => handleClick(0)} />
-        <TagCard image={Indoor} text="Indoor" xPosition='center' yPosition='bottom' clicked={clicked[1]} handleClick={() => handleClick(1)} />
-        <TagCard image={Free} text="Free" xPosition='center' yPosition='top' clicked={clicked[2]} handleClick={() => handleClick(2)} />
-        <TagCard image={Random} text="Random" xPosition='center' yPosition='top' clicked={clicked[3]} handleClick={() => handleClick(3)} />
+        <TagCard image={Outdoor} text="Utomhus" xPosition='center' yPosition='bottom' clicked={clicked[0]} handleClick={() => handleClick(0)} />
+        <TagCard image={Indoor} text="Inomhus" xPosition='center' yPosition='bottom' clicked={clicked[1]} handleClick={() => handleClick(1)} />
+        <TagCard image={Free} text="Gratis" xPosition='center' yPosition='top' clicked={clicked[2]} handleClick={() => handleClick(2)} />
+        <TagCard image={Random} text="Slumpat" xPosition='center' yPosition='top' clicked={clicked[3]} handleClick={() => handleClick(3)} />
       </div>
       <div className='flex justify-center'>
-        <p className='bg-white text-center absolute top-[10%] px-[15%] font-inriaSans'>What mood are you in?</p>
+        <p className='bg-white text-center absolute top-[10%] px-[15%] font-inriaSans'> Vad känner du för? </p>
         <button onClick={handleClickDone} className={`absolute text-white font-inriaSans text-xs italic bg-primaryDark px-[10%] py-[2%] rounded-full transition-all duration-500 ${doneClicked ? 'bottom-[12%]' : 'bottom-[0%]'}`}>
           Done
         </button>
