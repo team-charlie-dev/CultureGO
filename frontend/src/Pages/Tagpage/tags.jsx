@@ -115,7 +115,7 @@ export default function Tags({ changeScreen, setIsLoggedin, setIsLoading }) {
             doneClicked ? "bottom-[12%]" : "bottom-[0%]"
           }`}
         >
-          Done
+          Klar
         </button>
       </div>
     </div>
