@@ -86,35 +86,22 @@ export const algorithm = async (userId, sights, filters, liked, disliked) => {
     sights.splice(index, 1) // otherwise remove 1 element starting at the found index
   })
 
-  if (filters.indoor || filters.outdoor || filters.free) {
-    const newSights = sights.filter((sight) => {
-      const sight_id = sight.sight_id;
-      let indoor = false;
-      let outdoor = false;
-      let free = false;
+  // include only free
+  if (filters.free) {
+    sights = sights.filter(sight => sight.price === "Gratis")
+  }
 
-      if (sight.sub_tag.some((item) => item.tag_id === indoorTagId))
-        indoor = true;
-      if (sight.sub_tag.some((item) => item.tag_id === outdoorTagId))
-        outdoor = true;
-      if (sight.price === "Gratis")
-        free = true;
-
-      if(filters.free && free) {
-        if(filters.outdoor && outdoor)
-            return true
-        if(filters.indoor && indoor)
-            return true
+  // if indoor or outdoor is selected
+  if (filters.indoor || filters.outdoor)
+  {
+    sights = sights.filter(sight => {
+      if (filters.outdoor && sight.sub_tag.some(item => item.tag_id === outdoorTagId))
         return true
-      }
+      if (filters.indoor && sight.sub_tag.some(item => item.tag_id === indoorTagId))
+        return true
 
-      if (filters.indoor && indoor && !filters.free) return true;
-
-      if (filters.outdoor && outdoor && !filters.free) return true;
-
-      return false;
-    });
-    sights = newSights;
+      return false
+    })
   }
 
   const newSights = sights.filter((sight) => {
